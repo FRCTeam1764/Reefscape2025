@@ -1,0 +1,74 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2796798990272578,
+      "y": 5.52811290895741
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleStartDriveThroughMiddle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LimeLightRing"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WristDown"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundPickUpAuto"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "WristUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IndexRing"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidFarToSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFirst"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

@@ -1,0 +1,175 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6690561529271205,
+      "y": 6.7241388044029655
+    },
+    "rotation": -120.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootFirst"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "WristDown"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "StarttoTopMid"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLightRing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundPickUpAuto"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TopMidToShoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WristUp"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IndexRing"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLightSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TopScoreToLeave"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "WristDown"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLightRing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundPickUpAuto"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MidRingToShootTop"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WristUp"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "IndexRing"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimeLightSpeaker"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

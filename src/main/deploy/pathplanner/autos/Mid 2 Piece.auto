@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.9203306782681937,
+      "y": 5.55
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidStartToShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootToMidRing"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GroundPickUpAuto"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidRingToShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidShootToLeave"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
