@@ -340,10 +340,7 @@ return AutoBuilder.followPath(path);
   @Override
   public void periodic()
   {
-//    for(SwerveModule mod : swerveDrive.getModules()){
-// TalonFX motor = (TalonFX) mod.getDriveMotor().getMotor(); // this causes a memory leak probably
-//  SmartDashboard.putNumber("current-"+mod.moduleNumber,motor.getSupplyCurrent().getValueAsDouble());
-//    }
+    
   }
 
   @Override

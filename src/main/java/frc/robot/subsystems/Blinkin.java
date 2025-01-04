@@ -23,7 +23,7 @@ public class Blinkin extends SubsystemBase {
   }
 
   public void setColor(double color){
-this.color = color;
+    this.color = color;
   }
 
   @Override
