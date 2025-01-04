@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.constants.SwerveConstantsYAGSL;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -22,18 +21,15 @@ public class LockOnAprilTag extends Command {
   private SwerveSubsystem Drivetrain;
 private boolean fieldRelative;
   private Joystick controller;
-  private boolean gottadoFunny;
   private int pipeline;
   private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.Auton.angleAutoPID.kP, SwerveConstantsYAGSL.Auton.angleAutoPID.kI, SwerveConstantsYAGSL.Auton.angleAutoPID.kD);
-  public LockOnAprilTag(SwerveSubsystem drivetrain, LimelightSubsystem limelight, int pipeline, Joystick controller,boolean fieldRelative, boolean gottadoFunny) {
+  public LockOnAprilTag(SwerveSubsystem drivetrain, LimelightSubsystem limelight, int pipeline, Joystick controller,boolean fieldRelative) {
     addRequirements(drivetrain);
     this.Drivetrain = drivetrain;
     this.LimeLight = limelight;
     this.controller = controller;
     this.fieldRelative = fieldRelative;
     this.pipeline = pipeline;
-    //gottadofunny represnets the time in GKC where limeight couldnt see the april tag so we hvae to use another
-   this.gottadoFunny = gottadoFunny;
   }
 
   // Called when the command is initially scheduled.
@@ -56,19 +52,7 @@ private boolean fieldRelative;
     double horizontal_amgle = -(LimeLight.getHorizontalAngleOfErrorDegrees());
 
 		if (LimeLight.hasTarget()){
-      // if(gottadoFunny == true){
-      //   if(LimeLight.getID() == 3 || LimeLight.getID() == 8){
-      //     LimeLight.setPipeline(2);
-      //      horizontal_amgle = -(LimeLight.getHorizontalAngleOfErrorDegrees()+22 );
-      //   }else{
-
-      //     LimeLight.setPipeline(1);
-      //   }
-      // }
       
-
-
-
 			double setpoint = Math.toRadians(horizontal_amgle)+Drivetrain.getPose().getRotation().getRadians();
       thetaController.setSetpoint(setpoint);
 
