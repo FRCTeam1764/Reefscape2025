@@ -8,8 +8,8 @@ public final class Constants {
     public static final int PRESSURE_SENSOR_PORT =   0;
 
 
-    public static final CanPort CLIMBER_MOTOR1 =     new CanPort(20); //right
-    public static final CanPort CLIMBER_MOTOR2 =     new CanPort(10); //left
+    public static final CanPort ELEVATOR_MOTOR1 =     new CanPort(20); //right
+    public static final CanPort ELEVATOR_MOTOR2 =     new CanPort(10); //left
 
     public static final CanPort FLYWHEEL_MOTOR1 =     new CanPort(9); //right
     public static final CanPort FLYWHEEL_MOTOR2 =     new CanPort(7); //left
