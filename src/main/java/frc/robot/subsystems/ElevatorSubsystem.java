@@ -6,33 +6,37 @@ package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.libraries.internal.LazyTalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.*;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
 
-  public LazyTalonFX elevatorMotor1;
-  public LazyTalonFX elevatorMotor2;
+  public TalonFX elevatorMotor1;
+  public TalonFX elevatorMotor2;
   public PIDController pidController;
   public DigitalInput limitSwitch;
-  public DigitalInput limitSwitch2;
   private PositionDutyCycle setVoltage;
   private PositionDutyCycle setVoltage2;
   private double desiredEncoder;
   
   int negative;
   public ElevatorSubsystem() {
-    elevatorMotor1 = new LazyTalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
-    elevatorMotor2 = new LazyTalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
-    elevatorMotor2.follow(elevatorMotor1);
+    elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
+    elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
+    elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
     limitSwitch = new DigitalInput(Constants.CLIMBER_SWITCH_LEFT);
     negative = 1;
     
