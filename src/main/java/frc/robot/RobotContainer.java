@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.*;
-import frc.robot.commands.DriveCommands.DoA180;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TeleopDrive;
 import frc.robot.constants.CommandConstants;
@@ -49,7 +48,6 @@ public class RobotContainer {
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
     private final JoystickAxis LeftTrigger = new JoystickAxis(driver, XboxController.Axis.kLeftTrigger.value);
-    private final JoystickButton FLIPURSELF = new JoystickButton(driver, XboxController.Button.kX.value);
 
     private final JoystickButton SpeakerLimelight = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton RingLimelight = new JoystickButton(driver, XboxController.Button.kB.value);
@@ -101,8 +99,6 @@ public class RobotContainer {
     private void configurePilotButtonBindings() {
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        //a
-        FLIPURSELF.whileTrue(new DoA180(s_Swerve, driver, true));
     }
 
     private void configureCoPilotButtonBindings() {

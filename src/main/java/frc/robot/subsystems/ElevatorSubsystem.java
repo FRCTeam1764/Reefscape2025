@@ -81,8 +81,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     }
 
     variable = negative*Math.min(7.2, Math.abs(variable));
-    elevatorMotor1.set(ControlMode.PercentOutput,variable);  
-    elevatorMotor2.set(ControlMode.PercentOutput,variable);  
+    elevatorMotor1.set(variable);  
+    elevatorMotor2.set(variable);  
     
   }
   public double getDesiredEncoder(){
