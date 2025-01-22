@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.*;
-import frc.robot.commands.DriveCommands.DoA180;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TeleopDrive;
 import frc.robot.constants.CommandConstants;
@@ -98,8 +97,6 @@ public class RobotContainer {
     private void configurePilotButtonBindings() {
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
-        //a
-        FLIPURSELF.whileTrue(new DoA180(s_Swerve, driver, true));
     }
 
     private void configureCoPilotButtonBindings() {
