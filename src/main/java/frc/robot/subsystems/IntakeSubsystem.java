@@ -90,7 +90,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
 
 
-    breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM_INNER);
+    breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
     // breakBeamIntakeOut = new DigitalInput(Constants.INTAKE_BREAK_BEAM_FEED);
     // breakBeamIntakeMid = new DigitalInput(Constants.INTAKE_BREAK_BEAM_MIDDLE);
     this.intakeState = intakeState;
@@ -147,6 +147,10 @@ public class IntakeSubsystem extends SubsystemBase {
 
   public double getEncoderPos() {
     return m_angleEncoder.getPosition();
+  }
+  //TODO: find not safe encoder values
+  public boolean isFlexSafe(){
+    return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
   }
 
   @Override

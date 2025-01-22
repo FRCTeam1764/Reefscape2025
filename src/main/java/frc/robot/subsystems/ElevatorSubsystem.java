@@ -89,7 +89,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getEncoderValue2() {
     return elevatorMotor2.getPosition().getValueAsDouble();
   }
-
+  //TODO: find not safe encoder values
+  public boolean Motor1IsSafe(){
+    return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
+  }
+  public boolean Motor2IsSafe(){
+    return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
+  }
+  
 
 
   @Override
