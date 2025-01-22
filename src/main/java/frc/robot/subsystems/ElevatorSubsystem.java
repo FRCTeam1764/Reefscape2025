@@ -9,6 +9,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -26,7 +27,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public TalonFX elevatorMotor1;
   public TalonFX elevatorMotor2;
-  public PIDController pidController;
   public DigitalInput limitSwitch;
   private PositionDutyCycle setVoltage;
   private PositionDutyCycle setVoltage2;
@@ -36,16 +36,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   public ElevatorSubsystem() {
     elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
     elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
-    elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
-    limitSwitch = new DigitalInput(Constants.CLIMBER_SWITCH_LEFT);
-    negative = 1;
+    limitSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH1);
+    
+
     
     SetUpClimberMotors();
     
     setVoltage = new PositionDutyCycle(0).withSlot(0);
     setVoltage.UpdateFreqHz = 10;
-    setVoltage2 = new PositionDutyCycle(0).withSlot(0);
-    setVoltage2.UpdateFreqHz = 10;
   }
   public void SetUpClimberMotors() {
     TalonFXConfiguration config = new TalonFXConfiguration();
@@ -58,32 +56,28 @@ public class ElevatorSubsystem extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.PeakForwardDutyCycle = 1;
     config.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
+ 
+  
     config2.Slot0.kP = 0.435; // p pid
     config2.Slot0.kD = 0.00005; // d pid
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config2.MotorOutput.PeakForwardDutyCycle = 1;
     config2.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
+    config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
+    
 
     elevatorMotor1.getConfigurator().apply(config);
     elevatorMotor2.getConfigurator().apply(config2);
+
+    elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
+
   }
   
   public void elevatorOn(double desiredEncoderValue, double velocity){
     desiredEncoder = desiredEncoderValue;
-
-    double variable = pidController.calculate(getEncoderValue(),desiredEncoderValue);
-    if(variable<0){
-      negative = -1;
-    }
-    else{
-      negative = 1;
-    }
-
-    variable = negative*Math.min(7.2, Math.abs(variable));
-    elevatorMotor1.set(ControlMode.PercentOutput,variable);  
-    elevatorMotor2.set(ControlMode.PercentOutput,variable);  
-    
+//TOOD: NEED FEEDFORWARD
+    StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
   }
   public double getDesiredEncoder(){
     return desiredEncoder;
@@ -95,6 +89,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getEncoderValue2() {
     return elevatorMotor2.getPosition().getValueAsDouble();
   }
+
+
 
   @Override
   public void periodic() {

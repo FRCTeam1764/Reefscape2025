@@ -48,11 +48,8 @@ public class RobotContainer {
 
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickAxis LeftTrigger = new JoystickAxis(driver, XboxController.Axis.kLeftTrigger.value);
     private final JoystickButton FLIPURSELF = new JoystickButton(driver, XboxController.Button.kX.value);
 
-    private final JoystickButton SpeakerLimelight = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton RingLimelight = new JoystickButton(driver, XboxController.Button.kB.value);
 
     /* CoPilot Buttons */
 
