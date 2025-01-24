@@ -10,13 +10,19 @@ public final class CommandConstants {
     public static final int INTAKE_LEVEL_FOUR = 49; //48.5833 repeating
 
     //TODO: fix, currently in degrees
-    public static final int WRIST_LEVEL_ONE = 0;
+    public static final int WRIST_LEVEL_ONE = 0; //TODO - level one
     public static final int WRIST_LEVEL_TWO = 140; 
     public static final int WRIST_LEVEL_THREE = 140;
     public static final int WRIST_LEVEL_FOUR = 170;
 
+    public static final int WRIST_DOWN = 0; //TODO: fix
+
     public static final double INTAKE_CORAL_PICKUP_SPEED = 0.6;
     public static final double INTAKE_CORAL_OUT_SPEED = 0.6;
+
+    public static final double CLIMBER_SPEED = 0.5;
+
+    public static final int CLIMBER_DOWN = 0; //TODO: FIX
 
 
 

@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
-import frc.robot.commands.BasicCommands.ElevatorDownCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.constants.CommandConstants;
@@ -30,8 +29,8 @@ public class CoralReef extends SequentialCommandGroup {
     addRequirements();
 
     SequentialCommandGroup goToPosition = new SequentialCommandGroup(
-      new ElevatorCommand(elevator, elevator.retriveEncoder(level)), 
-      new WristCommand(intake, CommandConstants.INTAKE_REEF_ENCODERVALUE)
+      new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false), 
+      new WristCommand(intake, elevator.retriveAngleEncoder(level))
     );
 
     ParallelDeadlineGroup spitOut = new ParallelDeadlineGroup(
@@ -40,8 +39,8 @@ public class CoralReef extends SequentialCommandGroup {
     );
 
     SequentialCommandGroup goBack = new SequentialCommandGroup(
-      new WristCommand(intake, CommandConstants.INTAKE_REEF_ENCODERVALUE),
-      new ElevatorDownCommand(elevator)
+      new WristCommand(intake, CommandConstants.WRIST_DOWN),
+      new ElevatorCommand(elevator, 0, true)
     );
 
     addCommands(goToPosition, spitOut, goBack);
