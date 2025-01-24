@@ -15,6 +15,7 @@ public class ElevatorCommand extends Command {
   int desired;
   public ElevatorCommand(ElevatorSubsystem elevator, int desired) {
     // Use addRequirements() here to declare subsystem dependencies.
+    //boolean for stop at limit switch
     this.elevator = elevator;
     this.desired = desired;
   }
@@ -32,7 +33,7 @@ public class ElevatorCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    elevator.off();
+    //conditional
   }
 
   // Returns true when the command should end.

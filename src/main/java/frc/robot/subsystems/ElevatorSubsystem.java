@@ -17,6 +17,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -45,6 +46,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     setVoltage = new PositionDutyCycle(0).withSlot(0);
     setVoltage.UpdateFreqHz = 10;
   }
+
   public void SetUpClimberMotors() {
     TalonFXConfiguration config = new TalonFXConfiguration();
 
@@ -71,13 +73,20 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor2.getConfigurator().apply(config2);
 
     elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
-
   }
   
-  public void elevatorOn(double desiredEncoderValue, double velocity){
+  public void elevatorOn(double desiredEncoderValue){
     desiredEncoder = desiredEncoderValue;
-//TOOD: NEED FEEDFORWARD
+    //TOOD: NEED FEEDFORWARD
     StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
+  }
+
+  public void elevatorOnSpeed(double speed){
+    elevatorMotor1.set(speed);
+  }
+
+  public void off() {
+    elevatorMotor1.set(0);
   }
   public double getDesiredEncoder(){
     return desiredEncoder;
@@ -89,6 +98,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getEncoderValue2() {
     return elevatorMotor2.getPosition().getValueAsDouble();
   }
+  public boolean getLimitSwitch() {
+    return limitSwitch.get();
+  }
   //TODO: find not safe encoder values
   public boolean Motor1IsSafe(){
     return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
@@ -97,6 +109,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
   }
   
+  public int retriveEncoder(int level) {
+    //if level == 1, return intake level one, else...
+    return (level == 1) ? CommandConstants.INTAKE_LEVEL_ONE : 
+    //if level == 2, return intake level two, else...
+    (level == 2) ? CommandConstants.INTAKE_LEVEL_TWO :
+    (level == 3) ? CommandConstants.INTAKE_LEVEL_THREE :
+                   CommandConstants.INTAKE_LEVEL_FOUR;
+  }
 
 
   @Override
