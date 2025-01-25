@@ -5,7 +5,6 @@
 package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Climbersubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -13,9 +12,10 @@ public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
   ElevatorSubsystem elevator;
   int desired;
-  public ElevatorCommand(ElevatorSubsystem elevator, int desired) {
+  boolean stopAtLimitSwitch;
+  public ElevatorCommand(ElevatorSubsystem elevator, int desired, boolean stopAtLimitSwitch) {
     // Use addRequirements() here to declare subsystem dependencies.
-    //boolean for stop at limit switch
+    this.stopAtLimitSwitch = stopAtLimitSwitch;
     this.elevator = elevator;
     this.desired = desired;
   }
@@ -39,6 +39,11 @@ public class ElevatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (stopAtLimitSwitch) {
+      return elevator.getLimitSwitch() || 
+          !(elevator.Motor1IsSafe() || elevator.Motor2IsSafe()); //and?
+    } else {
+      return false;
+    }
   }
 }

@@ -23,7 +23,7 @@ public class GrabReefAlgae extends SequentialCommandGroup {
     addRequirements(elevator, intake);
 
     SequentialCommandGroup position = new SequentialCommandGroup(
-      new ElevatorCommand(elevator, elevator.retriveEncoder(level)),
+      new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
       new WristCommand(intake, CommandConstants.WRIST_DOWN)
     );
 

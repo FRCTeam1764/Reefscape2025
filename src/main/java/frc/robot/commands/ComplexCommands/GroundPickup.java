@@ -4,10 +4,10 @@
 
 package frc.robot.commands.ComplexCommands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
+import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -16,22 +16,21 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class BounceReefAlgae extends SequentialCommandGroup {
-  /** Creates a new TakeAlgae. */
-  public BounceReefAlgae(ElevatorSubsystem elevator, IntakeSubsystem intake, int level) {
+public class GroundPickup extends SequentialCommandGroup {
+  /** Creates a new GroundPickup. */
+  public GroundPickup(IntakeSubsystem intake, ElevatorSubsystem elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(intake, elevator);
-
+  
     SequentialCommandGroup position = new SequentialCommandGroup(
-      new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
-      new WristCommand(intake, CommandConstants.WRIST_DOWN)
+      new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
+      new ParallelCommandGroup(
+        new WristCommand(intake, CommandConstants.WRIST_UP),
+        new ElevatorCommand(elevator, 0, true)
+          .onlyIf(() -> (intake.getEncoderPos()>20)) //TODO: fix half out encoder
+      ) 
     );
 
-    Command getAlgaeOut = new WristCommand(intake, CommandConstants.INTAKE_BOUNCE_ALGAE_OUT);
-
-    
-
-    addCommands(position, getAlgaeOut, new WristCommand(intake, CommandConstants.WRIST_UP));
-  }
+    addCommands(position, new IntakeCommand(intake, 0.2));
+  } 
 }
