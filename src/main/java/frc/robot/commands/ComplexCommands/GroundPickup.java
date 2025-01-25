@@ -4,7 +4,13 @@
 
 package frc.robot.commands.ComplexCommands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.commands.BasicCommands.ElevatorCommand;
+import frc.robot.commands.BasicCommands.IntakeCommand;
+import frc.robot.commands.BasicCommands.WristCommand;
+import frc.robot.constants.CommandConstants;
+import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.IntakeSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -12,10 +18,23 @@ import frc.robot.subsystems.IntakeSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GroundPickup extends SequentialCommandGroup {
   /** Creates a new GroundPickup. */
-  public GroundPickup(IntakeSubsystem intake) {
+  public GroundPickup(IntakeSubsystem intake, ElevatorSubsystem elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+  
+    SequentialCommandGroup position = new SequentialCommandGroup(
+      new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
+      new ParallelCommandGroup(
+        new WristCommand(intake, CommandConstants.WRIST_UP),
+        new ElevatorCommand(elevator, 0, true)
+          .onlyIf(() -> (intake.getEncoderPos()>20)) //TODO: fix half out encoder
+      ) 
+    );
 
-    addCommands();
-  }
+    
+
+
+
+    addCommands(position, new IntakeCommand(intake, 0.2));
+  } 
 }
