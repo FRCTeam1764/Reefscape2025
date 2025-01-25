@@ -109,13 +109,27 @@ public class ElevatorSubsystem extends SubsystemBase {
     return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
   }
   
-  public int retriveEncoder(int level) {
+  public int retriveLevelEncoder(int level) {
     //if level == 1, return intake level one, else...
     return (level == 1) ? CommandConstants.INTAKE_LEVEL_ONE : 
     //if level == 2, return intake level two, else...
     (level == 2) ? CommandConstants.INTAKE_LEVEL_TWO :
     (level == 3) ? CommandConstants.INTAKE_LEVEL_THREE :
                    CommandConstants.INTAKE_LEVEL_FOUR;
+  }
+
+  public int retriveAngleEncoder(int level) {
+    //if level == 1, return intake level one, else...
+    return (level == 1) ? CommandConstants.WRIST_LEVEL_ONE : 
+    //if level == 2, return intake level two, else...
+    (level == 2) ? CommandConstants.WRIST_LEVEL_TWO :
+    (level == 3) ? CommandConstants.WRIST_LEVEL_THREE :
+                   CommandConstants.WRIST_LEVEL_FOUR;
+  }
+
+  public void zeroEncoder() {
+    elevatorMotor1.setPosition(0);
+    elevatorMotor2.setPosition(0);
   }
 
 
