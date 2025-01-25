@@ -9,12 +9,10 @@ import edu.wpi.first.wpilibj.Joystick;
 /** Add your docs here. */
 public class RobotState {
     public LimelightState limelightState;
-public IntakeState intakeState;
     public SwerveState swerveState;
     public RobotState(Joystick driver) {
         this.limelightState = new LimelightState();
         this.swerveState = new SwerveState(driver);
-        this.intakeState = new IntakeState();
 
     }
 }

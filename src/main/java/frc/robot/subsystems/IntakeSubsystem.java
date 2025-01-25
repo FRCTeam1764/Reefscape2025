@@ -24,14 +24,11 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.Constants;
-import frc.robot.state.IntakeState;
 
 //TODO: FIND CONSTANTS FOR Limits, PID
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   private final SparkMax m_flexMotor = new SparkMax(Constants.WRIST_MOTOR1.id, MotorType.kBrushless);
-  private final SparkMax m_flexMotor2 = new SparkMax(Constants.WRIST_MOTOR2.id,MotorType.kBrushless);
-  private final IntakeState intakeState;
   private final TalonFX m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
   private SparkClosedLoopController pidController;
 
@@ -42,7 +39,7 @@ public class IntakeSubsystem extends SubsystemBase {
   private DigitalInput breakBeamIntake;
 
 
-  public IntakeSubsystem(IntakeState intakeState) {
+  public IntakeSubsystem() {
 
   //configs
 
@@ -93,7 +90,6 @@ public class IntakeSubsystem extends SubsystemBase {
     breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
     // breakBeamIntakeOut = new DigitalInput(Constants.INTAKE_BREAK_BEAM_FEED);
     // breakBeamIntakeMid = new DigitalInput(Constants.INTAKE_BREAK_BEAM_MIDDLE);
-    this.intakeState = intakeState;
 
   }
 
@@ -162,6 +158,5 @@ public class IntakeSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("intakeCurre t", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
     SmartDashboard.putNumber("intakepos", m_angleEncoder.getPosition());
     
-    flexClosedLoop(intakeState.getEncoderValue());
   }
 }
