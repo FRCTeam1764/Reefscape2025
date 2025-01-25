@@ -111,11 +111,11 @@ public class ElevatorSubsystem extends SubsystemBase {
   
   public int retriveLevelEncoder(int level) {
     //if level == 1, return intake level one, else...
-    return (level == 1) ? CommandConstants.INTAKE_LEVEL_ONE : 
+    return (level == 1) ? CommandConstants.ELEVATOR_LEVEL_ONE : 
     //if level == 2, return intake level two, else...
-    (level == 2) ? CommandConstants.INTAKE_LEVEL_TWO :
-    (level == 3) ? CommandConstants.INTAKE_LEVEL_THREE :
-                   CommandConstants.INTAKE_LEVEL_FOUR;
+    (level == 2) ? CommandConstants.ELEVATOR_LEVEL_TWO :
+    (level == 3) ? CommandConstants.ELEVATOR_LEVEL_THREE :
+                   CommandConstants.ELEVATOR_LEVEL_FOUR;
   }
 
   public int retriveAngleEncoder(int level) {

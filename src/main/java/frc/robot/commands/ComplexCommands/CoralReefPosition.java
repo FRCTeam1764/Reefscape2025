@@ -28,11 +28,13 @@ public class CoralReefPosition extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements();
 
-
     addCommands(
+      new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
       new ParallelDeadlineGroup(
-        new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
-        new WristCommand(intake, CommandConstants.WRIST_UP).finallyDo((elevator) -> ((boolean)(elevator.getEncoderValue()>30))))
+        new WristCommand(intake, CommandConstants.WRIST_DOWN),
+        new IntakeCommand(intake, -0.2)
+          .onlyIf(() -> (intake.getEncoderPos() >= elevator.retriveAngleEncoder(level)))
+      )
     );
   }
 }

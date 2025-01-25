@@ -26,15 +26,15 @@ public class CoralIntakePrep extends SequentialCommandGroup {
     ParallelDeadlineGroup grab = new ParallelDeadlineGroup(
       new WaitCommand(2), new IntakeCommand(intake, 0.3));
 
-    ParallelCommandGroup down = new ParallelCommandGroup(
-      new ElevatorCommand(elevator, 0, true),
-      new WristCommand(intake, CommandConstants.WRIST_DOWN)
+    ParallelCommandGroup up = new ParallelCommandGroup(
+      new WristCommand(intake, CommandConstants.WRIST_UP),
+      new ElevatorCommand(elevator, 0, true)
+        .onlyIf(() -> (elevator.getEncoderValue()>20)) //TODO: fix half out encoder
     );
     
     addCommands(
       grab,
-      new WristCommand(intake, 50), //TO DO: FIX
-      down
+      up
     );
   }
 }
