@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -28,14 +29,14 @@ import frc.robot.constants.Constants;
 //TODO: FIND CONSTANTS FOR Limits, PID
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  private final SparkMax m_flexMotor = new SparkMax(Constants.WRIST_MOTOR1.id, MotorType.kBrushless);
+  private final TalonFX m_flexMotor = new TalonFX(Constants.WRIST_MOTOR1.id);
   private final TalonFX m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
-  private SparkClosedLoopController pidController;
+  final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
+
 
   ArmFeedforward armfeed = new ArmFeedforward(0,0.3,0);
 
-  private final SparkAbsoluteEncoder m_angleEncoder = m_flexMotor
-      .getAbsoluteEncoder();
+  
   private DigitalInput breakBeamIntake;
 
 
@@ -47,18 +48,27 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeConfig.MotorOutput.Inverted =  InvertedValue.Clockwise_Positive;
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     intakeConfig.MotorOutput.PeakForwardDutyCycle = 0.8;
-    intakeConfig.MotorOutput.PeakReverseDutyCycle = 0.8;
+    intakeConfig.MotorOutput.PeakReverseDutyCycle = -0.8;
     intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     intakeConfig.CurrentLimits.StatorCurrentLimit = 120;
 
-    TalonFXConfiguration flexConfig = new TalonFXConfiguration();
-    flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+    //TODO figure out values
+    TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
+    flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.9;
+    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.9; 
+    flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    flexConfig.CurrentLimits.StatorCurrentLimit = 100;
+
+    flexConfig.Slot0.kP = 0;
+    flexConfig.Slot0.kD = 0;
 
 
 
 
-  m_intakeMotor.getConfigurator().apply(intakeConfig);  
+
+  /*m_intakeMotor.getConfigurator().apply(intakeConfig);  
     
 
     AbsoluteEncoderConfig angleEncoderConfig = new AbsoluteEncoderConfig();
@@ -81,7 +91,7 @@ public class IntakeSubsystem extends SubsystemBase {
             .positionWrappingEnabled(false);
 
     m_flexMotor.configure(flexConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);    
-            
+         */   
     
     
 
@@ -109,6 +119,10 @@ public class IntakeSubsystem extends SubsystemBase {
      }
      
   }
+  
+  public void flexOn(double rotations) {
+    m_flexMotor.setControl((m_request.withPosition(rotations)));
+  }
 
   public boolean getIntakeBreakbeam() {
     return !breakBeamIntake.get();
@@ -120,8 +134,8 @@ public class IntakeSubsystem extends SubsystemBase {
    
   }
 
-    public double getPercentFromBattery(double speed){
-        return speed * 12 / RobotController.getBatteryVoltage();
+  public double getPercentFromBattery(double speed){
+    return speed * 12 / RobotController.getBatteryVoltage();
 }
 
   public void stop() {
@@ -129,25 +143,18 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
 
-  public void startflex1(){
+  public void startflex(){
     m_flexMotor.set(.2);
   }
 
-  public void stopflex1(){
+  public void stopflex(){
     m_flexMotor.set(0);
   }
-  public void flexClosedLoop(double desired) {
+  
 
-      pidController.setReference(desired, ControlType.kPosition);
-  }
-
-  public double getEncoderPos() {
-    return m_angleEncoder.getPosition();
-  }
+  
   //TODO: find not safe encoder values
-  public boolean isFlexSafe(){
-    return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
-  }
+  
 
   @Override
   public void periodic() {
@@ -156,7 +163,6 @@ public class IntakeSubsystem extends SubsystemBase {
     // SmartDashboard.putBoolean("Intake2", !breakBeamIntakeOut.get());
     // SmartDashboard.putBoolean("Intake3",!breakBeamIntakeMid.get());
     SmartDashboard.putNumber("intakeCurre t", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("intakepos", m_angleEncoder.getPosition());
     
   }
 }
