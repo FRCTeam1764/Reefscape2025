@@ -24,11 +24,11 @@ public class GroundPickup extends SequentialCommandGroup {
   
     SequentialCommandGroup position = new SequentialCommandGroup(
       new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
+      new WristCommand(intake, CommandConstants.WRIST_HALF),
       new ParallelCommandGroup(
-        new WristCommand(intake, CommandConstants.WRIST_UP),
+        new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE),
         new ElevatorCommand(elevator, 0, true)
-          .onlyIf(() -> (intake.getEncoderPos()>20)) //TODO: fix half out encoder
-      ) 
+      )
     );
 
     addCommands(position, new IntakeCommand(intake, 0.2));

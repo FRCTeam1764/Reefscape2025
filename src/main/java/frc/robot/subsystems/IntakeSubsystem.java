@@ -3,21 +3,14 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.AbsoluteEncoderConfig;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
@@ -28,14 +21,13 @@ import frc.robot.constants.Constants;
 //TODO: FIND CONSTANTS FOR Limits, PID
 public class IntakeSubsystem extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
-  private final SparkMax m_flexMotor = new SparkMax(Constants.WRIST_MOTOR1.id, MotorType.kBrushless);
+  private final TalonFX m_flexMotor = new TalonFX(Constants.WRIST_MOTOR1.id, Constants.WRIST_MOTOR1.busName);
   private final TalonFX m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
   private SparkClosedLoopController pidController;
 
   ArmFeedforward armfeed = new ArmFeedforward(0,0.3,0);
 
-  private final SparkAbsoluteEncoder m_angleEncoder = m_flexMotor
-      .getAbsoluteEncoder();
+  private final CANcoder m_angleEncoder = new CANcoder(Constants.INTAKE_CANCODER.id, Constants.INTAKE_CANCODER.busName);
   private DigitalInput breakBeamIntake;
 
 
@@ -55,42 +47,15 @@ public class IntakeSubsystem extends SubsystemBase {
     flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
+    CANcoderConfiguration CANcoderConfigs = new CANcoderConfiguration();
+    CANcoderConfigs.MagnetSensor.withMagnetOffset(0); //offset
+    CANcoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1; //NOTE: its range is currently [0, 1) 
 
-
-
-  m_intakeMotor.getConfigurator().apply(intakeConfig);  
-    
-
-    AbsoluteEncoderConfig angleEncoderConfig = new AbsoluteEncoderConfig();
-    angleEncoderConfig
-                    .zeroOffset(0)
-                    .setSparkMaxDataPortConfig()
-                    .inverted(false)
-                    .positionConversionFactor(360);
-
-    SparkMaxConfig flexConfig = new SparkMaxConfig();
-    flexConfig
-            .inverted(true) //TODOFINE OUT
-            .secondaryCurrentLimit(100)
-            .idleMode(IdleMode.kCoast);
-    flexConfig.apply(angleEncoderConfig);
-    flexConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            .pid(0.0, 0.0, 0.0)
-            .outputRange(-.9, .9)
-            .positionWrappingEnabled(false);
-
-    m_flexMotor.configure(flexConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);    
-            
-    
-    
-
-
+    m_angleEncoder.getConfigurator().apply(CANcoderConfigs);
+    m_intakeMotor.getConfigurator().apply(intakeConfig);  
+    m_flexMotor.getConfigurator().apply(flexConfig);
 
     breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
-    // breakBeamIntakeOut = new DigitalInput(Constants.INTAKE_BREAK_BEAM_FEED);
-    // breakBeamIntakeMid = new DigitalInput(Constants.INTAKE_BREAK_BEAM_MIDDLE);
-
   }
 
   double negative;
@@ -120,14 +85,13 @@ public class IntakeSubsystem extends SubsystemBase {
    
   }
 
-    public double getPercentFromBattery(double speed){
-        return speed * 12 / RobotController.getBatteryVoltage();
-}
+  public double getPercentFromBattery(double speed){
+    return speed * 12 / RobotController.getBatteryVoltage();
+  }
 
   public void stop() {
     m_intakeMotor.set(0);
   }
-
 
   public void startflex1(){
     m_flexMotor.set(.2);
@@ -137,13 +101,13 @@ public class IntakeSubsystem extends SubsystemBase {
     m_flexMotor.set(0);
   }
   public void flexClosedLoop(double desired) {
-
       pidController.setReference(desired, ControlType.kPosition);
   }
 
   public double getEncoderPos() {
-    return m_angleEncoder.getPosition();
+    return m_angleEncoder.getPosition().getValueAsDouble();
   }
+  
   //TODO: find not safe encoder values
   public boolean isFlexSafe(){
     return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
@@ -153,10 +117,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("IntakeBreakbeam", getIntakeBreakbeam());
-    // SmartDashboard.putBoolean("Intake2", !breakBeamIntakeOut.get());
-    // SmartDashboard.putBoolean("Intake3",!breakBeamIntakeMid.get());
-    SmartDashboard.putNumber("intakeCurre t", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("intakepos", m_angleEncoder.getPosition());
+    SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeWristEncoder", m_angleEncoder.getPosition().getValueAsDouble());
     
   }
 }

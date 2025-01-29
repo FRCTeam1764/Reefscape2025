@@ -20,6 +20,7 @@ public final class CommandConstants {
     public static final int WRIST_GRAB_ANGLE = 0;
 
     public static final int WRIST_DOWN = 0; //TODO: fix
+    public static final int WRIST_HALF = 90; //TODO: fix
     public static final int WRIST_UP = 180; //TODO: fix
 
     //speed

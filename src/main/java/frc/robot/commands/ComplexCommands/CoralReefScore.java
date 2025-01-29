@@ -21,19 +21,18 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CoralReefPosition extends SequentialCommandGroup {
+public class CoralReefScore extends SequentialCommandGroup {
   /** Creates a new CoralReef. */
-  public CoralReefPosition(ElevatorSubsystem elevator, IntakeSubsystem intake, int level) {
+  public CoralReefScore(ElevatorSubsystem elevator, IntakeSubsystem intake, int level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements();
 
     addCommands(
-      new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
+      new WristCommand(intake, elevator.retriveAngleEncoder(level)),
       new ParallelDeadlineGroup(
         new WristCommand(intake, CommandConstants.WRIST_DOWN),
         new IntakeCommand(intake, -0.2)
-          .onlyIf(() -> (intake.getEncoderPos() >= elevator.retriveAngleEncoder(level)))
       )
     );
   }
