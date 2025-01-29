@@ -21,6 +21,8 @@ public final class CommandConstants {
 
     public static final int WRIST_DOWN = 0; //TODO: fix
     public static final int WRIST_UP = 180; //TODO: fix
+    public static final int WRIST_HALF = 90; //TODO: fix
+    public static final int WRIST_ALGAE = 135; //TODO: fix
 
     //speed
     public static final double INTAKE_CORAL_PICKUP_SPEED = 0.6;
@@ -34,6 +36,8 @@ public final class CommandConstants {
 
     //climber
     public static final int CLIMBER_DOWN = 0; //TODO: FIX
+    
+    public static boolean ALGAE = false;
 
 
 

@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 
 //TODO: FIND CONSTANTS FOR Limits, PID
@@ -147,6 +148,11 @@ public class IntakeSubsystem extends SubsystemBase {
   //TODO: find not safe encoder values
   public boolean isFlexSafe(){
     return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
+  }
+
+  public boolean flexOutSafe(ElevatorSubsystem elevator, IntakeSubsystem intake) {
+    return elevator.getEncoderValue() >= CommandConstants.ELEVATOR_STOP_SAFE || 
+      ((int)intake.getEncoderPos() >= CommandConstants.WRIST_DOWN-1 && (int)intake.getEncoderPos() <= CommandConstants.WRIST_DOWN+1);
   }
 
   @Override

@@ -32,5 +32,6 @@ public class GroundPickup extends SequentialCommandGroup {
     );
 
     addCommands(position, new IntakeCommand(intake, 0.2));
+    CommandConstants.ALGAE = true;
   } 
 }
