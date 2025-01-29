@@ -32,7 +32,8 @@ public class GrabReefAlgae extends ParallelCommandGroup {
       new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE),
       new IntakeCommand(intake, CommandConstants.INTAKE_GRAB_ALGAE_OUT)
     );
-
+    
+    CommandConstants.ALGAE = true;
     addCommands(position, grab);
   }
 }

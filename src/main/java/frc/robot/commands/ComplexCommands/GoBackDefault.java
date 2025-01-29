@@ -21,6 +21,27 @@ public class GoBackDefault extends SequentialCommandGroup {
   public GoBackDefault(IntakeSubsystem intake, ElevatorSubsystem elevator) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    SequentialCommandGroup empty = new SequentialCommandGroup(
+      new WristCommand(intake, CommandConstants.WRIST_DOWN), 
+      new ElevatorCommand(elevator, 0, true)
+    );
+
+    ParallelCommandGroup down = new ParallelCommandGroup(
+      new ElevatorCommand(elevator, 0, true),
+      new WristCommand(intake, CommandConstants.WRIST_ALGAE)
+    );
+
+    SequentialCommandGroup algae = new SequentialCommandGroup(
+      // elevator.getEncoderValue() >= CommandConstants.ELEVATOR_STOP_SAFE //is elevator at a safe spot for wrist movement
+      // intake.getEncoderPos() >= CommandConstants.WRIST_HALF // is wrist at least higher than half
+      
+      new WristCommand(intake, CommandConstants.WRIST_ALGAE),
+      new ElevatorCommand(elevator, 0, true)
+    );
+
+    // addCommands(
+    //   CommandConstants.ALGAE ? algae : empty
+    // );
 
     ParallelCommandGroup wristHalf = new ParallelCommandGroup(
       new ElevatorCommand(elevator, 0, true),
