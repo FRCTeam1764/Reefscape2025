@@ -39,6 +39,7 @@ import frc.robot.constants.SwerveConstantsYAGSL;
 
 import java.io.File;
 import java.io.IOException;
+import java.security.Timestamp;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -701,6 +702,9 @@ public class SwerveSubsystem extends SubsystemBase
     swerveDrive.addVisionMeasurement(new Pose2d(3, 3, Rotation2d.fromDegrees(65)), Timer.getFPGATimestamp());
   }
 
+public void addVisionMeasurement(Pose2d pos, double time){
+  swerveDrive.addVisionMeasurement(getPose(), time);
+}
   /**
    * Gets the swerve drive object.
    *

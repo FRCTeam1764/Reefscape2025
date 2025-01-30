@@ -57,25 +57,17 @@ public class RobotContainer {
     public RobotState robotState = new RobotState(driver);
 
     private  SendableChooser<Command> autoChooser;
-    //private final Music THEMUSIC = new Music();
     private final Superstructure superstructure = new Superstructure();
     
     private final Blinkin blinky = new Blinkin();
 
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
-    // Limelights
-    // limelight 3 is front intake
-    // limelight 2 is back shooter
-    // 4,7,15,16,14,12,11,13,6,5 - april id tags that limelight 2 should see
-    private LimelightSubsystem limelight3 = new LimelightSubsystem("limelight-three", 1,s_Swerve);
-    private LimelightSubsystem limelight2 = new LimelightSubsystem("limelight-two",0,s_Swerve);
-
     private Trajectory[] trajectories;
 
     public RobotContainer() {
 
         // teleop drive for yagsl
-    limelight3.setPipeline(1);
+    
 
         s_Swerve.setDefaultCommand(
                 new TeleopDrive(

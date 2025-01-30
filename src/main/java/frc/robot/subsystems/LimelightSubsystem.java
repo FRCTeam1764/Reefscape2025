@@ -1,32 +1,33 @@
 package frc.robot.subsystems;
 
-import java.util.Optional;
-
-import org.dyn4j.geometry.Rotation;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
+import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimeLight. */
 
   private double horizontal_offset = 0;
-  private Limelight[] Limelights;
+  private String Limelight;
   private Pose2d botpose;
   private SwerveSubsystem driveTrain;
+
+  private double txoffset;
+  private double tyoffset;
+  private double rotyaw;
   boolean trust = false;
 
 
    
+//note: we may in the future need to hvae rotpitch/roll but for now im im not implimenting that. it sucks! 3dvectors are awful
 
-  public LimelightSubsystem(SwerveSubsystem swerve, int numOfLimelights) {
+  public LimelightSubsystem(SwerveSubsystem swerve, String LimelightName,double txoffset, double tyoffset, double rotyaw) {
     /**
      * tx - Horizontal Offset
      * ty - Vertical Offset 
@@ -36,7 +37,10 @@ public class LimelightSubsystem extends SubsystemBase {
 
 
 this.driveTrain = swerve;
-Limelights = new Limelight[numOfLimelights];
+this.txoffset = txoffset;
+this.tyoffset = tyoffset;
+this.rotyaw = rotyaw;
+Limelight = LimelightName;
 
   }
 
@@ -44,71 +48,69 @@ Limelights = new Limelight[numOfLimelights];
   
 
 
-public void addCamera(String camera, Rotation rot, double yoffset, double xoffset){
-Limelights[0] = new Limelight(camera, rot, yoffset, xoffset);
-
-}
-
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    updatePoseEstimation();
   }
 
   public double getHorizontalAngleOfErrorDegrees(){
-    return getTx().getDouble(0.0) +horizontal_offset;
+    return getTx();
 
   }
 
   public double getVerticalAngleOfErrorDegrees(){
-    return getTy().getDouble(0.0) +0;
+    return getTy() +0;
   }
 
 
- public NetworkTableEntry getTx() {
-    return tx;
+ public double getTx() {
+    return LimelightHelpers.getTX(Limelight);
   }
 
-  public NetworkTableEntry getTy() {
-    return ty;
+  public double getTy() {
+    return LimelightHelpers.getTY(Limelight);
   }
 
-  public NetworkTableEntry getTa() {
-    return ta;
+  public double getTa() {
+    return LimelightHelpers.getTA(Limelight);
   }
 
   public void setPipeline(int pipe){
-    table.getEntry("pipeline").setNumber(pipe);
+LimelightHelpers.setPipelineIndex(Limelight, pipe);
   }
 
   public int getID(){
-    return (int) this.tid.getInteger(0);
+    return (int) LimelightHelpers.getFiducialID(Limelight);
   }
 
-  public double getTxAngleRadians() {
-    return Units.degreesToRadians(tx.getDouble(0));
-  }
 
-  public double getTargetAngleRadians() {
-    return getTxAngleRadians();
-  }
   public boolean hasTarget(){
-    return tv.getDouble(0) != 0;
+    return LimelightHelpers.getTV(Limelight);
   }
-}
 
-public void updatePoseEstimation(SwerveSubsystem swerveDrive)
+public void updatePoseEstimation()
 {
   if (SwerveDriveTelemetry.isSimulation){
     //TODO: DO VISION STUFF FOR SIM 
   }
  
-    Optional<PoseEstimate> poseEst = getEstimatedGlobalPose(camera);
-    if (poseEst.isPresent())
-    {
-      var pose = poseEst.get();
-      swerveDrive.addVisionMeasurement(pose.estimatedPose.toPose2d(),
-                                       pose.timestampSeconds,
-                                       camera.curStdDevs);
-    }
+  //TODO: REPLACE AND IMPLIMENT BRAD CODE LATER
+  
+
+  LimelightHelpers.SetRobotOrientation(Limelight, driveTrain.getPose().getRotation().getDegrees(),0,0,0,0,0);
+
+  PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Limelight);
+  if (poseEstimate != null && poseEstimate.pose.getX() != 0.0 && poseEstimate.pose.getY() != 0.0) {
+
+  poseEstimate.pose.transformBy(new Transform2d(txoffset, tyoffset, new Rotation2d(rotyaw)));
+
+  
+
+  driveTrain.addVisionMeasurement(poseEstimate.pose,poseEstimate.timestampSeconds);
   }
+}
+
+
+}
