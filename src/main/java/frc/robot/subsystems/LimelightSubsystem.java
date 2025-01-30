@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.Optional;
 
+import org.dyn4j.geometry.Rotation;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
@@ -9,26 +11,22 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
+import frc.robot.LimelightHelpers.PoseEstimate;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimeLight. */
-  private NetworkTable table;
-  private NetworkTableEntry tx;
-  private NetworkTableEntry ty;
-  private NetworkTableEntry ta;
-  private NetworkTableEntry tv;
-  private NetworkTableEntry tid;
+
   private double horizontal_offset = 0;
-  private String name;
+  private Limelight[] Limelights;
   private Pose2d botpose;
   private SwerveSubsystem driveTrain;
   boolean trust = false;
 
 
+   
 
-
-  public LimelightSubsystem(String name,SwerveSubsystem swerve) {
+  public LimelightSubsystem(SwerveSubsystem swerve, int numOfLimelights) {
     /**
      * tx - Horizontal Offset
      * ty - Vertical Offset 
@@ -36,35 +34,22 @@ public class LimelightSubsystem extends SubsystemBase {
      * tv - Target Visible
      */
 
-    this.table = NetworkTableInstance.getDefault().getTable(name);
-    this.tx = table.getEntry("tx");
-    this.ty = table.getEntry("ty");
-    this.ta = table.getEntry("ta");
-    this.tv = table.getEntry("tv");
-        this.tid = table.getEntry("tid");
 
-this.name = name;
 this.driveTrain = swerve;
+Limelights = new Limelight[numOfLimelights];
+
   }
 
-  public LimelightSubsystem(String name,double offset,SwerveSubsystem drivetrain) {
-    /**
-     * tx - Horizontal Offset
-     * ty - Vertical Offset 
-     * ta - Area of target 
-     * tv - Target Visible
-     */
 
-    this.table = NetworkTableInstance.getDefault().getTable(name);
-    this.tx = table.getEntry("tx");
-    this.ty = table.getEntry("ty");
-    this.ta = table.getEntry("ta");
-    this.tv = table.getEntry("tv");
-    this.tid = table.getEntry("tid");
-    this.horizontal_offset = offset;
-    this.name = name;
-    this.driveTrain = drivetrain;
-  }
+  
+
+
+public void addCamera(String camera, Rotation rot, double yoffset, double xoffset){
+Limelights[0] = new Limelight(camera, rot, yoffset, xoffset);
+
+}
+
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -115,10 +100,10 @@ this.driveTrain = swerve;
 public void updatePoseEstimation(SwerveSubsystem swerveDrive)
 {
   if (SwerveDriveTelemetry.isSimulation){
-    //TODO: DO VISION STUFF
+    //TODO: DO VISION STUFF FOR SIM 
   }
  
-    Optional<EstimatedRobotPose> poseEst = getEstimatedGlobalPose(camera);
+    Optional<PoseEstimate> poseEst = getEstimatedGlobalPose(camera);
     if (poseEst.isPresent())
     {
       var pose = poseEst.get();
@@ -127,47 +112,3 @@ public void updatePoseEstimation(SwerveSubsystem swerveDrive)
                                        camera.curStdDevs);
     }
   }
-
-private int longDistangePoseEstimationCount = 0;
-private double maximumAmbiguity = .3;
-
-    private Optional<EstimatedRobotPose> filterPose(Optional<EstimatedRobotPose> pose)
-  {
-    if (pose.isPresent())
-    {
-      double bestTargetAmbiguity = 1; // 1 is max ambiguity
-      for (LimelightHelpers. target : pose.get().targetsUsed)
-      {
-        double ambiguity = target.getPoseAmbiguity();
-        if (ambiguity != -1 && ambiguity < bestTargetAmbiguity)
-        {
-          bestTargetAmbiguity = ambiguity;
-        }
-      }
-      //ambiguity to high dont use estimate
-      if (bestTargetAmbiguity > maximumAmbiguity)
-      {
-        return Optional.empty();
-      }
-
-      //est pose is very far from recorded robot pose
-      if (PhotonUtils.getDistanceToPose(currentPose.get(), pose.get().estimatedPose.toPose2d()) > 1)
-      {
-        longDistangePoseEstimationCount++;
-
-        //if it calculates that were 10 meter away for more than 10 times in a row its probably right
-        if (longDistangePoseEstimationCount < 10)
-        {
-          return Optional.empty();
-        }
-      } else
-      {
-        longDistangePoseEstimationCount = 0;
-      }
-      return pose;
-    }
-    return Optional.empty();
-  }
-
-
-}
