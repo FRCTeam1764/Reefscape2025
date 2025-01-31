@@ -4,8 +4,13 @@
 
 package frc.robot.commands.ComplexCommands;
 
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import java.util.concurrent.locks.Condition;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
@@ -16,22 +21,19 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GroundPickup extends SequentialCommandGroup {
-  /** Creates a new GroundPickup. */
-  public GroundPickup(IntakeSubsystem intake, ElevatorSubsystem elevator) {
+public class CoralReefScore extends SequentialCommandGroup {
+  /** Creates a new CoralReef. */
+  public CoralReefScore(ElevatorSubsystem elevator, IntakeSubsystem intake, int level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-  
-    SequentialCommandGroup position = new SequentialCommandGroup(
-      new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
-      new WristCommand(intake, CommandConstants.WRIST_HALF),
-      new ParallelCommandGroup(
-        new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE),
-        new ElevatorCommand(elevator, 0, true)
+    addRequirements();
+
+    addCommands(
+      new WristCommand(intake, elevator.retriveAngleEncoder(level)),
+      new ParallelDeadlineGroup(
+        new WristCommand(intake, CommandConstants.WRIST_DOWN),
+        new IntakeCommand(intake, -0.2)
       )
     );
-
-    addCommands(position, new IntakeCommand(intake, 0.2));
-    CommandConstants.ALGAE = true;
-  } 
+  }
 }

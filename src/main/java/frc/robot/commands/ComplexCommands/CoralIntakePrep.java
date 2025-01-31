@@ -25,14 +25,16 @@ public class CoralIntakePrep extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     ParallelDeadlineGroup grab = new ParallelDeadlineGroup(
       new WaitCommand(2), 
-      new IntakeCommand(intake, 0.3));
+      new IntakeCommand(intake, 0.3)
+    );
 
+// what about now? not an if statement, but should work all the same
     SequentialCommandGroup up = new SequentialCommandGroup(
       new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
+      new WristCommand(intake, CommandConstants.WRIST_HALF),
       new ParallelCommandGroup(
         new WristCommand(intake, CommandConstants.WRIST_UP),
         new ElevatorCommand(elevator, 0, true)
-          .onlyIf(() -> (intake.getEncoderPos()>20)) //TODO: fix half out encoder
       )    
     );
     

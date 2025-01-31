@@ -4,6 +4,7 @@
 
 package frc.robot.commands.ComplexCommands;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
@@ -15,7 +16,7 @@ import frc.robot.subsystems.IntakeSubsystem;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class GrabReefAlgae extends SequentialCommandGroup {
+public class GrabReefAlgae extends ParallelCommandGroup {
   /** Creates a new GrabAlgae. */
   public GrabReefAlgae(ElevatorSubsystem elevator, IntakeSubsystem intake, int level) {
     // Add your commands in the addCommands() call, e.g.
@@ -24,14 +25,15 @@ public class GrabReefAlgae extends SequentialCommandGroup {
 
     SequentialCommandGroup position = new SequentialCommandGroup(
       new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
-      new WristCommand(intake, CommandConstants.WRIST_DOWN)
+      new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE)
     );
 
-    SequentialCommandGroup grab = new SequentialCommandGroup(
+    ParallelCommandGroup grab = new ParallelCommandGroup(
       new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE),
       new IntakeCommand(intake, CommandConstants.INTAKE_GRAB_ALGAE_OUT)
     );
-
-    addCommands(position, grab, new WristCommand(intake, CommandConstants.WRIST_UP));
+    
+    CommandConstants.ALGAE = true;
+    addCommands(position, grab);
   }
 }
