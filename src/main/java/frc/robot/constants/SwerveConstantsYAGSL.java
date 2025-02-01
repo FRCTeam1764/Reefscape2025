@@ -5,7 +5,7 @@
 
 package frc.robot.constants;
 
-import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.config.PIDConstants;
 
 /** Add your docs here. */
 

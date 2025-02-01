@@ -58,6 +58,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.PeakForwardDutyCycle = 1;
     config.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
+    config.CurrentLimits.StatorCurrentLimitEnable = true;
+    config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
     config2.Slot0.kP = 0.435; // p pid
@@ -67,7 +69,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     config2.MotorOutput.PeakForwardDutyCycle = 1;
     config2.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
-    
+    config2.CurrentLimits.StatorCurrentLimitEnable = true;
+    config2.CurrentLimits.StatorCurrentLimit = 60; 
 
     elevatorMotor1.getConfigurator().apply(config);
     elevatorMotor2.getConfigurator().apply(config2);
@@ -135,6 +138,16 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
+
+    SmartDashboard.putNumber("ElevatorMotor1Temperature", elevatorMotor1.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Temperature", elevatorMotor2.getDeviceTemp().getValueAsDouble());
+
+    SmartDashboard.putNumber("ElevatorMotor1Current", elevatorMotor1.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Current", elevatorMotor2.getStatorCurrent().getValueAsDouble());
+
+    SmartDashboard.putNumber("ElevatorMotor1Voltage", elevatorMotor1.getMotorVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Voltage", elevatorMotor2.getMotorVoltage().getValueAsDouble());
   }
 }
