@@ -6,6 +6,7 @@ package frc.robot.commands.DriveCommands;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.SwerveConstantsYAGSL;
 import frc.robot.libraries.lib.util.COTSFalconSwerveConstants.driveGearRatios;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.SwerveSubsystem;
@@ -42,7 +43,7 @@ public class DriveBasic extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-swerve.drive(new Translation2d(-speed *swerve.maximumSpeed,0), 0 ,false);
+swerve.drive(new Translation2d(-speed *SwerveConstantsYAGSL.MAX_SPEED,0), 0 ,false);
   }
 
   // Called once the command ends or is interrupted.
@@ -55,7 +56,7 @@ swerve.drive(new Translation2d(-speed *swerve.maximumSpeed,0), 0 ,false);
   @Override
   public boolean isFinished() {
     if(goToLimelightpos){
-    return  Math.abs(limeLight.getTy().getDouble(0)) < pos +1 && Math.abs(limeLight.getTy().getDouble(0)) < pos - 1;
+    return  Math.abs(limeLight.getTy()) < pos +1 && Math.abs(limeLight.getTy()) < pos - 1;
     }
     return false;
   }

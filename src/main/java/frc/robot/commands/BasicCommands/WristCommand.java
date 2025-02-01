@@ -21,19 +21,18 @@ public class WristCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.startflex1();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.flexClosedLoop(desired);
+    intake.flexOn(desired);
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stopflex1();
+    intake.stopflex();
   }
 
   // Returns true when the command should end.

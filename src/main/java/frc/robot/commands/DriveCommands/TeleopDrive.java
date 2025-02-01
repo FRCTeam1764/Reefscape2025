@@ -15,6 +15,9 @@ import frc.robot.subsystems.SwerveSubsystem;
 
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+
+import org.ironmaple.simulation.drivesims.configs.SwerveModuleSimulationConfig;
+
 import swervelib.SwerveController;
 
 /**
@@ -58,7 +61,7 @@ public class TeleopDrive extends Command
   @Override
   public void execute()
   {
-    double xVelocity   = Math.pow(MathUtil.applyDeadband(vX.getAsDouble(),SwerveConstantsYAGSL.OperatorConstants.LEFT_X_DEADBAND), 1);
+    double xVelocity   = Math.pow(MathUtil.applyDeadband(vX.getAsDouble(),SwerveConstantsYAGSL.OperatorConstants.RIGHT_X_DEADBAND), 1);
     double yVelocity   = Math.pow(MathUtil.applyDeadband(vY.getAsDouble(),SwerveConstantsYAGSL.OperatorConstants.LEFT_Y_DEADBAND), 1);
     double angVelocity = Math.pow(MathUtil.applyDeadband(omega.getAsDouble(),SwerveConstantsYAGSL.OperatorConstants.TURN_CONSTANT), 3);
     SmartDashboard.putNumber("vX", xVelocity);
@@ -66,7 +69,7 @@ public class TeleopDrive extends Command
     SmartDashboard.putNumber("omega", angVelocity);
 
     // Drive using raw values.
-    swerve.drive(new Translation2d(xVelocity * swerve.maximumSpeed, yVelocity * swerve.maximumSpeed),
+    swerve.drive(new Translation2d(xVelocity * SwerveConstantsYAGSL.MAX_SPEED, yVelocity * SwerveConstantsYAGSL.MAX_SPEED),
                  angVelocity * Math.PI*2,
                  driveMode.getAsBoolean());
   }

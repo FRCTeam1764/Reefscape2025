@@ -4,8 +4,6 @@
 
 package frc.robot.commands.DriveCommands;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -69,7 +67,7 @@ public class DriveToTarget extends Command {
   	if (m_LimeLight.hasTarget()){
       // prev InterpolationConstants.GAME_PIECE_INTERPOLATOR.getInterpolatedValue(m_LimeLight.getTy().getDouble(0.0)
       //this probably wont work 
-      Translation2d t = new Translation2d(m_LimeLight.getTy().getDouble(0), 0);
+      Translation2d t = new Translation2d(m_LimeLight.getTy(), 0);
       Rotation2d r = new Rotation2d(m_Drivetrain.getHeading().getRadians()+m_LimeLight.getTxAngleRadians());
       Transform2d i = new Transform2d(t, r);
       m_Game_Piece_Pose = m_Drivetrain.getPose().transformBy(i);

@@ -54,7 +54,7 @@ public class IntakeSubsystem extends SubsystemBase {
     flexConfig.MotorOutput.PeakForwardDutyCycle = 0.9;
     flexConfig.MotorOutput.PeakReverseDutyCycle = -0.9; 
     flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    flexConfig.CurrentLimits.StatorCurrentLimit = 100;
+    flexConfig.CurrentLimits.StatorCurrentLimit = 60;
 
     flexConfig.Feedback.FeedbackRemoteSensorID = Constants.INTAKE_CANCODER.id;
     flexConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;

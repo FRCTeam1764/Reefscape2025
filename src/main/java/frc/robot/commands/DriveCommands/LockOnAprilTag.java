@@ -22,7 +22,7 @@ public class LockOnAprilTag extends Command {
 private boolean fieldRelative;
   private Joystick controller;
   private int pipeline;
-  private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.Auton.angleAutoPID.kP, SwerveConstantsYAGSL.Auton.angleAutoPID.kI, SwerveConstantsYAGSL.Auton.angleAutoPID.kD);
+  private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kP, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kI, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kD);
   public LockOnAprilTag(SwerveSubsystem drivetrain, LimelightSubsystem limelight, int pipeline, Joystick controller,boolean fieldRelative) {
     addRequirements(drivetrain);
     this.Drivetrain = drivetrain;
@@ -47,8 +47,8 @@ private boolean fieldRelative;
 
 
     double thetaOutput = 0;
-    double xOutput =MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftY.value),SwerveConstantsYAGSL.OperatorConstants.LEFT_X_DEADBAND)*Drivetrain.maximumSpeed;
-    double yOutput = MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftX.value),SwerveConstantsYAGSL.OperatorConstants.RIGHT_X_DEADBAND)*Drivetrain.maximumSpeed;
+    double xOutput =MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftY.value),SwerveConstantsYAGSL.OperatorConstants.LEFT_Y_DEADBAND)*SwerveConstantsYAGSL.MAX_SPEED;
+    double yOutput = MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftX.value),SwerveConstantsYAGSL.OperatorConstants.RIGHT_X_DEADBAND)*SwerveConstantsYAGSL.MAX_SPEED;
     double horizontal_amgle = -(LimeLight.getHorizontalAngleOfErrorDegrees());
 
 		if (LimeLight.hasTarget()){
