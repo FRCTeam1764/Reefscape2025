@@ -4,6 +4,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
@@ -90,6 +91,10 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
     return LimelightHelpers.getTV(Limelight);
   }
 
+
+  public double getTxAngleRadians(){
+    return   Units.degreesToRadians(getTx());
+  }
 public void updatePoseEstimation()
 {
   if (SwerveDriveTelemetry.isSimulation){

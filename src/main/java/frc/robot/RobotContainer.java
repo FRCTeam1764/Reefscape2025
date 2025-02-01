@@ -21,6 +21,9 @@ import frc.robot.state.RobotState;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -96,7 +99,7 @@ public class RobotContainer {
     }
 
     public void configAutoCommands() {
-        
+        NamedCommands.registerCommand(null, getAutonomousCommand());
     }
 
     public Command getAutonomousCommand() {

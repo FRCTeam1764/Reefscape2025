@@ -28,7 +28,7 @@ public class DriveToTarget extends Command {
   
   private double m_speed_modifier = 1;
 
-  private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.Auton.angleAutoPID.kP, SwerveConstantsYAGSL.Auton.angleAutoPID.kI, SwerveConstantsYAGSL.Auton.angleAutoPID.kD);
+  private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kP, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kI, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kD);
 
   TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2.8, 1.5);
   private ProfiledPIDController xController = new ProfiledPIDController(4,0.0,0.3, constraints);
@@ -92,7 +92,7 @@ public class DriveToTarget extends Command {
     SmartDashboard.putNumber("Robot Angle", Math.toDegrees(m_Drivetrain.getPose().getRotation().getRadians()));
     SmartDashboard.putNumber("Calculated Angle", Math.toDegrees(setpoint));
 
-    m_Drivetrain.drive(new Translation2d(xOutput * m_Drivetrain.maximumSpeed,yOutput*m_Drivetrain.maximumSpeed),thetaOutput, true);
+    m_Drivetrain.drive(new Translation2d(xOutput * SwerveConstantsYAGSL.MAX_SPEED,yOutput*SwerveConstantsYAGSL.MAX_SPEED),thetaOutput, true);
   }
 
   // Called once the command ends or is interrupted.
