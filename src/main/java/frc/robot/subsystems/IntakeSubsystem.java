@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase {
     intakeConfig.MotorOutput.PeakForwardDutyCycle = 0.8;
     intakeConfig.MotorOutput.PeakReverseDutyCycle = -0.8;
     intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    intakeConfig.CurrentLimits.StatorCurrentLimit = 120;
+    intakeConfig.CurrentLimits.StatorCurrentLimit = 60;
 
     //TODO figure out values
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
@@ -142,7 +142,7 @@ public class IntakeSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("IntakeBreakbeam", getIntakeBreakbeam());
     SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("IntakeWristEncoder", m_angleEncoder.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeWristPosition", m_angleEncoder.getPosition().getValueAsDouble());
     
   }
 }

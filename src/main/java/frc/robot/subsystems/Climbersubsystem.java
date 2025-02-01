@@ -12,6 +12,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.constants.Constants;
@@ -20,12 +21,12 @@ import frc.robot.constants.Constants;
 
 public class Climbersubsystem extends SubsystemBase {
   /** Creates a new Climbersubsystem. */
-  public TalonFX ClimberMotor;
   public DigitalInput limitSwitch;
   private PositionDutyCycle setVoltage;
+  public TalonFX m_climberMotor;
 
   public Climbersubsystem() {
-    TalonFX ClimberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id);
+    m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id);
 
     setVoltage = new PositionDutyCycle(null).withSlot(0);
     
@@ -39,28 +40,36 @@ public class Climbersubsystem extends SubsystemBase {
     climbconfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     climbconfig.MotorOutput.PeakForwardDutyCycle = 1;
     climbconfig.MotorOutput.PeakReverseDutyCycle = -1;
+    climbconfig.CurrentLimits.StatorCurrentLimitEnable = true;
+    climbconfig.CurrentLimits.StatorCurrentLimit = 60; 
 
-    ClimberMotor.getConfigurator().apply(climbconfig);
+    m_climberMotor.getConfigurator().apply(climbconfig);
 
     var slot0Configs = new Slot0Configs();
     slot0Configs.kP = 0; 
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 
-    ClimberMotor.getConfigurator().apply(slot0Configs);
+    m_climberMotor.getConfigurator().apply(slot0Configs);
   }
   
   public void climberOn(double desiredEncoderValue) {
-    StatusCode val =   ClimberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
+    StatusCode val =   m_climberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
 
   }
 
   public void zeroEncoder() {
-    ClimberMotor.setPosition(0);
+    m_climberMotor.setPosition(0);
   }
   
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("ClimbMotorPosition", m_climberMotor.getPosition().getValueAsDouble());
+
+    SmartDashboard.putNumber("ClimbMotorTemperature", m_climberMotor.getDeviceTemp().getValueAsDouble());
+
+    SmartDashboard.putNumber("ClimbMotorCurrent", m_climberMotor.getStatorCurrent().getValueAsDouble());
+
+    SmartDashboard.putNumber("ElevatorMotorVoltage", m_climberMotor.getMotorVoltage().getValueAsDouble());
   }
 }

@@ -17,7 +17,9 @@ public final class CommandConstants {
     public static final int WRIST_LEVEL_TWO = 140; 
     public static final int WRIST_LEVEL_THREE = 140;
     public static final int WRIST_LEVEL_FOUR = 170;
-    public static final int WRIST_GRAB_ANGLE = 0;
+
+    public static final int WRIST_GRAB_ANGLE = 0; //TODO
+    public static final int WRIST_PROCESSOR = 0; //TODO: fix
 
     public static final int WRIST_DOWN = 0; //TODO: fix
     public static final int WRIST_HALF = 90; //TODO: fix

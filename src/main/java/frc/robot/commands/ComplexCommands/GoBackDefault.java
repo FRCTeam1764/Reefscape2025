@@ -39,25 +39,8 @@ public class GoBackDefault extends SequentialCommandGroup {
       new ElevatorCommand(elevator, 0, true)
     );
 
-    // addCommands(
-    //   CommandConstants.ALGAE ? algae : empty
-    // );
-
-    ParallelCommandGroup wristHalf = new ParallelCommandGroup(
-      new ElevatorCommand(elevator, 0, true),
-      new WristCommand(intake, CommandConstants.WRIST_DOWN)
-    );
-
-    SequentialCommandGroup wristUp = new SequentialCommandGroup(
-      new WristCommand(intake, CommandConstants.WRIST_HALF),
-      new ParallelCommandGroup(
-        new ElevatorCommand(elevator, 0, true)
-      )
-    );
-    
     addCommands(
-      intake.getEncoderPos()<=CommandConstants.WRIST_HALF ? wristHalf : 
-        intake.getEncoderPos()>CommandConstants.WRIST_HALF ? wristUp : wristUp
+      CommandConstants.ALGAE ? algae : empty
     );
   }
 }
