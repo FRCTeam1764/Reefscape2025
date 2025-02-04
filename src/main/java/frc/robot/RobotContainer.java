@@ -14,8 +14,7 @@ import frc.robot.commands.DriveCommands.TeleopDrive;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.SwerveConstantsYAGSL;
 import frc.robot.subsystems.*;
-import frc.robot.libraries.external.control.Path;
-import frc.robot.libraries.external.control.Trajectory;
+
 import frc.robot.libraries.external.robot.input.JoystickAxis;
 
 import java.io.File;
@@ -57,14 +56,15 @@ public class RobotContainer {
     /* Subsystems */
 
 
-    private  SendableChooser<Command> autoChooser;
     private final Superstructure superstructure = new Superstructure();
     
     private final Blinkin blinky = new Blinkin();
-
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
-    private Trajectory[] trajectories;
-
+    
+    
+    
+    
+    private  SendableChooser<Command> autoChooser;
     public RobotContainer() {
 
         // teleop drive for yagsl
@@ -82,7 +82,6 @@ public class RobotContainer {
         configurePilotButtonBindings();
         configureCoPilotButtonBindings();
 
-        // autoChooser =  AutoBuilder.buildAutoChooser();
         SmartDashboard.putData(autoChooser);
         
     }
@@ -123,7 +122,5 @@ public class RobotContainer {
         return driver;
     }
 
-    public Trajectory[] getTrajectories() {
-        return trajectories;
-    }
+
 }

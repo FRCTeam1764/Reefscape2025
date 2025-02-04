@@ -103,6 +103,6 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
   public void periodic() {
     SmartDashboard.putNumber("IntakeWristPosition", m_angleEncoder.getPosition().getValueAsDouble());
     
-    stateManager.addDesiredData("WristEncoderPosition",  m_angleEncoder.getPosition().getValueAsDouble());
+    stateManager.updateCurrentData("WristEncoderPosition",  m_angleEncoder.getPosition().getValueAsDouble());
   }
 }

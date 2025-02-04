@@ -11,7 +11,7 @@ public boolean matches(States state){
 
 public void execute(StateManager stateManager){
 
-    stateManager.addDesiredData("IntakePosition", 10);
+    stateManager.addDesiredData("WristEncoderPosition", 10);
     stateManager.addDesiredData("ElevatorPosition", 10);
 }
    

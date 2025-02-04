@@ -14,6 +14,7 @@ import frc.robot.state.L1;
 import frc.robot.state.L2;
 import frc.robot.state.L3;
 import frc.robot.state.L4;
+import swervelib.encoders.ThriftyNovaEncoderSwerve;
 
 public class StateManager extends SubsystemBase {
 
@@ -32,6 +33,7 @@ public class StateManager extends SubsystemBase {
       PROCESSOR,
       BARGE,
       INTAKE_CORAL,
+      INTAKE_ALGAE_PREP,
       INTAKE_ALGAE_GROUND,
       INTAKE_ALGAE_LOW,
       INTAKE_ALGAE_HIGH,
@@ -53,6 +55,7 @@ public class StateManager extends SubsystemBase {
 
   );
 
+  public States state;
 
 
   /** Creates a new StateManager. */
@@ -61,10 +64,11 @@ public class StateManager extends SubsystemBase {
   }
 
 
-public void requestNewState(States state){
+public void requestNewState(States newstate){
   for (BasicState handler : StateHandlers){
-    if (handler.matches(state)){
+    if (handler.matches(newstate)){
       handler.execute(this);
+      this.state = newstate;
     }
   }
 }
@@ -83,6 +87,20 @@ public Object getCurrentData(String key) {
   }else {
       return null; // Handle cases where the value is not of expected type
   }
+}
+
+
+public void returntoIdle(){
+  if ((boolean) currentData.get("IntakeLimitSwitch")){
+if(state == States.INTAKE_CORAL){
+requestNewState(States.IDLE_CORAL);
+}else
+ if(state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW ||  state == States.INTAKE_ALGAE_HIGH ){
+requestNewState(States.IDLE_ALGAE);
+ }
+}else{
+  requestNewState(States.IDLE);
+}
 }
 
 
@@ -113,6 +131,9 @@ public Object getDesiredData(String key){
     currentData.put(key, object);
   }
 
+  public void setState(States state){
+this.state = state;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
