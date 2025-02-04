@@ -1,22 +1,20 @@
 package frc.robot.subsystems;
 
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.LimelightHelpers.PoseEstimate;
-import swervelib.SwerveDrive;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class LimelightSubsystem extends SubsystemBase {
   /** Creates a new LimeLight. */
 
-  private double horizontal_offset = 0;
+ // private double horizontal_offset = 0;
   private String Limelight;
-  private Pose2d botpose;
+//  private Pose2d botpose;
   private SwerveSubsystem driveTrain;
 
   private double txoffset;

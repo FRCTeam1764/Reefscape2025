@@ -17,7 +17,6 @@ import frc.robot.subsystems.*;
 import frc.robot.libraries.external.control.Path;
 import frc.robot.libraries.external.control.Trajectory;
 import frc.robot.libraries.external.robot.input.JoystickAxis;
-import frc.robot.state.RobotState;
 
 import java.io.File;
 
@@ -57,7 +56,6 @@ public class RobotContainer {
 
     /* Subsystems */
 
-    public RobotState robotState = new RobotState(driver);
 
     private  SendableChooser<Command> autoChooser;
     private final Superstructure superstructure = new Superstructure();

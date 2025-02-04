@@ -5,14 +5,15 @@
 package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeRollers;
+import frc.robot.subsystems.IntakeWrist;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
-  IntakeSubsystem intake;
+  IntakeRollers intake;
   double speed;
-  public IntakeCommand(IntakeSubsystem intake, double speed) {
+  public IntakeCommand(IntakeRollers intake, double speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;

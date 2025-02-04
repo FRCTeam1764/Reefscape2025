@@ -12,38 +12,27 @@ import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 
 //TODO: FIND CONSTANTS FOR Limits, PID
-public class IntakeSubsystem extends SubsystemBase {
+public class IntakeWrist extends SubsystemBase {
   /** Creates a new IntakeSubsystem. */
   private final TalonFX m_flexMotor = new TalonFX(Constants.WRIST_MOTOR1.id, Constants.WRIST_MOTOR1.busName);
-  private final TalonFX m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
   final PositionVoltage m_request = new PositionVoltage(0).withSlot(0);
 
 
   ArmFeedforward armfeed = new ArmFeedforward(0,0.3,0);
 
   private final CANcoder m_angleEncoder = new CANcoder(Constants.INTAKE_CANCODER.id, Constants.INTAKE_CANCODER.busName);
-  private DigitalInput breakBeamIntake;
-
-
-  public IntakeSubsystem() {
+  private StateManager stateManager;
+  public IntakeWrist( StateManager stateManager) {
 
   //configs
+this.stateManager = stateManager;
 
-    TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
-    intakeConfig.MotorOutput.Inverted =  InvertedValue.Clockwise_Positive;
-    intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    intakeConfig.MotorOutput.PeakForwardDutyCycle = 0.8;
-    intakeConfig.MotorOutput.PeakReverseDutyCycle = -0.8;
-    intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
-    intakeConfig.CurrentLimits.StatorCurrentLimit = 60;
 
     //TODO figure out values
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
@@ -67,49 +56,12 @@ public class IntakeSubsystem extends SubsystemBase {
     CANcoderConfigs.MagnetSensor.AbsoluteSensorDiscontinuityPoint = 1; //NOTE: its range is currently [0, 1) 
 
     m_angleEncoder.getConfigurator().apply(CANcoderConfigs);
-    m_intakeMotor.getConfigurator().apply(intakeConfig);  
     m_flexMotor.getConfigurator().apply(flexConfig);
 
-    breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
   }
 
-  double negative;
-  public void wheelsIntake(double speed) {
-
-    if (speed < 0) {
-      negative = -1;
-    } else {
-      negative = 1;
-    }
-
-     if (!breakBeamIntake.get() && negative ==1) {
-       m_intakeMotor.set(0);
-     } else {
-       m_intakeMotor.set(getPercentFromBattery(speed));
-     }
-     
-  }
-  
   public void flexOn(double rotations) {
     m_flexMotor.setControl((m_request.withPosition(rotations)));
-  }
-
-  public boolean getIntakeBreakbeam() {
-    return !breakBeamIntake.get();
-  }
-
-  public void run(double speed) {
-    
-   m_intakeMotor.set(speed);
-   
-  }
-
-  public double getPercentFromBattery(double speed){
-    return speed * 12 / RobotController.getBatteryVoltage();
-  }
-
-  public void stop() {
-    m_intakeMotor.set(0);
   }
 
   public void startflex1(){
@@ -120,27 +72,37 @@ public class IntakeSubsystem extends SubsystemBase {
     m_flexMotor.set(0);
   }
 
-
   public double getEncoderPos() {
     return m_angleEncoder.getPosition().getValueAsDouble();
   }
   
   //TODO: find not safe encoder values
-  public boolean isFlexSafe(){
-    return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
+  // public boolean isFlexSafe(){
+  //   return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
+  // }
+
+  public boolean flexOutSafe(Elevator elevator, IntakeWrist intake) {
+    return elevator.getEncoderValue() >= CommandConstants.ELEVATOR_STOP_SAFE || 
+      (intake.getEncoderPos() >= CommandConstants.WRIST_DOWN-1 && intake.getEncoderPos() <= CommandConstants.WRIST_DOWN+1);
   }
 
-  public boolean flexOutSafe(ElevatorSubsystem elevator, IntakeSubsystem intake) {
-    return elevator.getEncoderValue() >= CommandConstants.ELEVATOR_STOP_SAFE || 
-      ((int)intake.getEncoderPos() >= CommandConstants.WRIST_DOWN-1 && (int)intake.getEncoderPos() <= CommandConstants.WRIST_DOWN+1);
+
+  public boolean isFlexSafe(){
+ 
+    double elevatorCurrentPos = (double) stateManager.getCurrentData("ElevatorEncoderPosition");
+
+    double wristCurrentPos = (double) stateManager.getCurrentData("WristEncoderPosition");
+    
+
+return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos < 30);
   }
+
+
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("IntakeBreakbeam", getIntakeBreakbeam());
-    SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
     SmartDashboard.putNumber("IntakeWristPosition", m_angleEncoder.getPosition().getValueAsDouble());
     
+    stateManager.addDesiredData("WristEncoderPosition",  m_angleEncoder.getPosition().getValueAsDouble());
   }
 }

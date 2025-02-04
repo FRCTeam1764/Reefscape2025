@@ -19,13 +19,13 @@ import frc.robot.constants.Constants;
 
 
 
-public class Climbersubsystem extends SubsystemBase {
+public class Climber extends SubsystemBase {
   /** Creates a new Climbersubsystem. */
   public DigitalInput limitSwitch;
   private PositionDutyCycle setVoltage;
   public TalonFX m_climberMotor;
 
-  public Climbersubsystem() {
+  public Climber() {
     m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id);
 
     setVoltage = new PositionDutyCycle(null).withSlot(0);
@@ -54,6 +54,8 @@ public class Climbersubsystem extends SubsystemBase {
   }
   
   public void climberOn(double desiredEncoderValue) {
+    
+    @SuppressWarnings("unused")
     StatusCode val =   m_climberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
 
   }
