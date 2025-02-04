@@ -14,128 +14,138 @@ import frc.robot.state.L1;
 import frc.robot.state.L2;
 import frc.robot.state.L3;
 import frc.robot.state.L4;
-import swervelib.encoders.ThriftyNovaEncoderSwerve;
 
 public class StateManager extends SubsystemBase {
 
-  Map<String,Object> desiredData = new HashMap<>();
-  Map<String,Object> currentData = new HashMap<>();
-  
-//TODO: FIGURE OUT IF WE NEED A "SCORE" STATE FOR ALL POSITIONS
-  public enum States  {
-      IDLE,
-      IDLE_CORAL,
-      IDLE_ALGAE,
-      L4,
-      L3,
-      L2,
-      L1,
-      PROCESSOR,
-      BARGE,
-      INTAKE_CORAL,
-      INTAKE_ALGAE_PREP,
-      INTAKE_ALGAE_GROUND,
-      INTAKE_ALGAE_LOW,
-      INTAKE_ALGAE_HIGH,
-      
-      // L4_SCORE,
-      // L3_SCORE,
-      // L2_SCORE,
-      // L1_SCORE,
-      // PROCESSOR_SCORE,
-      // BARGE_SCORE,
+  Map<String, Object> desiredData = new HashMap<>();
+  Map<String, Object> currentData = new HashMap<>();
+  boolean isAtLocation = false;
+
+  // TODO: FIGURE OUT IF WE NEED A "SCORE" STATE FOR ALL POSITIONS
+  public enum States {
+    IDLE,
+    IDLE_CORAL,
+    IDLE_ALGAE,
+    L4,
+    L3,
+    L2,
+    L1,
+    PROCESSOR,
+    BARGE,
+    INTAKE_CORAL,
+    INTAKE_ALGAE_PREP,
+    INTAKE_ALGAE_GROUND,
+    INTAKE_ALGAE_LOW,
+    INTAKE_ALGAE_HIGH,
+    INTERPOLATED_STATE // to ensure things don't go wrong
+
+    // L4_SCORE,
+    // L3_SCORE,
+    // L2_SCORE,
+    // L1_SCORE,
+    // PROCESSOR_SCORE,
+    // BARGE_SCORE,
   }
 
-
- public List<BasicState> StateHandlers =  List.of(
-    new L1(),
-    new L2(),
-    new L3(),
-    new L4()
+  public List<BasicState> StateHandlers = List.of(
+      new L1(),
+      new L2(),
+      new L3(),
+      new L4()
 
   );
 
   public States state;
-
 
   /** Creates a new StateManager. */
   public StateManager() {
 
   }
 
-
-public void requestNewState(States newstate){
-  for (BasicState handler : StateHandlers){
-    if (handler.matches(newstate)){
-      handler.execute(this);
-      this.state = newstate;
+  public void requestNewState(States newstate) {
+    for (BasicState handler : StateHandlers) {
+      if (handler.matches(newstate)) {
+        handler.execute(this);
+        isAtLocation = false;
+        this.state = newstate;
+      }
     }
   }
-}
 
-public Object getCurrentData(String key) {
-  Object value = currentData.get(key);
+  public void clearCommandData() {
 
-  if (value instanceof String) {
-      return (String) value;
-  } else if (value instanceof Integer) {
-      return (Integer) value;
-  } else if (value instanceof Double) {
-      return (Double) value;
-  } else if (value instanceof Boolean) {
-      return (Boolean) value;
-  }else {
-      return null; // Handle cases where the value is not of expected type
   }
-}
 
+  public Object getCurrentData(String key) {
+    Object value = currentData.get(key);
 
-public void returntoIdle(){
-  if ((boolean) currentData.get("IntakeLimitSwitch")){
-if(state == States.INTAKE_CORAL){
-requestNewState(States.IDLE_CORAL);
-}else
- if(state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW ||  state == States.INTAKE_ALGAE_HIGH ){
-requestNewState(States.IDLE_ALGAE);
- }
-}else{
-  requestNewState(States.IDLE);
-}
-}
-
-
-public Object getDesiredData(String key){
-  Object value = desiredData.get(key);
-
-  if (value instanceof String) {
+    if (value instanceof String) {
       return (String) value;
-  } else if (value instanceof Integer) {
+    } else if (value instanceof Integer) {
       return (Integer) value;
-  } else if (value instanceof Double) {
+    } else if (value instanceof Double) {
       return (Double) value;
-  } else if (value instanceof Boolean) {
+    } else if (value instanceof Boolean) {
       return (Boolean) value;
-  }else {
+    } else {
       return null; // Handle cases where the value is not of expected type
-  }}
+    }
+  }
 
-  public void removeDesiredData(String key){
+  public void returntoIdle() {
+    if ((boolean) currentData.get("IntakeLimitSwitch")) {
+      if (state == States.INTAKE_CORAL) {
+        requestNewState(States.IDLE_CORAL);
+      } else if (state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW
+          || state == States.INTAKE_ALGAE_HIGH) {
+        requestNewState(States.IDLE_ALGAE);
+      }
+    } else {
+      requestNewState(States.IDLE);
+    }
+  }
+
+  public Object getDesiredData(String key) {
+    Object value = desiredData.get(key);
+
+    if (value instanceof String) {
+      return (String) value;
+    } else if (value instanceof Integer) {
+      return (Integer) value;
+    } else if (value instanceof Double) {
+      return (Double) value;
+    } else if (value instanceof Boolean) {
+      return (Boolean) value;
+    } else {
+      return null; // Handle cases where the value is not of expected type
+    }
+  }
+
+  public void removeDesiredData(String key) {
     desiredData.remove(key);
   }
 
-  public void addDesiredData(String key, Object object){
+  public void addDesiredData(String key, Object object) {
     desiredData.put(key, object);
   }
 
-  public void updateCurrentData(String key, Object object){
+  public void updateCurrentData(String key, Object object) {
     currentData.put(key, object);
   }
 
-  public void setState(States state){
-this.state = state;
+  public void setState(States state) {
+    this.state = state;
   }
+
+  public boolean getisAtLocaiton(){
+    return isAtLocation;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+
+  
+
   }
 }

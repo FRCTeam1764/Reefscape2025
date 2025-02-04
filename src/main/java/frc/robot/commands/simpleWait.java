@@ -7,12 +7,12 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class simpleWaitCommand extends Command {
+public class simpleWait extends Command {
   /** Creates a new simpleWaitCommand. */
   double time;
   Timer timer;
 
-  public simpleWaitCommand(double time) {
+  public simpleWait(double time) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.time = time;
     timer = new Timer();
