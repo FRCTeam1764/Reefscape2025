@@ -104,6 +104,14 @@ public class IntakeSubsystem extends SubsystemBase {
    
   }
 
+  public void intakeTest(double speed) {
+    m_intakeMotor.set(speed);
+  }
+
+  public void flexTest(double speed) {
+    m_flexMotor.set(speed);
+  }
+
   public double getPercentFromBattery(double speed){
     return speed * 12 / RobotController.getBatteryVoltage();
   }

@@ -14,7 +14,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 
 
@@ -55,7 +55,10 @@ public class Climbersubsystem extends SubsystemBase {
   
   public void climberOn(double desiredEncoderValue) {
     StatusCode val =   m_climberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
+  }
 
+  public void climberTest(double speed) {
+    m_climberMotor.set(speed);
   }
 
   public void zeroEncoder() {

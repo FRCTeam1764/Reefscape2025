@@ -88,6 +88,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotor1.set(speed);
   }
 
+  public void elevatorTest(double wantedSpeed) {
+    double speed = wantedSpeed;
+    if (limitSwitch.get()) {
+      speed = 0;
+    }
+    elevatorMotor1.set(speed);
+  }
+
   public void off() {
     elevatorMotor1.set(0);
   }

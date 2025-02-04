@@ -50,7 +50,12 @@ public class RobotContainer {
 
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton FLIPURSELF = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton intakeTest = new JoystickButton(driver, XboxController.Button.kA.value);
+    private final JoystickButton climberDownTest = new JoystickButton(driver, XboxController.Button.kX.value);
+    private final JoystickButton climberUpTest = new JoystickButton(driver, XboxController.Button.kB.value);
+    
+    private final POVButton elevatorUp = new POVButton(secondaryController, 0);
+    private final POVButton elevatorDown = new POVButton(secondaryController, 180);
 
 
     /* CoPilot Buttons */
@@ -63,6 +68,10 @@ public class RobotContainer {
     private final Superstructure superstructure = new Superstructure();
     
     private final Blinkin blinky = new Blinkin();
+
+    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    private final Climbersubsystem climber = new Climbersubsystem();
 
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
     private Trajectory[] trajectories;
@@ -92,6 +101,21 @@ public class RobotContainer {
     private void configurePilotButtonBindings() {
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        //a
+        intakeTest.whileTrue(new InstantCommand(() -> intake.intakeTest(0.2)));
+
+        //x
+        climberDownTest.whileTrue(new InstantCommand(() -> climber.climberTest(0.2)));
+
+        //b
+        climberUpTest.whileTrue(new InstantCommand(() -> climber.climberTest(-0.2)));
+
+        //dpad up
+        elevatorUp.whileTrue(new InstantCommand(() -> elevator.elevatorTest(0.2)));
+
+        //dpad down
+        elevatorDown.whileTrue(new InstantCommand(() -> elevator.elevatorTest(-0.2)));
     }
 
     private void configureCoPilotButtonBindings() {

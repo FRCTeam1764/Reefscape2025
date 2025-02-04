@@ -38,9 +38,7 @@ public final class CommandConstants {
 
     //climber
     public static final int CLIMBER_DOWN = 0; //TODO: FIX
+    public static final int CLIMBER_UP = 0; //TODO: FIX
     
     public static boolean ALGAE = false;
-
-
-
 }
