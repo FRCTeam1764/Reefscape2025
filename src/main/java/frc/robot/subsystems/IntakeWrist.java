@@ -89,7 +89,7 @@ this.stateManager = stateManager;
 
   public boolean isFlexSafe(){
  
-    double elevatorCurrentPos = (double) stateManager.getCurrentData("ElevatorEncoderPosition");
+    double elevatorCurrentPos = (double) stateManager.getCurrentData("ElevatorPosition");
 
     double wristCurrentPos = (double) stateManager.getCurrentData("WristEncoderPosition");
     

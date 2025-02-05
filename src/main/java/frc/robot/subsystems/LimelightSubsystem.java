@@ -5,8 +5,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
-import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.libraries.internal.LimelightHelpers;
+import frc.robot.libraries.internal.LimelightHelpers.PoseEstimate;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class LimelightSubsystem extends SubsystemBase {

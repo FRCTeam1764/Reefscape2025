@@ -135,7 +135,14 @@ public class Elevator extends SubsystemBase {
                    CommandConstants.WRIST_LEVEL_FOUR;
   }
 
-
+public boolean getLimitSwitches(){
+  if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
+return true;
+  }else  if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+return true;
+    }
+    return false;
+}
 
 
 

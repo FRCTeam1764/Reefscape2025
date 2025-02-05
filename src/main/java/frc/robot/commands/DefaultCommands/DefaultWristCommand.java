@@ -4,7 +4,9 @@
 
 package frc.robot.commands.DefaultCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.IntakeWrist;
 import frc.robot.subsystems.StateManager;
 
@@ -28,7 +30,18 @@ public class DefaultWristCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+      if(  stateManager.getDesiredData(CommandConstants.INTAKE_KEY) != null){
+
+    if (wrist.isFlexSafe())
+      SmartDashboard.putBoolean("WristSafe", true);
+
+    wrist.flexOn((double) stateManager.getDesiredData(CommandConstants.INTAKE_KEY));
+  }else{
+    SmartDashboard.putBoolean("WristSafe", false);
+  }
+}
+  
 
   // Called once the command ends or is interrupted.
   @Override

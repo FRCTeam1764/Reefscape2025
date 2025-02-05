@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.CommandFactory.desiredAction;
 import frc.robot.commands.*;
+import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
@@ -53,36 +55,45 @@ public class RobotContainer {
 
     private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
     private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
+    private final JoystickButton actionButton = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton FLIPURSELF = new JoystickButton(driver, XboxController.Button.kX.value);
 
 
     /* CoPilot Buttons */
-
+    private final JoystickButton test1 = new JoystickButton(secondaryController, XboxController.Button.kA.value);
     /* Subsystems */
 
-
-    private final Superstructure superstructure = new Superstructure();
     private final StateManager stateManager = new StateManager();
+    
     private final IntakeRollers intakeRollers = new IntakeRollers();
     private final IntakeWrist intakeWrist = new IntakeWrist(stateManager);
     private final Elevator elevator = new Elevator(stateManager);
     private final Climber climber = new Climber();
-
     
     private final Blinkin blinky = new Blinkin();
+
+
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
+//TODO: FIND LIMELIGHT NAMES
+
+    private final LimelightSubsystem limelight4 = new LimelightSubsystem(s_Swerve, "LIMELIGHT4", 0, 0,0);
+    private final LimelightSubsystem limelight3 = new LimelightSubsystem(s_Swerve, "LIMELIGHT3", 0, 0,0);
+    private final LimelightSubsystem limelight2 = new LimelightSubsystem(s_Swerve, "LIMELIGHT2", 0, 0,0);
+
     
+
     
+    private final CommandFactory commandFactory = new CommandFactory(climber, elevator,intakeRollers,intakeWrist,limelight4,limelight3,limelight2,s_Swerve,stateManager);
     
     
     private  SendableChooser<Command> autoChooser;
-    @SuppressWarnings("Type Null")
-    Command requestStateChange = Commands.run(()->stateManager.requestNewState(States.L1), null);
+
+
     public RobotContainer() {
 
         // teleop drive for yagsl 
     
-
+    
         s_Swerve.setDefaultCommand(
                 new TeleopDrive(
                         s_Swerve,
@@ -107,15 +118,19 @@ public class RobotContainer {
 
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+
+        actionButton.onTrue(new InstantCommand(() -> commandFactory.getDesiredAction()));
     }
 
     private void configureCoPilotButtonBindings() {
-        
+
+        test1.onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE)));
     }
 
     public void configAutoCommands() {
         NamedCommands.registerCommand(null, getAutonomousCommand());
     }
+
 
     public Command getAutonomousCommand() {
         return autoChooser.getSelected();
@@ -127,18 +142,4 @@ public class RobotContainer {
     public double getPercentFromBattery(double speed){
         return speed * 12 / RobotController.getBatteryVoltage();
     }
-
-    public Superstructure getSuperstructure() {
-        return superstructure;
-    }
-
-    public Joystick getsecondaryController() {
-        return secondaryController;
-    }
-
-    public Joystick getPrimaryController() {
-        return driver;
-    }
-
-
 }

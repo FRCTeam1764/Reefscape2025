@@ -39,7 +39,11 @@ public final class CommandConstants {
     //climber
     public static final int CLIMBER_DOWN = 0; //TODO: FIX
     
-    public static boolean ALGAE = false;
+    
+    //keys
+    public static final String INTAKE_KEY = "WristEncoderPosition";
+
+    public static final String ELEVATOR_KEY = "ElevatorPosition";
 
 
 

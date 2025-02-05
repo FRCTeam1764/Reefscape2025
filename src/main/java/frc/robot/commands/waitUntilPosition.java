@@ -5,22 +5,27 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.libraries.internal.BooleanCondition;
 import frc.robot.subsystems.StateManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class waitUntilStatesMatch extends Command {
+public class waitUntilPosition extends Command {
   /** Creates a new waitUntilCondition. */
     //TODO: MAKE
 
 StateManager stateManager;
 String key;
 double error;
-    public waitUntilStatesMatch(StateManager manager, String key, double error) {
+String key2;
+double error2;
+
+    public waitUntilPosition(StateManager manager, String key1, double error1, String key2, double error2) {
     // Use addRequirements() here to declare subsystem dependencies.
     stateManager = manager;
-this.key = key;
-this.error = error;
+this.key = key1;
+this.error = error1;
+this.key2 = key2;
+this.error2 = error2;
+
   }
 
   // Called when the command is initially scheduled.
@@ -41,6 +46,9 @@ this.error = error;
     return ( (double) stateManager.getCurrentData(key) <=  (double) stateManager.getDesiredData(key) +error
      ||
     (double) stateManager.getCurrentData(key) <= (double) stateManager.getDesiredData(key) -error
-    );
+     ) && ( (double) stateManager.getCurrentData(key2) <=  (double) stateManager.getDesiredData(key2) +error2
+     ||
+    (double) stateManager.getCurrentData(key2) <= (double) stateManager.getDesiredData(key2) -error2
+     );
   }
 }
