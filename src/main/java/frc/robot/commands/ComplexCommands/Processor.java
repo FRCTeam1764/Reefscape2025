@@ -11,6 +11,7 @@ import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,17 +19,17 @@ import frc.robot.subsystems.IntakeWrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class Processor extends SequentialCommandGroup {
   /** Creates a new Processor. */
-  public Processor(Elevator elevator, IntakeWrist intake) {
+  public Processor(Elevator elevator, IntakeWrist wrist, IntakeRollers roller) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
       new ElevatorCommand(elevator, CommandConstants.ELEVATOR_STOP_SAFE, false),
-      new WristCommand(intake, CommandConstants.WRIST_HALF),
-      new WristCommand(intake, CommandConstants.WRIST_PROCESSOR),
+      new WristCommand(wrist, CommandConstants.WRIST_HALF),
+      new WristCommand(wrist, CommandConstants.WRIST_PROCESSOR),
       new ParallelCommandGroup(
-        new WristCommand(intake, CommandConstants.WRIST_PROCESSOR),
-        new IntakeCommand(intake, 0.2)
+        new WristCommand(wrist, CommandConstants.WRIST_PROCESSOR),
+        new IntakeCommand(roller, 0.2)
       )
     );
   }

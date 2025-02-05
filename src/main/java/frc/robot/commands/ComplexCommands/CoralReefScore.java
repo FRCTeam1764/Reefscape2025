@@ -16,6 +16,7 @@ import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -23,16 +24,16 @@ import frc.robot.subsystems.IntakeWrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class CoralReefScore extends SequentialCommandGroup {
   /** Creates a new CoralReef. */
-  public CoralReefScore(Elevator elevator, IntakeWrist intake, int level) {
+  public CoralReefScore(Elevator elevator, IntakeRollers rollers, IntakeWrist wrist, int level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements();
 
     addCommands(
-      new WristCommand(intake, elevator.retriveAngleEncoder(level)),
+      new WristCommand(wrist, elevator.retriveAngleEncoder(level)),
       new ParallelDeadlineGroup(
-        new WristCommand(intake, CommandConstants.WRIST_DOWN),
-        new IntakeCommand(intake, -0.2)
+        new WristCommand(wrist, CommandConstants.WRIST_DOWN),
+        new IntakeCommand(rollers, -0.2)
       )
     );
   }

@@ -11,6 +11,7 @@ import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -18,19 +19,19 @@ import frc.robot.subsystems.IntakeWrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class GrabReefAlgae extends ParallelCommandGroup {
   /** Creates a new GrabAlgae. */
-  public GrabReefAlgae(Elevator elevator, IntakeWrist intake, int level) {
+  public GrabReefAlgae(Elevator elevator, IntakeRollers rollers, IntakeWrist wrist, int level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(elevator, intake);
+    addRequirements(elevator, rollers, wrist);
 
     SequentialCommandGroup position = new SequentialCommandGroup(
       new ElevatorCommand(elevator, elevator.retriveLevelEncoder(level), false),
-      new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE)
+      new WristCommand(wrist, CommandConstants.WRIST_GRAB_ANGLE)
     );
 
     ParallelCommandGroup grab = new ParallelCommandGroup(
-      new WristCommand(intake, CommandConstants.WRIST_GRAB_ANGLE),
-      new IntakeCommand(intake, CommandConstants.INTAKE_GRAB_ALGAE_OUT)
+      new WristCommand(wrist, CommandConstants.WRIST_GRAB_ANGLE),
+      new IntakeCommand(rollers, CommandConstants.INTAKE_GRAB_ALGAE_OUT)
     );
     
     CommandConstants.ALGAE = true;

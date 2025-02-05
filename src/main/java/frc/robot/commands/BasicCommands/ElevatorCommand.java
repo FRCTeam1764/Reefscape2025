@@ -40,7 +40,7 @@ public class ElevatorCommand extends Command {
   @Override
   public boolean isFinished() {
     if (stopAtLimitSwitch) {
-      return elevator.getLimitSwitch() || 
+      return elevator.limitSwitchBottom1.get() || elevator.limitSwitchBottom2.get() ||
           !(elevator.Motor1IsSafe() || elevator.Motor2IsSafe()); //and?
     } else {
       return false;
