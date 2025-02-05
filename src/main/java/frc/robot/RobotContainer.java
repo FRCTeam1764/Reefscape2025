@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -9,15 +10,19 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.*;
+import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TeleopDrive;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.SwerveConstantsYAGSL;
 import frc.robot.subsystems.*;
-
+import frc.robot.subsystems.StateManager.States;
 import frc.robot.libraries.external.robot.input.JoystickAxis;
 
 import java.io.File;
+
+import javax.sql.StatementEvent;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -57,6 +62,12 @@ public class RobotContainer {
 
 
     private final Superstructure superstructure = new Superstructure();
+    private final StateManager stateManager = new StateManager();
+    private final IntakeRollers intakeRollers = new IntakeRollers();
+    private final IntakeWrist intakeWrist = new IntakeWrist(stateManager);
+    private final Elevator elevator = new Elevator(stateManager);
+    private final Climber climber = new Climber();
+
     
     private final Blinkin blinky = new Blinkin();
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
@@ -65,9 +76,11 @@ public class RobotContainer {
     
     
     private  SendableChooser<Command> autoChooser;
+    @SuppressWarnings("Type Null")
+    Command requestStateChange = Commands.run(()->stateManager.requestNewState(States.L1), null);
     public RobotContainer() {
 
-        // teleop drive for yagsl
+        // teleop drive for yagsl 
     
 
         s_Swerve.setDefaultCommand(
@@ -84,9 +97,14 @@ public class RobotContainer {
 
         SmartDashboard.putData(autoChooser);
         
+        elevator.setDefaultCommand(new DefaultElevatorCommand(elevator,stateManager));
+        intakeWrist.setDefaultCommand(new DefaultWristCommand(intakeWrist, stateManager));
+        
     }
 
     private void configurePilotButtonBindings() {
+
+
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
     }
