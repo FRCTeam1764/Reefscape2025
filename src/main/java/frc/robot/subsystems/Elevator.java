@@ -173,6 +173,7 @@ return true;
 setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
     }
 
+  
     stateManager.addDesiredData("ElevatorPosition", elevatorMotor1.getPosition().getValueAsDouble());
   }
 }

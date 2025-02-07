@@ -9,6 +9,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.util.datalog.BooleanLogEntry;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,6 +23,8 @@ public class IntakeRollers extends SubsystemBase {
   /** Creates a new IntakeRollers. */
   private TalonFX m_intakeMotor;
   private DigitalInput breakBeamIntake;
+  DoubleLogEntry currentLog;
+  BooleanLogEntry limitSwitchLog;
 
   public IntakeRollers() {
     m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
@@ -37,6 +43,9 @@ public class IntakeRollers extends SubsystemBase {
 
     breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
 
+    DataLog log = DataLogManager.getLog();
+ currentLog = new DoubleLogEntry(log, "IntakeCurrent");
+ limitSwitchLog = new BooleanLogEntry(log, "IntakeLimitSwitch");
   }
 
   double negative;
@@ -69,6 +78,9 @@ public class IntakeRollers extends SubsystemBase {
 
   @Override
   public void periodic() {
+    currentLog.append(m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
+    limitSwitchLog.append(getIntakeBreakbeam());
     SmartDashboard.putBoolean("IntakeBreakbeam", getIntakeBreakbeam());
     SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());  }
+    
 }

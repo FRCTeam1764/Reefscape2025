@@ -28,6 +28,7 @@ public class IntakeWrist extends SubsystemBase {
 
   private final CANcoder m_angleEncoder = new CANcoder(Constants.INTAKE_CANCODER.id, Constants.INTAKE_CANCODER.busName);
   private StateManager stateManager;
+
   public IntakeWrist( StateManager stateManager) {
 
   //configs
@@ -72,6 +73,7 @@ this.stateManager = stateManager;
     m_flexMotor.set(0);
   }
 
+
   public double getEncoderPos() {
     return m_angleEncoder.getPosition().getValueAsDouble();
   }
@@ -102,7 +104,13 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
   @Override
   public void periodic() {
     SmartDashboard.putNumber("IntakeWristPosition", m_angleEncoder.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeWristTempature",m_flexMotor.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
+
+
     
     stateManager.updateCurrentData("WristEncoderPosition",  m_angleEncoder.getPosition().getValueAsDouble());
+
+    
   }
 }
