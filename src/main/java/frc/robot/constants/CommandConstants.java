@@ -42,8 +42,8 @@ public final class CommandConstants {
     
     //keys
     public static final String INTAKE_KEY = "WristEncoderPosition";
-
     public static final String ELEVATOR_KEY = "ElevatorPosition";
+    public static final String ROLLER_KEY = "RollerSpeed";
 
 
 

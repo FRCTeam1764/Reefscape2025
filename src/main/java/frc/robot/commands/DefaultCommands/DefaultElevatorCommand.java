@@ -31,15 +31,14 @@ public class DefaultElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-  if(  stateManager.getDesiredData("ElevatorPosition") != null){
-    if (elevator.Motor1IsSafe() && elevator.Motor2IsSafe()){
-      SmartDashboard.putBoolean("ElevatorSafe", true);
-
-    elevator.elevatorOn((double) stateManager.getCurrentData("ElevatorPosition"));
-  }else{
-    SmartDashboard.putBoolean("ElevatorSafe", false);
-  }
-}
+    if(stateManager.getDesiredData("ElevatorPosition") != null){
+      if (elevator.Motor1IsSafe() && elevator.Motor2IsSafe()) {
+        SmartDashboard.putBoolean("ElevatorSafe", true);
+        elevator.elevatorOn((double) stateManager.getCurrentData("ElevatorPosition"));
+      } else {
+        SmartDashboard.putBoolean("ElevatorSafe", false);
+      }
+    }
   }
 
   // Called once the command ends or is interrupted.

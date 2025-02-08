@@ -14,7 +14,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.RequestStateChange;
+import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
+import frc.robot.commands.DriveCommands.DriveToTarget;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -75,22 +77,45 @@ this.swerve = swerve;
 this.stateManager = stateManager;
 }
 
-//example,unfinished - TODO, IMPLIMENT LIMELIGHT/ CALL THE COMMAND RETURN TO IDLE
-private Command L4(){
-return new SequentialCommandGroup(
-    new RequestStateChange(States.L4, stateManager),
-    new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-);
-
+// TESTING COMMANDS
+private Command L4Position() {
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L4, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        )
+    );
 }
 
+private Command L4Score() {
+    return new SequentialCommandGroup(
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED)
+        
+    );
+}
 
+// AUTOMATED COMMANDS
+//example,unfinished - TODO, IMPLIMENT LIMELIGHT/ CALL THE COMMAND RETURN TO IDLE
+private Command L4(){
+    return new SequentialCommandGroup(
+        new DriveToTarget(swerve, Limelight2), //look at limelights later
+        new RequestStateChange(States.L4, stateManager),
+        new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+    );
+}
+
+private Command L3() {
+    return new InstantCommand();
+}
 
 //TODO: ADD MORE CASES/STATES
     public Command getDesiredAction(){
 switch (currentAction) {
     case SCOREL4:
         return L4();
+    case SCOREL3:
+        return L3();
 
     default:
     return new InstantCommand(); //EQUIVALNT TO NULL, CHECK LATER TODO:

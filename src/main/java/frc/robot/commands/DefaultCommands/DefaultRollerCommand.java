@@ -7,39 +7,33 @@ package frc.robot.commands.DefaultCommands;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.CommandConstants;
-import frc.robot.subsystems.IntakeWrist;
+import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.StateManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultWristCommand extends Command {
-  /** Creates a new DefaultWristCommand. */
-  IntakeWrist wrist;
+public class DefaultRollerCommand extends Command {
+  /** Creates a new DefaultRollerCommand. */
+  IntakeRollers rollers;
   StateManager stateManager;
-  public DefaultWristCommand(IntakeWrist wrist, StateManager stateManager) {
+
+  public DefaultRollerCommand(IntakeRollers rollers, StateManager stateManager) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.wrist = wrist;
+    this.rollers = rollers;
     this.stateManager = stateManager;
-    addRequirements(wrist);
+    addRequirements(rollers);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(stateManager.getDesiredData(CommandConstants.INTAKE_KEY) != null) {
-      if (wrist.isFlexSafe())
-        SmartDashboard.putBoolean("WristSafe", true);
-        wrist.flexOn((double) stateManager.getDesiredData(CommandConstants.INTAKE_KEY));
-    } else {
-      SmartDashboard.putBoolean("WristSafe", false);
+    if(stateManager.getDesiredData(CommandConstants.ROLLER_KEY) != null){
+      rollers.wheelsIntake((double) stateManager.getDesiredData(CommandConstants.ROLLER_KEY));
     }
   }
-  
 
   // Called once the command ends or is interrupted.
   @Override
