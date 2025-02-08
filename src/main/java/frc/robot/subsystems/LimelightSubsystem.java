@@ -4,6 +4,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.util.datalog.DoubleLogEntry;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.libraries.internal.LimelightHelpers;
 import frc.robot.libraries.internal.LimelightHelpers.PoseEstimate;
@@ -41,6 +44,7 @@ this.tyoffset = tyoffset;
 this.rotyaw = rotyaw;
 Limelight = LimelightName;
 
+
   }
 
 
@@ -52,6 +56,8 @@ Limelight = LimelightName;
   public void periodic() {
     // This method will be called once per scheduler run
     updatePoseEstimation();
+
+    
   }
 
   public double getHorizontalAngleOfErrorDegrees(){

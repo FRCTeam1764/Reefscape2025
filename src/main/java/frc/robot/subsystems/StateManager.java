@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.util.datalog.DataLog;
+import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.state.BasicState;
 import frc.robot.state.L1;
@@ -59,6 +61,8 @@ public class StateManager extends SubsystemBase {
 
   /** Creates a new StateManager. */
   public StateManager() {
+    DataLogManager.start();
+    
 
   }
 
@@ -150,8 +154,5 @@ public class StateManager extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-
-  
-
   }
 }

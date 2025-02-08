@@ -26,9 +26,14 @@ public class Blinkin extends SubsystemBase {
     this.color = color;
   }
 
+
+  public void setBlinkin(){
+    blinkin.set(color);
+  }
+
   @Override
   public void periodic() {
-    blinkin.set(color);
+  //  blinkin.set(color);
     // This method will be called once per scheduler run
   }
 }
