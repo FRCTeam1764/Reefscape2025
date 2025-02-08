@@ -35,10 +35,12 @@ public class StateManager extends SubsystemBase {
     PROCESSOR,
     BARGE,
     INTAKE_CORAL,
-    INTAKE_ALGAE_PREP,
     INTAKE_ALGAE_GROUND,
+    ALGAE_KNOCK_LOW,
+    ALGAE_KNOCK_HIGH,
     INTAKE_ALGAE_LOW,
     INTAKE_ALGAE_HIGH,
+    SPIT_OUT,
     INTERPOLATED_STATE // to ensure things don't go wrong
 
     // L4_SCORE,

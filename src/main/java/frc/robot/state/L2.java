@@ -1,5 +1,6 @@
 package frc.robot.state;
 
+import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
 
@@ -12,8 +13,8 @@ public boolean matches(States state){
 public void execute(StateManager stateManager){
     stateManager.clearDesiredData();
 
-    stateManager.addDesiredData("WristEncoderPosition", 10);
-    stateManager.addDesiredData("ElevatorPosition", 10);
+    stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 10);
+    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 10);
 }
    
 }
