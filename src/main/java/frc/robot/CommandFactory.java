@@ -22,6 +22,8 @@ import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveToTarget;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.constants.CommandConstants;
+import frc.robot.state.ALGAE_KNOCK_HIGH;
+import frc.robot.state.ALGAE_KNOCK_LOW;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
@@ -42,13 +44,18 @@ import frc.robot.subsystems.StateManager.States;
 public class CommandFactory  {
 
     public enum desiredAction  {
+        ALGAE_KNOCK_HIGH,
+        ALGAE_KNOCK_LOW,
+        BARGE,
+        INTAKE_ALGAE_GROUND,
+        INTAKE_ALGAE_HIGH,
+        INTAKE_ALGAE_LOW,
+        INTAKE_CORAL,
         SCOREL4,
         SCOREL3,
         SCOREL2,
         SCOREL1,
-        INTAKE,
-
-
+        PROCESSOR
     }
 
 
@@ -126,10 +133,10 @@ public class CommandFactory  {
         );
     }
 
-    private Command algaeReefIntake(int index) { //idle algae
+    private Command algaeReefIntake(boolean low) { //idle algae
         return new SequentialCommandGroup(
             new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
-            new RequestStateChange(index == 0 ? States.INTAKE_ALGAE_LOW : index == 1 ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
+            new RequestStateChange(low ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
             new ParallelCommandGroup(
                 new LockOnAprilTag(swerve, Limelight2, 0, driver, false),
                 new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
@@ -143,6 +150,20 @@ public class CommandFactory  {
     //TODO: ADD MORE CASES/STATES
     public Command getDesiredAction() {
     switch (currentAction) {
+        case ALGAE_KNOCK_HIGH:
+            return new InstantCommand();
+        case ALGAE_KNOCK_LOW:
+            return new InstantCommand();
+        case BARGE:
+            return new InstantCommand();
+        case INTAKE_ALGAE_GROUND:
+            return new InstantCommand();
+        case INTAKE_ALGAE_HIGH:
+            return algaeReefIntake(false);
+        case INTAKE_ALGAE_LOW:
+            return algaeReefIntake(true);
+        case INTAKE_CORAL:
+            return new InstantCommand();
         case SCOREL4:
             return Level(3);
         case SCOREL3:
@@ -151,6 +172,8 @@ public class CommandFactory  {
             return Level(1);
         case SCOREL1:
             return Level(0);
+        case PROCESSOR:
+            return new InstantCommand();
         default:
             return new InstantCommand(); //EQUIVALNT TO NULL, CHECK LATER TODO:
         }
