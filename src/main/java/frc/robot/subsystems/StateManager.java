@@ -98,12 +98,12 @@ public class StateManager extends SubsystemBase {
 
   
 
-  public void returnToIdle(States perviousState) {
+  public void returnToIdle(States previousState) {
     if ((boolean) currentData.get("IntakeLimitSwitch")) {
-      if (perviousState == States.INTAKE_CORAL) {
+      if (previousState == States.INTAKE_CORAL) {
         requestNewState(States.IDLE_CORAL);
-      } else if (perviousState == States.INTAKE_ALGAE_GROUND || perviousState == States.INTAKE_ALGAE_LOW
-          || perviousState == States.INTAKE_ALGAE_HIGH) {
+      } else if (previousState == States.INTAKE_ALGAE_GROUND || previousState == States.INTAKE_ALGAE_LOW
+          || previousState == States.INTAKE_ALGAE_HIGH) {
         requestNewState(States.IDLE_ALGAE);
       }
     } else {
