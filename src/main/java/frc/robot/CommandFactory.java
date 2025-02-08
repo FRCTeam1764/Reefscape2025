@@ -78,6 +78,14 @@ this.stateManager = stateManager;
 }
 
 // TESTING COMMANDS
+private Command LevelScore() {
+    return new SequentialCommandGroup(
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+        new WaitCommand(1),
+        new returnToIdle(stateManager, States.IDLE)
+    );
+}
+
 private Command L4Position() {
     return new SequentialCommandGroup(
         new RequestStateChange(States.L4, stateManager),
@@ -88,10 +96,33 @@ private Command L4Position() {
     );
 }
 
-private Command L4Score() {
+private Command L3Position() {
     return new SequentialCommandGroup(
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED)
-        
+        new RequestStateChange(States.L3, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        )
+    );
+}
+
+private Command L2Position() {
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L2, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        )
+    );
+}
+
+private Command L1Position() {
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L1, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        )
     );
 }
 
@@ -99,14 +130,54 @@ private Command L4Score() {
 //example,unfinished - TODO, IMPLIMENT LIMELIGHT/ CALL THE COMMAND RETURN TO IDLE
 private Command L4(){
     return new SequentialCommandGroup(
-        new DriveToTarget(swerve, Limelight2), //look at limelights later
         new RequestStateChange(States.L4, stateManager),
-        new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        ),
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+        new WaitCommand(1),
+        new returnToIdle(stateManager, States.IDLE)
     );
 }
 
-private Command L3() {
-    return new InstantCommand();
+private Command L3(){
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L3, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        ),
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+        new WaitCommand(1),
+        new returnToIdle(stateManager, States.IDLE)
+    );
+}
+
+private Command L2(){
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L2, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        ),
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+        new WaitCommand(1),
+        new returnToIdle(stateManager, States.IDLE)
+    );
+}
+
+private Command L1(){
+    return new SequentialCommandGroup(
+        new RequestStateChange(States.L1, stateManager),
+        new ParallelCommandGroup(
+            new DriveToTarget(swerve, Limelight2),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+        ),
+        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+        new WaitCommand(1),
+        new returnToIdle(stateManager, States.IDLE)
+    );
 }
 
 //TODO: ADD MORE CASES/STATES
