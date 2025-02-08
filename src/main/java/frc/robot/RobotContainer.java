@@ -76,14 +76,17 @@ public class RobotContainer {
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
 //TODO: FIND LIMELIGHT NAMES
 
+    //left
     private final LimelightSubsystem limelight4 = new LimelightSubsystem(s_Swerve, "LIMELIGHT4", 0, 0,0);
+    //right
     private final LimelightSubsystem limelight3 = new LimelightSubsystem(s_Swerve, "LIMELIGHT3", 0, 0,0);
+    //back
     private final LimelightSubsystem limelight2 = new LimelightSubsystem(s_Swerve, "LIMELIGHT2", 0, 0,0);
 
     
 
     
-    private final CommandFactory commandFactory = new CommandFactory(climber, elevator,intakeRollers,intakeWrist,limelight4,limelight3,limelight2,s_Swerve,stateManager);
+    private final CommandFactory commandFactory = new CommandFactory(climber, elevator,intakeRollers,intakeWrist,limelight4,limelight3,limelight2,driver,s_Swerve,stateManager);
     
     
     private  SendableChooser<Command> autoChooser;

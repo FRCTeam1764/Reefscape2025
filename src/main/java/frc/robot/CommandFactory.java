@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -12,11 +14,13 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveToTarget;
+import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
@@ -53,6 +57,7 @@ public class CommandFactory  {
 
 
     public desiredAction currentAction;
+    private boolean leftLimelight;
     private Climber climber;
     private Elevator elevator;
     private IntakeRollers intakeRollers;
@@ -62,140 +67,96 @@ public class CommandFactory  {
     private LimelightSubsystem Limelight2;
     private SwerveSubsystem swerve;
     private StateManager stateManager;
+    private States[] stateList = {States.L4, States.L3, States.L2, States.L1};
+    private Joystick driver;
 
 
 
-public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2, SwerveSubsystem swerve, StateManager stateManager){
-this.climber = climber;
-this.elevator = elevator;
-this.intakeRollers = intakeRollers;
-this.intakeWrist = intakeWrist;
-this.Limelight4 = Limelight4;
-this.Limelight3 = Limelight3;
-this.Limelight2 = Limelight2;
-this.swerve = swerve;
-this.stateManager = stateManager;
-}
+    public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2, Joystick driver, SwerveSubsystem swerve, StateManager stateManager){
+        this.climber = climber;
+        this.elevator = elevator;
+        this.intakeRollers = intakeRollers;
+        this.intakeWrist = intakeWrist;
+        this.Limelight4 = Limelight4;
+        this.Limelight3 = Limelight3;
+        this.Limelight2 = Limelight2;
+        this.driver = driver;
+        this.swerve = swerve;
+        this.stateManager = stateManager;
+    }
 
-// TESTING COMMANDS
-private Command LevelScore() {
-    return new SequentialCommandGroup(
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-        new WaitCommand(1),
-        new returnToIdle(stateManager, States.IDLE)
-    );
-}
+    public void changeLimelightOrienation(boolean leftLimelight) {
+        this.leftLimelight = leftLimelight;
+    }
 
-private Command L4Position() {
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L4, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        )
-    );
-}
+    // TESTING COMMANDS
 
-private Command L3Position() {
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L3, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        )
-    );
-}
+    private Command LevelPosition(int index) {
+        return new SequentialCommandGroup(
+            new RequestStateChange(index == 0 ? States.L1 : index == 1 ? States.L2 : index == 2 ? States.L3 : States.L4, stateManager),
+            new ParallelCommandGroup(
+                new DriveToTarget(swerve, Limelight2),
+                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+            )
+        );
+    }
 
-private Command L2Position() {
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L2, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        )
-    );
-}
-
-private Command L1Position() {
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L1, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        )
-    );
-}
-
-// AUTOMATED COMMANDS
-//example,unfinished - TODO, IMPLIMENT LIMELIGHT/ CALL THE COMMAND RETURN TO IDLE
-private Command L4(){
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L4, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        ),
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-        new WaitCommand(1),
-        new returnToIdle(stateManager, States.IDLE)
-    );
-}
-
-private Command L3(){
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L3, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        ),
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-        new WaitCommand(1),
-        new returnToIdle(stateManager, States.IDLE)
-    );
-}
-
-private Command L2(){
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L2, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        ),
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-        new WaitCommand(1),
-        new returnToIdle(stateManager, States.IDLE)
-    );
-}
-
-private Command L1(){
-    return new SequentialCommandGroup(
-        new RequestStateChange(States.L1, stateManager),
-        new ParallelCommandGroup(
-            new DriveToTarget(swerve, Limelight2),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-        ),
-        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-        new WaitCommand(1),
-        new returnToIdle(stateManager, States.IDLE)
-    );
-}
-
-//TODO: ADD MORE CASES/STATES
-    public Command getDesiredAction(){
-switch (currentAction) {
-    case SCOREL4:
-        return L4();
-    case SCOREL3:
-        return L3();
-
-    default:
-    return new InstantCommand(); //EQUIVALNT TO NULL, CHECK LATER TODO:
+    private Command LevelScore() {
+        return new SequentialCommandGroup(
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+            new WaitCommand(1),
+            new returnToIdle(stateManager, States.IDLE)
+        );
     }
 
 
-}
+    // AUTOMATED COMMANDS
 
-public void setDesiredAction(desiredAction currAction){
-currentAction = currAction;
-}
+    private Command Level(int index) {
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
+            new RequestStateChange(index == 0 ? States.L1 : index == 1 ? States.L2 : index == 2 ? States.L3 : States.L4, stateManager),
+            new ParallelCommandGroup(
+                new DriveToTarget(swerve, Limelight2),
+                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+            ),
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
+            new WaitUntilCommand(() -> intakeRollers.getIntakeBreakbeam()),
+            new returnToIdle(stateManager, States.IDLE_CORAL)
+        );
+    }
+
+    private Command algaeReefIntake(int index) { //idle algae
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
+            new RequestStateChange(index == 0 ? States.INTAKE_ALGAE_LOW : index == 1 ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
+            new ParallelCommandGroup(
+                new LockOnAprilTag(swerve, Limelight2, 0, driver, false),
+                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+            ),
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE),
+            new WaitUntilCommand(() -> intakeRollers.getIntakeBreakbeam()),
+            new returnToIdle(stateManager, States.IDLE_ALGAE)
+        );
+    }
+
+    //TODO: ADD MORE CASES/STATES
+    public Command getDesiredAction() {
+    switch (currentAction) {
+        case SCOREL4:
+            return Level(3);
+        case SCOREL3:
+            return Level(2);
+        case SCOREL2:
+            return Level(1);
+        case SCOREL1:
+            return Level(0);
+        default:
+            return new InstantCommand(); //EQUIVALNT TO NULL, CHECK LATER TODO:
+        }
+    }
+
+    public void setDesiredAction(desiredAction currAction) {
+        currentAction = currAction;
+    }
 }

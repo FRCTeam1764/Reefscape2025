@@ -31,7 +31,7 @@ public final class CommandConstants {
     public static final double INTAKE_CORAL_OUT_SPEED = 0.6;
 
     public static final int INTAKE_BOUNCE_ALGAE_OUT = 0;
-    public static final int INTAKE_GRAB_ALGAE_OUT = 0;
+    public static final int INTAKE_GRAB_ALGAE = 0;
 
     public static final int ELEVATOR_DOWN = 0;
     public static final double CLIMBER_SPEED = 0.5;

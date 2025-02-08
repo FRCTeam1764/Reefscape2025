@@ -19,7 +19,7 @@ public class LockOnAprilTag extends Command {
    
   private LimelightSubsystem LimeLight;
   private SwerveSubsystem Drivetrain;
-private boolean fieldRelative;
+  private boolean fieldRelative;
   private Joystick controller;
   private int pipeline;
   private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kP, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kI, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kD);
@@ -38,7 +38,6 @@ private boolean fieldRelative;
     thetaController.reset();
     thetaController.setTolerance(Math.toRadians(1)); //fix later?
     LimeLight.setPipeline(pipeline);
-
   }
 
   // Called every time the scheduler runs while the command is scheduled.
