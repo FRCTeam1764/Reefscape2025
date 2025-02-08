@@ -9,6 +9,8 @@ public boolean matches(States state){
 }
 
 public void execute(StateManager stateManager){
+    stateManager.clearDesiredData();
+    stateManager.addDesiredData("", stateManager);
     stateManager.addDesiredData("ElevatorPosition", 5);
     stateManager.addDesiredData("IntakeWristPosition",5 );
 }

@@ -107,6 +107,10 @@ public class StateManager extends SubsystemBase {
     }
   }
 
+  public void clearDesiredData(){
+    desiredData.clear();
+  }
+
   public Object getDesiredData(String key) {
     Object value = desiredData.get(key);
 

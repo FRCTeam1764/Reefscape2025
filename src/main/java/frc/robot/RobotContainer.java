@@ -119,11 +119,12 @@ public class RobotContainer {
         //y
         zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
 
+        
         actionButton.onTrue(new InstantCommand(() -> commandFactory.getDesiredAction()));
     }
 
     private void configureCoPilotButtonBindings() {
-
+        
         test1.onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE)));
     }
 
