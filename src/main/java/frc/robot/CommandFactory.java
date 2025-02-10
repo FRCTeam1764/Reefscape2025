@@ -110,14 +110,57 @@ public class CommandFactory  {
 
     private Command LevelScore() {
         return new SequentialCommandGroup(
-            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-            new WaitCommand(1),
-            new returnToIdle(stateManager, States.IDLE)
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED, true),
+            new returnToIdle(stateManager, States.IDLE_CORAL)
         );
     }
 
 
     // AUTOMATED COMMANDS
+
+    private Command AlgaeKnock(boolean high) {
+        return new SequentialCommandGroup(
+            new RequestStateChange(high ? States.ALGAE_KNOCK_HIGH : States.ALGAE_KNOCK_LOW, stateManager),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+            new returnToIdle(stateManager, States.IDLE)
+        );
+    }
+
+    private Command Barge() {
+        return new SequentialCommandGroup(
+            new RequestStateChange(States.BARGE, stateManager),
+            new IntakeCommand(intakeRollers, CommandConstants.ALGAE_BARGE_OUT_SPEED, false),
+            new WaitUntilCommand(()-> !intakeRollers.getIntakeLimitSwitch())
+        );
+    }
+
+    private Command AlgaeGround() {
+        return new SequentialCommandGroup(
+            new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE_SPEED, true),
+            new returnToIdle(stateManager, States.IDLE_ALGAE)
+        );
+    }
+
+    private Command AlgaeReefIntake(boolean low) {
+        return new SequentialCommandGroup(
+            new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
+            new RequestStateChange(low ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
+            new ParallelCommandGroup(
+                new LockOnAprilTag(swerve, Limelight2, 0, driver, false),
+                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
+            ),
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE_SPEED, true),
+            new returnToIdle(stateManager, States.IDLE_ALGAE)
+        );
+    }
+
+    private Command IntakeCoral() {
+        return new SequentialCommandGroup(
+            new RequestStateChange(States.INTAKE_CORAL, stateManager) //TODO: figure out what to do
+        );
+    }
 
     private Command Level(int index) {
         return new SequentialCommandGroup(
@@ -127,23 +170,18 @@ public class CommandFactory  {
                 new DriveToTarget(swerve, Limelight2),
                 new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
             ),
-            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED),
-            new WaitUntilCommand(() -> intakeRollers.getIntakeBreakbeam()),
+            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED, true),
             new returnToIdle(stateManager, States.IDLE_CORAL)
         );
     }
 
-    private Command algaeReefIntake(boolean low) { //idle algae
+    private Command AlgaeProcessor() {
         return new SequentialCommandGroup(
-            new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
-            new RequestStateChange(low ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
-            new ParallelCommandGroup(
-                new LockOnAprilTag(swerve, Limelight2, 0, driver, false),
-                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4)
-            ),
-            new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE),
-            new WaitUntilCommand(() -> intakeRollers.getIntakeBreakbeam()),
-            new returnToIdle(stateManager, States.IDLE_ALGAE)
+            new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+            new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false), 
+            new WaitUntilCommand(() -> !intakeRollers.getIntakeLimitSwitch()),
+            new returnToIdle(stateManager, States.IDLE)
         );
     }
 
@@ -151,19 +189,19 @@ public class CommandFactory  {
     public Command getDesiredAction() {
     switch (currentAction) {
         case ALGAE_KNOCK_HIGH:
-            return new InstantCommand();
+            return AlgaeKnock(true);
         case ALGAE_KNOCK_LOW:
-            return new InstantCommand();
+            return AlgaeKnock(false);
         case BARGE:
-            return new InstantCommand();
+            return Barge();
         case INTAKE_ALGAE_GROUND:
-            return new InstantCommand();
+            return AlgaeGround();
         case INTAKE_ALGAE_HIGH:
-            return algaeReefIntake(false);
+            return AlgaeReefIntake(false);
         case INTAKE_ALGAE_LOW:
-            return algaeReefIntake(true);
+            return AlgaeReefIntake(true);
         case INTAKE_CORAL:
-            return new InstantCommand();
+            return IntakeCoral();
         case SCOREL4:
             return Level(3);
         case SCOREL3:
@@ -173,7 +211,7 @@ public class CommandFactory  {
         case SCOREL1:
             return Level(0);
         case PROCESSOR:
-            return new InstantCommand();
+            return AlgaeProcessor();
         default:
             return new InstantCommand(); //EQUIVALNT TO NULL, CHECK LATER TODO:
         }

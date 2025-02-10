@@ -22,7 +22,7 @@ import frc.robot.constants.Constants;
 public class IntakeRollers extends SubsystemBase {
   /** Creates a new IntakeRollers. */
   private TalonFX m_intakeMotor;
-  private DigitalInput breakBeamIntake;
+  private DigitalInput limitSwitchIntake;
   DoubleLogEntry currentLog;
   BooleanLogEntry limitSwitchLog;
 
@@ -41,7 +41,7 @@ public class IntakeRollers extends SubsystemBase {
     
     m_intakeMotor.getConfigurator().apply(intakeConfig);
 
-    breakBeamIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
+    limitSwitchIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
 
     DataLog log = DataLogManager.getLog();
  currentLog = new DoubleLogEntry(log, "IntakeCurrent");
@@ -57,7 +57,7 @@ public class IntakeRollers extends SubsystemBase {
       negative = 1;
     }
 
-     if (!breakBeamIntake.get() && negative ==1) {
+     if (!limitSwitchIntake.get() && negative ==1) {
        m_intakeMotor.set(0);
      } else {
        m_intakeMotor.set(getPercentFromBattery(speed));
@@ -69,10 +69,12 @@ public class IntakeRollers extends SubsystemBase {
   }
  
   public boolean getIntakeBreakbeam() {
-    return !breakBeamIntake.get();
+    return !limitSwitchIntake.get();
   }
 
-
+  public boolean getIntakeLimitSwitch() {
+    return !limitSwitchIntake.get();
+  }
 
 
 

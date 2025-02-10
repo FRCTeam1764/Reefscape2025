@@ -128,7 +128,7 @@ public class RobotContainer {
 
     private void configureCoPilotButtonBindings() {
         
-        test1.onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE)));
+        test1.onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
     }
 
     public void configAutoCommands() {

@@ -13,10 +13,12 @@ public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
   IntakeRollers intake;
   double speed;
-  public IntakeCommand(IntakeRollers intake, double speed) {
+  boolean stopAtLimit;
+  public IntakeCommand(IntakeRollers intake, double speed, boolean stopAtLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
+    this.stopAtLimit = stopAtLimit;
   }
 
   // Called when the command is initially scheduled.
@@ -38,6 +40,10 @@ public class IntakeCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (stopAtLimit && intake.getIntakeLimitSwitch()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
