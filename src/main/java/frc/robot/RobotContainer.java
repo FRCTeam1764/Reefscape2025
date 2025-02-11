@@ -132,7 +132,34 @@ public class RobotContainer {
     }
 
     public void configAutoCommands() {
-        NamedCommands.registerCommand(null, getAutonomousCommand());
+        NamedCommands.registerCommand("AutoAlgaeKnockHigh", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.ALGAE_KNOCK_HIGH)));
+        NamedCommands.registerCommand("AutoAlgaeKnockLow", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.ALGAE_KNOCK_LOW)));
+        NamedCommands.registerCommand("AutoBarge", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.BARGE)));
+        NamedCommands.registerCommand("AutoIntakeAlgaeGround", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND)));
+        NamedCommands.registerCommand("AutoIntakeAlgaeHigh", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH)));
+        NamedCommands.registerCommand("AutoIntakeAlgaeLow", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW)));
+        NamedCommands.registerCommand("AutoIntakeCoral", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_CORAL)));
+        NamedCommands.registerCommand("AutoLevelFour", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
+        NamedCommands.registerCommand("AutoLevelThree", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
+        NamedCommands.registerCommand("AutoLevelTwo", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
+        NamedCommands.registerCommand("AutoLevelOne", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
+        NamedCommands.registerCommand("AutoProcessor", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.PROCESSOR)));
+    
+        ALGAE_KNOCK_HIGH,
+        ALGAE_KNOCK_LOW,
+        BARGE,
+        INTAKE_ALGAE_GROUND,
+        INTAKE_ALGAE_HIGH,
+        INTAKE_ALGAE_LOW,
+        INTAKE_CORAL,
+        SCOREL4,
+        SCOREL3,
+        SCOREL2,
+        SCOREL1,
+        PROCESSOR
+    
+    
+    
     }
 
 
