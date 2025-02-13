@@ -108,14 +108,14 @@ public class CommandFactory {
     }
 
     // AUTOMATED COMMANDS
-
+//TODO: FIX
     private Command AlgaeKnock(boolean high) {
         return new SequentialCommandGroup(
                 new RequestStateChange(high ? States.ALGAE_KNOCK_HIGH : States.ALGAE_KNOCK_LOW, stateManager),
                 new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
                 new returnToIdle(stateManager, States.IDLE)).finallyDo((key) -> interupted(key));
     }
-
+//TODO: FIX
     private Command Barge() {
         return new SequentialCommandGroup(
                 new RequestStateChange(States.BARGE, stateManager),
@@ -126,9 +126,7 @@ public class CommandFactory {
     private Command AlgaeGround() {
         return new SequentialCommandGroup(
                 new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
-                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
-                new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE_SPEED, true),
-                new returnToIdle(stateManager, States.IDLE_ALGAE)).finallyDo((key) -> interupted(key));
+                new LockOnAprilTag(swerve, Limelight3, 0, driver, false)).finallyDo((key) -> interupted(key));
     }
 
     private Command AlgaeReefIntake(boolean low) {
