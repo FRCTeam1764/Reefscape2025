@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.math.estimator.SteadyStateKalmanFilter;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -41,14 +42,7 @@ public class StateManager extends SubsystemBase {
     INTAKE_ALGAE_LOW,
     INTAKE_ALGAE_HIGH,
     SPIT_OUT,
-    INTERPOLATED_STATE // to ensure things don't go wrong
-
-    // L4_SCORE,
-    // L3_SCORE,
-    // L2_SCORE,
-    // L1_SCORE,
-    // PROCESSOR_SCORE,
-    // BARGE_SCORE,
+    INTERPOLATED_STATE 
   }
 
   public List<BasicState> StateHandlers = List.of(
@@ -60,6 +54,8 @@ public class StateManager extends SubsystemBase {
   );
 
   public States state;
+
+  private States previousState;
 
   /** Creates a new StateManager. */
   public StateManager() {
@@ -73,6 +69,7 @@ public class StateManager extends SubsystemBase {
       if (handler.matches(newstate)) {
         handler.execute(this);
         isAtLocation = false;
+        previousState = state;
         this.state = newstate;
       }
     }
@@ -100,18 +97,38 @@ public class StateManager extends SubsystemBase {
 
   
 
-  public void returnToIdle(States previousState) {
+  public void returnToIdle(States state) {
     if ((boolean) currentData.get("IntakeLimitSwitch")) {
-      if (previousState == States.INTAKE_CORAL) {
+      if (state == States.INTAKE_CORAL) {
         requestNewState(States.IDLE_CORAL);
-      } else if (previousState == States.INTAKE_ALGAE_GROUND || previousState == States.INTAKE_ALGAE_LOW
-          || previousState == States.INTAKE_ALGAE_HIGH) {
+      } else if (state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW
+          || state == States.INTAKE_ALGAE_HIGH) {
         requestNewState(States.IDLE_ALGAE);
+      }else{
+        requestNewState(States.IDLE_ALGAE); //this should not happen
+
       }
     } else {
       requestNewState(States.IDLE);
     }
   }
+
+  public void returnToIdle() {
+    if ((boolean) currentData.get("IntakeLimitSwitch")) {
+      if (state == States.INTAKE_CORAL) {
+        requestNewState(States.IDLE_CORAL);
+      } else if (state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW
+          || state == States.INTAKE_ALGAE_HIGH) {
+        requestNewState(States.IDLE_ALGAE);
+      }else{
+        requestNewState(States.IDLE_ALGAE); //this should not happen
+
+      }
+    } else {
+      requestNewState(States.IDLE);
+    }
+  }
+
 
   public void clearDesiredData(){
     desiredData.clear();

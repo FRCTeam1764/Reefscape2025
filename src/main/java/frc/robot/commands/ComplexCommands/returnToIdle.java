@@ -21,8 +21,10 @@ import frc.robot.subsystems.StateManager.States;
 public class returnToIdle extends SequentialCommandGroup {
   /** Creates a new returnToIdle. */
   StateManager stateManager;
+  States state;
   public returnToIdle(StateManager stateManager, States state) {
     this.stateManager = stateManager;
+    this.state = state;
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -30,7 +32,22 @@ public class returnToIdle extends SequentialCommandGroup {
       
     new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
     new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 3, CommandConstants.ELEVATOR_KEY, 1),
-    new InstantCommand (() -> stateManager.returnToIdle(state)) 
+    new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
+    );
+  }
+
+
+  public returnToIdle(StateManager stateManager) {
+    this.stateManager = stateManager;
+    this.state = stateManager.state;
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+
+    addCommands(
+      
+    new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
+    new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 3, CommandConstants.ELEVATOR_KEY, 1),
+    new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
     );
   }
 }

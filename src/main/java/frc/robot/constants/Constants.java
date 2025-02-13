@@ -20,7 +20,8 @@ public final class Constants {
     public static final CanPort INTAKE_CANCODER = new CanPort(0);
 
     public static final int BLINKIN_SPARKPORT = 0;
-    public static final int INTAKE_BREAK_BEAM = 0;
+    public static final int INTAKE_LIMITSWITCH = 0;
+    public static final int INTAKE_BREAKBEAM = 0;
 
     public static final int ELEVATOR_SWITCHUP1 = 0; 
     public static final int ELEVATOR_SWITCHUP2 = 0;

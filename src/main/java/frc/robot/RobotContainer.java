@@ -13,6 +13,7 @@ import frc.robot.CommandFactory.desiredAction;
 import frc.robot.commands.*;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
 import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TeleopDrive;
@@ -113,7 +114,7 @@ public class RobotContainer {
         
         elevator.setDefaultCommand(new DefaultElevatorCommand(elevator,stateManager));
         intakeWrist.setDefaultCommand(new DefaultWristCommand(intakeWrist, stateManager));
-        
+        intakeRollers.setDefaultCommand(new DefaultRollerCommand(intakeRollers, stateManager));
     }
 
     private void configurePilotButtonBindings() {
@@ -145,18 +146,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("AutoLevelOne", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
         NamedCommands.registerCommand("AutoProcessor", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.PROCESSOR)));
     
-        ALGAE_KNOCK_HIGH,
-        ALGAE_KNOCK_LOW,
-        BARGE,
-        INTAKE_ALGAE_GROUND,
-        INTAKE_ALGAE_HIGH,
-        INTAKE_ALGAE_LOW,
-        INTAKE_CORAL,
-        SCOREL4,
-        SCOREL3,
-        SCOREL2,
-        SCOREL1,
-        PROCESSOR
+ 
     
     
     

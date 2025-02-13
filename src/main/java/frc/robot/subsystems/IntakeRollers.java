@@ -23,6 +23,7 @@ public class IntakeRollers extends SubsystemBase {
   /** Creates a new IntakeRollers. */
   private TalonFX m_intakeMotor;
   private DigitalInput limitSwitchIntake;
+  private DigitalInput internalbottomBreakbeam;
   DoubleLogEntry currentLog;
   BooleanLogEntry limitSwitchLog;
 
@@ -41,11 +42,13 @@ public class IntakeRollers extends SubsystemBase {
     
     m_intakeMotor.getConfigurator().apply(intakeConfig);
 
-    limitSwitchIntake = new DigitalInput(Constants.INTAKE_BREAK_BEAM);
+    limitSwitchIntake = new DigitalInput(Constants.INTAKE_LIMITSWITCH);
+    internalbottomBreakbeam = new DigitalInput(Constants.INTAKE_BREAKBEAM);
 
     DataLog log = DataLogManager.getLog();
  currentLog = new DoubleLogEntry(log, "IntakeCurrent");
  limitSwitchLog = new BooleanLogEntry(log, "IntakeLimitSwitch");
+
   }
 
   double negative;
@@ -69,20 +72,21 @@ public class IntakeRollers extends SubsystemBase {
   }
  
   public boolean getIntakeBreakbeam() {
-    return !limitSwitchIntake.get();
+    return !internalbottomBreakbeam.get();
   }
 
   public boolean getIntakeLimitSwitch() {
     return !limitSwitchIntake.get();
   }
 
-
+  
 
   @Override
   public void periodic() {
     currentLog.append(m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
     limitSwitchLog.append(getIntakeBreakbeam());
-    SmartDashboard.putBoolean("IntakeBreakbeam", getIntakeBreakbeam());
+    SmartDashboard.putBoolean("IntakeLimitSwitch", getIntakeBreakbeam());
+    SmartDashboard.putBoolean("IntakeInternalBreakbeam",getIntakeBreakbeam());
     SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());  }
     
 }
