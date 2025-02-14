@@ -69,7 +69,8 @@ public class RobotContainer {
     
     private final Blinkin blinky = new Blinkin();
 
-    private final IntakeSubsystem intake = new IntakeSubsystem();
+    private final IntakeRollers intake = new IntakeRollers();
+    private final IntakeWristRev intakewrist = new IntakeWristRev();
     private final ElevatorSubsystem elevator = new ElevatorSubsystem();
     private final Climbersubsystem climber = new Climbersubsystem();
 
