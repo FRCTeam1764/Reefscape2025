@@ -28,6 +28,8 @@ public class DriveToTarget extends Command {
   
   private double m_speed_modifier = 1;
 
+  private double m_safetyDistance = 0;
+
   private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kP, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kI, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kD);
 
   TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(2.8, 1.5);
@@ -41,11 +43,18 @@ public class DriveToTarget extends Command {
     m_LimeLight = limelight;
   }
 
-  public DriveToTarget(SwerveSubsystem drivetrain, LimelightSubsystem limelight, double speed_modifier) {
+  public DriveToTarget(SwerveSubsystem drivetrain, double speed_modifier, LimelightSubsystem limelight) {
     addRequirements(drivetrain);
     m_Drivetrain = drivetrain;
     m_LimeLight = limelight;
     m_speed_modifier = speed_modifier;
+  }
+
+  public DriveToTarget(SwerveSubsystem drivetrain, LimelightSubsystem limelight, double safetyDistance) {
+    addRequirements(drivetrain);
+    m_Drivetrain = drivetrain;
+    m_LimeLight = limelight;
+    m_safetyDistance = safetyDistance;
   }
   
 
@@ -87,12 +96,14 @@ public class DriveToTarget extends Command {
 			thetaOutput = thetaController.calculate(m_Drivetrain.getPose().getRotation().getRadians(), setpoint);
 		}
 
-    SmartDashboard.putNumber("xOutput", xOutput);
-    SmartDashboard.putNumber("yOutput", yOutput);
-    SmartDashboard.putNumber("Robot Angle", Math.toDegrees(m_Drivetrain.getPose().getRotation().getRadians()));
-    SmartDashboard.putNumber("Calculated Angle", Math.toDegrees(setpoint));
+    if (m_LimeLight.getDistanceToTarget()>m_safetyDistance) { //?
+      SmartDashboard.putNumber("xOutput", xOutput);
+      SmartDashboard.putNumber("yOutput", yOutput);
+      SmartDashboard.putNumber("Robot Angle", Math.toDegrees(m_Drivetrain.getPose().getRotation().getRadians()));
+      SmartDashboard.putNumber("Calculated Angle", Math.toDegrees(setpoint));
 
-    m_Drivetrain.drive(new Translation2d(xOutput * SwerveConstantsYAGSL.MAX_SPEED,yOutput*SwerveConstantsYAGSL.MAX_SPEED),thetaOutput, true);
+      m_Drivetrain.drive(new Translation2d(xOutput * SwerveConstantsYAGSL.MAX_SPEED,yOutput*SwerveConstantsYAGSL.MAX_SPEED),thetaOutput, true);
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -105,6 +116,6 @@ public class DriveToTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return m_safetyDistance == 0 ? false : m_LimeLight.getDistanceToTarget()>m_safetyDistance; //?
   }
 }

@@ -90,6 +90,12 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
     return (int) LimelightHelpers.getFiducialID(Limelight);
   }
 
+  public double getDistanceToTarget(){
+    double x = LimelightHelpers.getCameraPose3d_TargetSpace(Limelight).getX();
+    double y = LimelightHelpers.getCameraPose3d_TargetSpace(Limelight).getZ();
+    return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+  }
+
 
   public boolean hasTarget(){
     return LimelightHelpers.getTV(Limelight);

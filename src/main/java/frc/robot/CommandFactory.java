@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.RequestStateChange;
+import frc.robot.commands.BasicCommands.ClimberCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
@@ -44,6 +45,7 @@ public class CommandFactory {
         ALGAE_KNOCK_HIGH,
         ALGAE_KNOCK_LOW,
         BARGE,
+        CLIMBER,
         INTAKE_ALGAE_GROUND,
         INTAKE_ALGAE_HIGH,
         INTAKE_ALGAE_LOW,
@@ -115,12 +117,20 @@ public class CommandFactory {
                 new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
                 new returnToIdle(stateManager, States.IDLE)).finallyDo((key) -> interupted(key));
     }
-//TODO: FIX
+
     private Command Barge() {
         return new SequentialCommandGroup(
                 new RequestStateChange(States.BARGE, stateManager),
-                new IntakeCommand(intakeRollers, CommandConstants.ALGAE_BARGE_OUT_SPEED, false),
-                new WaitUntilCommand(() -> !intakeRollers.getIntakeLimitSwitch())).finallyDo((key) -> interupted(key));
+                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+                new ParallelDeadlineGroup(new WaitUntilCommand(() -> !intakeRollers.getIntakeLimitSwitch()),
+                        new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false)),
+                new returnToIdle(stateManager, States.IDLE).finallyDo((key) -> interupted(key)));
+    }
+
+    private Command Climber() {
+        return new SequentialCommandGroup(
+                new ClimberCommand(climber) //?
+        );
     }
 
     private Command AlgaeGround() {
@@ -157,10 +167,10 @@ public class CommandFactory {
         return new SequentialCommandGroup(
                 new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
                 new RequestStateChange(
-                        index == 0 ? States.L1 : index == 1 ? States.L2 : index == 2 ? States.L3 : States.L4,
+                        index == 1 ? States.L1 : index == 2 ? States.L2 : index == 3 ? States.L3 : States.L4,
                         stateManager),
                 new ParallelCommandGroup(
-                        new DriveToTarget(swerve, Limelight2),
+                        new DriveToTarget(swerve, Limelight2, 10), //TODO: find the actual safety distance
                         new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4,
                                 CommandConstants.ELEVATOR_KEY, 4)),
                 new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED, true),
@@ -198,6 +208,8 @@ public class CommandFactory {
                 return AlgaeKnock(false);
             case BARGE:
                 return Barge();
+            case CLIMBER:
+                return Climber();
             case INTAKE_ALGAE_GROUND:
                 return AlgaeGround();
             case INTAKE_ALGAE_HIGH:
@@ -206,14 +218,14 @@ public class CommandFactory {
                 return AlgaeReefIntake(true);
             case INTAKE_CORAL:
                 return IntakeCoral();
-            case SCOREL4: // you didn't have to make it start at 0 aleyah that makes it make less sense
-                return Level(3);
+            case SCOREL4:
+                return Level(4);
             case SCOREL3:
-                return Level(2);
+                return Level(3);
             case SCOREL2:
-                return Level(1);
+                return Level(2);
             case SCOREL1:
-                return Level(0);
+                return Level(1);
             case PROCESSOR:
                 return AlgaeProcessor();
             default:
