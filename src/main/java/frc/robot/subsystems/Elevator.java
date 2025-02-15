@@ -1,50 +1,55 @@
+
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.*;
 
-public class ElevatorSubsystem extends SubsystemBase {
+
+public class Elevator extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
 
   public TalonFX elevatorMotor1;
   public TalonFX elevatorMotor2;
-  public DigitalInput limitSwitch;
+  public DigitalInput limitSwitchTop1;
+  public DigitalInput limitSwitchTop2;
+
+  public DigitalInput limitSwitchBottom1;
+  public DigitalInput limitSwitchBottom2;
+
+
   private PositionDutyCycle setVoltage;
-  private PositionDutyCycle setVoltage2;
   private double desiredEncoder;
-  
   int negative;
-  public ElevatorSubsystem() {
+  public Elevator() {
     elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
     elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
-    limitSwitch = new DigitalInput(Constants.ELEVATOR_SWITCH1);
-    
+    limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
+    limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
+
+    limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
+    limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
 
     
     SetUpClimberMotors();
     
     setVoltage = new PositionDutyCycle(0).withSlot(0);
     setVoltage.UpdateFreqHz = 10;
+
   }
 
   public void SetUpClimberMotors() {
@@ -81,18 +86,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void elevatorOn(double desiredEncoderValue){
     desiredEncoder = desiredEncoderValue;
     //TOOD: NEED FEEDFORWARD
+
+    @SuppressWarnings("unused")
     StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
   }
 
   public void elevatorOnSpeed(double speed){
-    elevatorMotor1.set(speed);
-  }
-
-  public void elevatorTest(double wantedSpeed) {
-    double speed = wantedSpeed;
-    if (limitSwitch.get()) {
-      speed = 0;
-    }
     elevatorMotor1.set(speed);
   }
 
@@ -109,17 +108,9 @@ public class ElevatorSubsystem extends SubsystemBase {
   public double getEncoderValue2() {
     return elevatorMotor2.getPosition().getValueAsDouble();
   }
-  public boolean getLimitSwitch() {
-    return limitSwitch.get();
-  }
   //TODO: find not safe encoder values
-  public boolean Motor1IsSafe(){
-    return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
-  }
-  public boolean Motor2IsSafe(){
-    return Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <200;
-  }
-  
+  //CHECKS IF ELEVATOR IS TOO LOW OR TOO HIGH, AS WELL AS ENSURING INTAKE WILL NOT BE RAMMED INTO THE GROUND 
+
   public int retriveLevelEncoder(int level) {
     //if level == 1, return intake level one, else...
     return (level == 1) ? CommandConstants.ELEVATOR_LEVEL_ONE : 
@@ -138,11 +129,21 @@ public class ElevatorSubsystem extends SubsystemBase {
                    CommandConstants.WRIST_LEVEL_FOUR;
   }
 
-  public void zeroEncoder() {
-    elevatorMotor1.setPosition(0);
-    elevatorMotor2.setPosition(0);
-  }
+public boolean getLimitSwitches(){
+  if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
+return true;
+  }else  if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+return true;
+    }
+    return false;
+}
 
+
+
+  public void setEncoders(double EncoderValue){
+    elevatorMotor1.setPosition(EncoderValue);
+    elevatorMotor2.setPosition(EncoderValue);
+  }
 
   @Override
   public void periodic() {
@@ -157,5 +158,17 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("ElevatorMotor1Voltage", elevatorMotor1.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Voltage", elevatorMotor2.getMotorVoltage().getValueAsDouble());
+
+//zeroing encoders
+    if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
+      setEncoders(0);
+      
+    }else if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
+    }
+
+  
   }
 }
+
+

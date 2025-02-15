@@ -55,7 +55,7 @@ public class IntakeWristRev extends SubsystemBase {
 
     AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
     encoderConfig.positionConversionFactor(360);
-    encoderConfig.zeroOffset(100);
+    encoderConfig.zeroOffset(0);
 
     
 

@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.commands.*;
+import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TeleopDrive;
 import frc.robot.constants.CommandConstants;
@@ -53,7 +54,9 @@ public class RobotContainer {
     private final JoystickButton intakeTest = new JoystickButton(driver, XboxController.Button.kA.value);
     private final JoystickButton climberDownTest = new JoystickButton(driver, XboxController.Button.kX.value);
     private final JoystickButton climberUpTest = new JoystickButton(driver, XboxController.Button.kB.value);
+    private final JoystickButton wristTest = new JoystickButton(driver, XboxController.Button.kLeftBumper.value);
     
+
     private final POVButton elevatorUp = new POVButton(secondaryController, 0);
     private final POVButton elevatorDown = new POVButton(secondaryController, 180);
 
@@ -71,7 +74,7 @@ public class RobotContainer {
 
     private final IntakeRollers intake = new IntakeRollers();
     private final IntakeWristRev intakewrist = new IntakeWristRev();
-    private final ElevatorSubsystem elevator = new ElevatorSubsystem();
+    private final Elevator elevator = new Elevator();
     private final Climbersubsystem climber = new Climbersubsystem();
 
     private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
@@ -112,11 +115,8 @@ public class RobotContainer {
         //b
         climberUpTest.whileTrue(new InstantCommand(() -> climber.climberTest(-0.2)));
 
-        //dpad up
-        elevatorUp.whileTrue(new InstantCommand(() -> elevator.elevatorTest(0.2)));
+        wristTest.whileTrue(new WristCommand(intakewrist, 180));
 
-        //dpad down
-        elevatorDown.whileTrue(new InstantCommand(() -> elevator.elevatorTest(-0.2)));
     }
 
     private void configureCoPilotButtonBindings() {

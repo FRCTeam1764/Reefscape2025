@@ -5,17 +5,19 @@
 package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.IntakeRollers;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeCommand extends Command {
   /** Creates a new IntakeCommand. */
-  IntakeSubsystem intake;
+  IntakeRollers intake;
   double speed;
-  public IntakeCommand(IntakeSubsystem intake, double speed) {
+  boolean stopAtLimit;
+  public IntakeCommand(IntakeRollers intake, double speed, boolean stopAtLimit) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.speed = speed;
+    this.stopAtLimit = stopAtLimit;
   }
 
   // Called when the command is initially scheduled.
@@ -31,12 +33,16 @@ public class IntakeCommand extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intake.stop();
+    intake.wheelsIntake(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (stopAtLimit && intake.getIntakeLimitSwitch()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
