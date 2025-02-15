@@ -96,14 +96,14 @@ public class DriveToTarget extends Command {
 			thetaOutput = thetaController.calculate(m_Drivetrain.getPose().getRotation().getRadians(), setpoint);
 		}
 
-    if (m_LimeLight.getDistanceToTarget()>m_safetyDistance) { //?
+    //if (m_LimeLight.getDistanceToTarget()>m_safetyDistance) {
       SmartDashboard.putNumber("xOutput", xOutput);
       SmartDashboard.putNumber("yOutput", yOutput);
       SmartDashboard.putNumber("Robot Angle", Math.toDegrees(m_Drivetrain.getPose().getRotation().getRadians()));
       SmartDashboard.putNumber("Calculated Angle", Math.toDegrees(setpoint));
 
       m_Drivetrain.drive(new Translation2d(xOutput * SwerveConstantsYAGSL.MAX_SPEED,yOutput*SwerveConstantsYAGSL.MAX_SPEED),thetaOutput, true);
-    }
+    //}
   }
 
   // Called once the command ends or is interrupted.
@@ -116,6 +116,6 @@ public class DriveToTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return m_safetyDistance == 0 ? false : m_LimeLight.getDistanceToTarget()>m_safetyDistance; //?
+    return false;
   }
 }

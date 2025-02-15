@@ -38,6 +38,8 @@ public final class CommandConstants {
     public static final int ELEVATOR_DOWN = 0;
     public static final double CLIMBER_SPEED = 0.5;
 
+    public static final double INTAKE_HOLDING_SPEED = 0.2;
+    
     //climber
     public static final int CLIMBER_DOWN = 0; //TODO: FIX
     

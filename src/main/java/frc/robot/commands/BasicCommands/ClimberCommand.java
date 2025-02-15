@@ -12,15 +12,17 @@ import frc.robot.subsystems.Climber;
 public class ClimberCommand extends Command {
   /** Creates a new ClimberCommand. */
   Climber climber;
-  public ClimberCommand(Climber climber) {
+  int desired;
+  public ClimberCommand(Climber climber, int desired) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
+    this.desired = desired;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    climber.climberOn(CommandConstants.CLIMBER_DOWN);
+    climber.climberOn(CommandConstants.CLIMBER_SPEED);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -34,6 +36,6 @@ public class ClimberCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false; //TODO: cancoder :)
+    return climber.getEncoderPos() <= desired && climber.getEncoderPos() >= desired;
   }
 }

@@ -52,6 +52,10 @@ public class Climber extends SubsystemBase {
 
     m_climberMotor.getConfigurator().apply(slot0Configs);
   }
+
+  public double getEncoderPos() {
+    return m_climberMotor.getPosition().getValueAsDouble();
+  }
   
   public void climberOn(double desiredEncoderValue) {
     

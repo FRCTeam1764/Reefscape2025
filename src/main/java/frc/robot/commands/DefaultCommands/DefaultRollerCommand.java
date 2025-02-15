@@ -31,7 +31,11 @@ public class DefaultRollerCommand extends Command {
   @Override
   public void execute() {
     if(stateManager.getDesiredData(CommandConstants.ROLLER_KEY) != null){
-      rollers.wheelsIntake((double) stateManager.getDesiredData(CommandConstants.ROLLER_KEY));
+      if (rollers.getIntakeLimitSwitch()) {
+        rollers.wheelsIntake(CommandConstants.INTAKE_HOLDING_SPEED); //TODO: find slower speed
+      } else {
+        rollers.wheelsIntake((double) stateManager.getDesiredData(CommandConstants.ROLLER_KEY));
+      }
     }
   }
 

@@ -129,7 +129,7 @@ public class CommandFactory {
 
     private Command Climber() {
         return new SequentialCommandGroup(
-                new ClimberCommand(climber) //?
+                new ClimberCommand(climber, CommandConstants.CLIMBER_DOWN)
         );
     }
 
