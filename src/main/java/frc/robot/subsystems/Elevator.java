@@ -4,15 +4,24 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Volts;
+
+import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.StrictFollower;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+
+import edu.wpi.first.units.VoltageUnit;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,12 +37,30 @@ public class Elevator extends SubsystemBase {
 
   public DigitalInput limitSwitchBottom1;
   public DigitalInput limitSwitchBottom2;
+  private VoltageOut voltageOut = new VoltageOut(0.0);
 
 
   private PositionDutyCycle setVoltage;
   private double desiredEncoder;
   private StateManager stateManager;
   int negative;
+
+  private final SysIdRoutine m_sysIdRoutine =
+   new SysIdRoutine(
+      new SysIdRoutine.Config(
+         null,        // Use default ramp rate (1 V/s)
+         Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+         null,        // Use default timeout (10 s)
+                      // Log state with Phoenix SignalLogger class
+         (state) -> SignalLogger.writeString("state", state.toString())
+      ),
+      new SysIdRoutine.Mechanism(
+         (volts) -> elevatorMotor1.setControl(voltageOut.withOutput(volts.in(Volts))),
+         null,
+         this
+      )
+   );
+
   public Elevator(StateManager stateManager) {
     elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
     elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
@@ -81,6 +108,14 @@ public class Elevator extends SubsystemBase {
     elevatorMotor2.getConfigurator().apply(config2);
 
     elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
   
   public void elevatorOn(double desiredEncoderValue){
