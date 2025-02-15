@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Micro;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +13,24 @@ import java.util.Map;
 import edu.wpi.first.math.estimator.SteadyStateKalmanFilter;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.state.ALGAE_KNOCK_HIGH;
+import frc.robot.state.BARGE;
+import frc.robot.state.ALGAE_KNOCK_LOW;
 import frc.robot.state.BasicState;
+import frc.robot.state.IDLE;
+import frc.robot.state.IDLE_ALGAE;
+import frc.robot.state.IDLE_CORAL;
+import frc.robot.state.INTAKE_ALGAE_GROUND;
+import frc.robot.state.INTAKE_ALGAE_HIGH;
+import frc.robot.state.INTAKE_ALGAE_LOW;
+import frc.robot.state.INTERPOLATED_STATE;
+import frc.robot.state.INTAKE_CORAL;
 import frc.robot.state.L1;
 import frc.robot.state.L2;
 import frc.robot.state.L3;
+import frc.robot.state.PROCESSOR;
 import frc.robot.state.L4;
 
 public class StateManager extends SubsystemBase {
@@ -49,7 +64,19 @@ public class StateManager extends SubsystemBase {
       new L1(),
       new L2(),
       new L3(),
-      new L4()
+      new L4(),
+      new ALGAE_KNOCK_HIGH(),
+      new ALGAE_KNOCK_LOW(),
+      new BARGE(),
+      new IDLE_ALGAE(),
+      new IDLE_CORAL(),
+      new IDLE(),
+      new INTAKE_ALGAE_GROUND(),
+      new INTAKE_ALGAE_HIGH(),
+      new INTAKE_ALGAE_LOW(),
+      new INTAKE_CORAL(),
+      new INTERPOLATED_STATE(),
+      new PROCESSOR()
 
   );
 
@@ -172,6 +199,18 @@ public class StateManager extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    for (Map.Entry<String, Object> entry : desiredData.entrySet()) {
+      String key = entry.getKey();
+      Object value = entry.getValue();
+
+      if (value instanceof Double || value instanceof Integer) {
+        SmartDashboard.putNumber(key, (Double) value);
+      }else if (value instanceof Boolean) {
+        SmartDashboard.putBoolean(key, (Boolean) value);
+      } 
+  }
+
     // This method will be called once per scheduler run
   }
 }

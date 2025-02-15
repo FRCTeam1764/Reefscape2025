@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -30,7 +31,7 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom2;
 
 
-  private PositionDutyCycle setVoltage;
+  private PositionVoltage setVoltage;
   private double desiredEncoder;
   private StateManager stateManager;
   int negative;
@@ -46,7 +47,7 @@ public class Elevator extends SubsystemBase {
     
     SetUpClimberMotors();
     
-    setVoltage = new PositionDutyCycle(0).withSlot(0);
+    setVoltage = new PositionVoltage(0).withSlot(0).withFeedForward(0);
     setVoltage.UpdateFreqHz = 10;
 
     this.stateManager = stateManager;
