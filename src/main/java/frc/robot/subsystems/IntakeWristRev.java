@@ -14,6 +14,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.AbsoluteEncoderConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
@@ -35,7 +36,7 @@ public class IntakeWristRev extends SubsystemBase {
 
   ArmFeedforward armfeed = new ArmFeedforward(0,0.3,0);
 
-  private SparkMax jank = new SparkMax(0, null); //this is bad, dont do this future coders!
+  private SparkMax jank = new SparkMax(1,MotorType.kBrushless); //this is bad, dont do this future coders!
   private AbsoluteEncoder revAbsoluteEncoder = jank.getAbsoluteEncoder(); //to run a rev encoder through a talon, we need to get it through the spark max and do external pid calculations. this will stay uintil we get a actual ctre-throughboreencoder
 
   private PIDController controller = new PIDController(0.001, 0, 0.0001);
@@ -43,6 +44,7 @@ public class IntakeWristRev extends SubsystemBase {
   private StateManager stateManager;
 
   private VoltageOut voltageOut;
+  private double calculation;
 
   private final SysIdRoutine m_sysIdRoutine =
    new SysIdRoutine(
@@ -82,7 +84,8 @@ this.stateManager = stateManager;
 
     AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
     encoderConfig.positionConversionFactor(360);
-    encoderConfig.zeroOffset(100);
+    encoderConfig.zeroOffset(0);
+    
 
     
 
@@ -102,9 +105,9 @@ this.stateManager = stateManager;
   }
 
   public void flexOn(double rotations) {
-    double calculation = controller.calculate(revAbsoluteEncoder.getPosition(), rotations);
+    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), rotations);
     SmartDashboard.putNumber("INTAKE_WRIST_PID", calculation);
-    m_flexMotor.set(calculation);
+    //m_flexMotor.set(calculation);
   }
 
   public void startflex1(){
@@ -149,8 +152,9 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putNumber("IntakeWristPosition",revAbsoluteEncoder.getPosition());
     SmartDashboard.putNumber("IntakeWristTempature",m_flexMotor.getDeviceTemp().getValueAsDouble());
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("IntakeDesired", calculation);
 
-
+  
     
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
     

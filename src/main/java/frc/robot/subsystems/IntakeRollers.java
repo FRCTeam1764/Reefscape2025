@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.lang.constant.Constable;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -28,7 +30,7 @@ public class IntakeRollers extends SubsystemBase {
   BooleanLogEntry limitSwitchLog;
 
   public IntakeRollers() {
-    m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id);
+    m_intakeMotor = new TalonFX(Constants.INTAKE_MOTOR.id, Constants.INTAKE_MOTOR.busName);
 
 
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();

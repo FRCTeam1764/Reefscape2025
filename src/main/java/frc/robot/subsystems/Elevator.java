@@ -65,8 +65,8 @@ public class Elevator extends SubsystemBase {
   public Elevator(StateManager stateManager) {
     elevatorMotor1 = new TalonFX(Constants.ELEVATOR_MOTOR1.id, Constants.ELEVATOR_MOTOR1.busName);
     elevatorMotor2 = new TalonFX(Constants.ELEVATOR_MOTOR2.id, Constants.ELEVATOR_MOTOR2.busName);
-    limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
-    limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
+    limitSwitchBottom1 = new DigitalInput(Constants.ELEVATOR_SWITCHDOWN1);
+    limitSwitchBottom2 = new DigitalInput(Constants.ELEVATOR_SWITCHDOWN2);
 
     limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
     limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
@@ -172,12 +172,12 @@ public class Elevator extends SubsystemBase {
   }
 
 public boolean getLimitSwitches(){
-  if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
-return true;
-  }else  if(limitSwitchTop1.get() && limitSwitchTop2.get()){
-return true;
-    }
-    return false;
+    if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
+  return true;
+    }else  if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+  return true;
+      }
+      return false;
 }
 
 
@@ -201,12 +201,17 @@ return true;
     SmartDashboard.putNumber("ElevatorMotor1Voltage", elevatorMotor1.getMotorVoltage().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Voltage", elevatorMotor2.getMotorVoltage().getValueAsDouble());
 
+    SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
+    SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());
+    SmartDashboard.putBoolean("ElevatorTopLimit1", limitSwitchTop1.get());
+    SmartDashboard.putBoolean("ElevatorTopLimit2", limitSwitchTop2.get());
+
 //zeroing encoders
     if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
       setEncoders(0);
       
     }else if(limitSwitchTop1.get() && limitSwitchTop2.get()){
-setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
+      setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
     }
 
   

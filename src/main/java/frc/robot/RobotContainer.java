@@ -1,166 +1,87 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot;
 
+import static edu.wpi.first.units.Units.*;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.Subsystem;
-import frc.robot.CommandFactory.desiredAction;
-import frc.robot.commands.*;
-import frc.robot.commands.BasicCommands.RequestStateChange;
-import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
-import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
-import frc.robot.commands.DefaultCommands.DefaultWristCommand;
-import frc.robot.commands.DriveCommands.LockOnAprilTag;
-import frc.robot.commands.DriveCommands.TeleopDrive;
-import frc.robot.constants.CommandConstants;
-import frc.robot.constants.SwerveConstantsYAGSL;
-import frc.robot.subsystems.*;
-import frc.robot.subsystems.StateManager.States;
-import frc.robot.libraries.external.robot.input.JoystickAxis;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Elevator;
+import frc.robot.subsystems.StateManager;
+import frc.robot.subsystems.IntakeRollers;
+import frc.robot.subsystems.IntakeWristRev;
 
-import java.io.File;
 
-import javax.sql.StatementEvent;
-
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-    
-    private final Joystick driver = new Joystick(0);
-    private final Joystick secondaryController = new Joystick(1); 
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
-    /* Drive Controls */
+    /* Setting up bindings for necessary control of the swerve drive platform */
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final int translationAxis = XboxController.Axis.kLeftY.value;
-    private final int strafeAxis = XboxController.Axis.kLeftX.value;
-    private final int rotationAxis = XboxController.Axis.kRightX.value;
+    private final Telemetry logger = new Telemetry(MaxSpeed);
 
-    /* Driver Buttons */
+    private final CommandXboxController joystick = new CommandXboxController(0);
 
-    private final JoystickButton zeroGyro = new JoystickButton(driver, XboxController.Button.kY.value);
-    private final JoystickButton robotCentric = new JoystickButton(driver, XboxController.Button.kRightBumper.value);
-    private final JoystickButton actionButton = new JoystickButton(driver, XboxController.Button.kA.value);
-    private final JoystickButton FLIPURSELF = new JoystickButton(driver, XboxController.Button.kX.value);
-
-
-    /* CoPilot Buttons */
-    private final JoystickButton test1 = new JoystickButton(secondaryController, XboxController.Button.kA.value);
-    /* Subsystems */
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-    
-    private final IntakeRollers intakeRollers = new IntakeRollers();
-    private final IntakeWrist intakeWrist = new IntakeWrist(stateManager);
-    private final Elevator elevator = new Elevator(stateManager);
     private final Climber climber = new Climber();
-    
-    private final Blinkin blinky = new Blinkin();
-
-
-    private final SwerveSubsystem s_Swerve = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(), "swerve/falcon"));
-//TODO: FIND LIMELIGHT NAMES
-
-    //left
-    private final LimelightSubsystem limelight4 = new LimelightSubsystem(s_Swerve, "LIMELIGHT4", 0, 0,0);
-    //right
-    private final LimelightSubsystem limelight3 = new LimelightSubsystem(s_Swerve, "LIMELIGHT3", 0, 0,0);
-    //back
-    private final LimelightSubsystem limelight2 = new LimelightSubsystem(s_Swerve, "LIMELIGHT2", 0, 0,0);
-
-    
-
-    
-    private final CommandFactory commandFactory = new CommandFactory(climber, elevator,intakeRollers,intakeWrist,limelight4,limelight3,limelight2,driver,s_Swerve,stateManager);
-    
-    
-    private  SendableChooser<Command> autoChooser;
-
+    private final Elevator elevator = new Elevator(stateManager);
+    private final IntakeRollers rollers = new IntakeRollers();
+    private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
 
     public RobotContainer() {
-
-        // teleop drive for yagsl 
-    
-    
-        s_Swerve.setDefaultCommand(
-                new TeleopDrive(
-                        s_Swerve,
-                        () -> -driver.getRawAxis(translationAxis),
-                        () -> -driver.getRawAxis(strafeAxis),
-                        () -> -driver.getRawAxis(rotationAxis),
-                        () -> !robotCentric.getAsBoolean()));
-
-        configAutoCommands();
-        configurePilotButtonBindings();
-        configureCoPilotButtonBindings();
-
-        SmartDashboard.putData(autoChooser);
-        
-        elevator.setDefaultCommand(new DefaultElevatorCommand(elevator,stateManager));
-        intakeWrist.setDefaultCommand(new DefaultWristCommand(intakeWrist, stateManager));
-        intakeRollers.setDefaultCommand(new DefaultRollerCommand(intakeRollers, stateManager));
+        configureBindings();
     }
 
-    private void configurePilotButtonBindings() {
+    private void configureBindings() {
+        // Note that X is defined as forward according to WPILib convention,
+        // and Y is defined as to the left according to WPILib convention.
+        drivetrain.setDefaultCommand(
+            // Drivetrain will execute this command periodically
+            drivetrain.applyRequest(() ->
+                drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                    .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                    .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            )
+        );
 
+        joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        joystick.b().whileTrue(drivetrain.applyRequest(() ->
+            point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
+        ));
 
-        //y
-        zeroGyro.onTrue(new InstantCommand(() -> s_Swerve.zeroGyro()));
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        
-        actionButton.onTrue(new InstantCommand(() -> commandFactory.getDesiredAction()));
+        // reset the field-centric heading on left bumper press
+        joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        drivetrain.registerTelemetry(logger::telemeterize);
     }
-
-    private void configureCoPilotButtonBindings() {
-        
-        test1.onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
-    }
-
-    public void configAutoCommands() {
-        NamedCommands.registerCommand("AutoAlgaeKnockHigh", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.ALGAE_KNOCK_HIGH)));
-        NamedCommands.registerCommand("AutoAlgaeKnockLow", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.ALGAE_KNOCK_LOW)));
-        NamedCommands.registerCommand("AutoBarge", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.BARGE)));
-        NamedCommands.registerCommand("AutoIntakeAlgaeGround", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND)));
-        NamedCommands.registerCommand("AutoIntakeAlgaeHigh", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH)));
-        NamedCommands.registerCommand("AutoIntakeAlgaeLow", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW)));
-        NamedCommands.registerCommand("AutoIntakeCoral", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.INTAKE_CORAL)));
-        NamedCommands.registerCommand("AutoLevelFour", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
-        NamedCommands.registerCommand("AutoLevelThree", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
-        NamedCommands.registerCommand("AutoLevelTwo", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
-        NamedCommands.registerCommand("AutoLevelOne", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
-        NamedCommands.registerCommand("AutoProcessor", new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.PROCESSOR)));
-    
- 
-    
-    
-    
-    }
-
 
     public Command getAutonomousCommand() {
-        return autoChooser.getSelected();
-    }
-
-    public SwerveSubsystem getDrivetrainSubsystem(){
-     return s_Swerve;
-     }
-    public double getPercentFromBattery(double speed){
-        return speed * 12 / RobotController.getBatteryVoltage();
+        return Commands.print("No autonomous command configured");
     }
 }
