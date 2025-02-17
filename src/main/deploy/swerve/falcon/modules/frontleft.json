@@ -1,7 +1,7 @@
 {
   "drive": {
     "type": "talonfx",
-    "id": 7,
+    "id": 52,
     "canbus": "1764 canivore"
   },
   "angle": {
