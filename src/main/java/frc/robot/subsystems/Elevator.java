@@ -50,7 +50,7 @@ public class Elevator extends SubsystemBase {
    new SysIdRoutine(
       new SysIdRoutine.Config(
          null,        // Use default ramp rate (1 V/s)
-         Volts.of(4), // Reduce dynamic step voltage to 4 to prevent brownout
+         Volts.of(1), // Reduce dynamic step voltage to 4 to prevent brownout
          null,        // Use default timeout (10 s)
                       // Log state with Phoenix SignalLogger class
          (state) -> SignalLogger.writeString("state", state.toString())
@@ -85,23 +85,30 @@ public class Elevator extends SubsystemBase {
 
     TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config.Slot0.kP = 0.045; // p pid
-    config.Slot0.kD = 0.00005; // d pid
+    config.Slot0.kP = 0.2; // p pid
+    config.Slot0.kD = 0.0005; // d pid
+    config.Slot0.kV = 0.12394;
+    config.Slot0.kA = 0.018365;
+    config.Slot0.kG = 0.4434;
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 1;
-    config.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
+    config.MotorOutput.PeakForwardDutyCycle = .4;
+    config.MotorOutput.PeakReverseDutyCycle = -.4; // can bump up to 12 or something
+    config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
-    config2.Slot0.kP = 0.435; // p pid
-    config2.Slot0.kD = 0.00005; // d pid
+    config2.Slot0.kP = 0.2; // p pid
+    config2.Slot0.kD = 0.0005; // d pid
+    config2.Slot0.kV = 0.12394;
+    config2.Slot0.kA = 0.018365;
+    config2.Slot0.kG = 0.4434;
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 1;
-    config2.MotorOutput.PeakReverseDutyCycle = -1; // can bump up to 12 or something
-    config2.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
+    config2.MotorOutput.PeakForwardDutyCycle =.4;
+    config2.MotorOutput.PeakReverseDutyCycle = -.4; // can bump up to 12 or something
+    config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
 
@@ -138,7 +145,7 @@ public class Elevator extends SubsystemBase {
     return desiredEncoder;
   }
   public double getEncoderValue() {
-    return elevatorMotor1.getPosition().getValueAsDouble();
+    return elevatorMotor1.getPosition().getValueAsDouble(); //all the way 24
   }
 
   public double getEncoderValue2() {
@@ -189,6 +196,9 @@ public boolean getLimitSwitches(){
 
   @Override
   public void periodic() {
+    elevatorOn(23);
+
+
     SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
 
@@ -211,10 +221,12 @@ public boolean getLimitSwitches(){
       setEncoders(0);
       
     }else if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
-      setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
+      setEncoders(24); //TODO: FIND MAX ENCODER HEIGHT
     }
 
   
-    stateManager.addDesiredData("ElevatorPosition", elevatorMotor1.getPosition().getValueAsDouble());
+    stateManager.updateCurrentData("ElevatorPosition", elevatorMotor1.getPosition().getValueAsDouble());
+ 
   }
+
 }

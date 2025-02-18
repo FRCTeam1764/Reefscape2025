@@ -107,7 +107,7 @@ this.stateManager = stateManager;
   }
 
   public void flexOn(double rotations) {
-    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), 18);
+    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), 28);
     SmartDashboard.putNumber("INTAKE_WRIST_PID", calculation);
     m_flexMotor.set(calculation);
   }
@@ -156,7 +156,7 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
     
 
-    flexOn(SmartDashboard.getNumber("rotationswrist", 0));
+    flexOn(SmartDashboard.getNumber("rotationswrist", 28));
     // startflex1();
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
     
