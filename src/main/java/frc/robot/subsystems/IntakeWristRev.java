@@ -36,10 +36,10 @@ public class IntakeWristRev extends SubsystemBase {
 
   ArmFeedforward armfeed = new ArmFeedforward(0,0.3,0);
 
-  private SparkMax jank = new SparkMax(1,MotorType.kBrushless); //this is bad, dont do this future coders!
+  private SparkMax jank = new SparkMax(5,MotorType.kBrushless); //this is bad, dont do this future coders!
   private AbsoluteEncoder revAbsoluteEncoder = jank.getAbsoluteEncoder(); //to run a rev encoder through a talon, we need to get it through the spark max and do external pid calculations. this will stay uintil we get a actual ctre-throughboreencoder
 
-  private PIDController controller = new PIDController(0.001, 0, 0.0001);
+  private PIDController controller = new PIDController(0.01, 0, 0.0001);
 
   private StateManager stateManager;
 
@@ -71,25 +71,27 @@ this.stateManager = stateManager;
     //TODO figure out values
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
     flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
-    flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.7;
-    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.7; 
+    flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.3;
+    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.3; 
     flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flexConfig.CurrentLimits.StatorCurrentLimit = 60;
 
 
 
     SparkMaxConfig jankconfig = new SparkMaxConfig();
+    SmartDashboard.putNumber("rotationswrist", 0);
 
-
-    AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig();
+    AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig(); 
+    encoderConfig.inverted(true);
+    encoderConfig.zeroOffset(110.0/360);
     encoderConfig.positionConversionFactor(360);
-    encoderConfig.zeroOffset(0);
     
+
 
     
 
-    jankconfig.apply(encoderConfig);
+    jankconfig.absoluteEncoder.apply(encoderConfig);
     jank.configure(jankconfig, null, null);
 
     m_flexMotor.getConfigurator().apply(flexConfig);
@@ -105,13 +107,13 @@ this.stateManager = stateManager;
   }
 
   public void flexOn(double rotations) {
-    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), rotations);
+    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), 18);
     SmartDashboard.putNumber("INTAKE_WRIST_PID", calculation);
-    //m_flexMotor.set(calculation);
+    m_flexMotor.set(calculation);
   }
 
   public void startflex1(){
-    m_flexMotor.set(.2);
+    m_flexMotor.set(.1);
   }
 
   public void stopflex(){
@@ -149,13 +151,13 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("IntakeWristPosition",revAbsoluteEncoder.getPosition());
+    SmartDashboard.putNumber("IntakeWristPosition",jank.getAbsoluteEncoder().getPosition());
     SmartDashboard.putNumber("IntakeWristTempature",m_flexMotor.getDeviceTemp().getValueAsDouble());
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("IntakeDesired", calculation);
-
-  
     
+
+    flexOn(SmartDashboard.getNumber("rotationswrist", 0));
+    // startflex1();
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
     
   }

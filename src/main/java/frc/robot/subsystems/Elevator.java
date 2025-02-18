@@ -174,7 +174,7 @@ public class Elevator extends SubsystemBase {
 public boolean getLimitSwitches(){
     if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
   return true;
-    }else  if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+    }else  if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
   return true;
       }
       return false;
@@ -210,7 +210,7 @@ public boolean getLimitSwitches(){
     if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
       setEncoders(0);
       
-    }else if(limitSwitchTop1.get() && limitSwitchTop2.get()){
+    }else if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
       setEncoders(100); //TODO: FIND MAX ENCODER HEIGHT
     }
 
