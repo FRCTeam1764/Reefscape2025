@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.ClimberCommand;
@@ -27,12 +28,12 @@ import frc.robot.constants.CommandConstants;
 import frc.robot.state.ALGAE_KNOCK_HIGH;
 import frc.robot.state.ALGAE_KNOCK_LOW;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
-import frc.robot.subsystems.SwerveSubsystem;
 import frc.robot.subsystems.StateManager.States;
 
 //This class will handle all command handling for drivers
@@ -66,14 +67,14 @@ public class CommandFactory {
     private LimelightSubsystem Limelight4;
     private LimelightSubsystem Limelight3;
     private LimelightSubsystem Limelight2;
-    private SwerveSubsystem swerve;
+    private CommandSwerveDrivetrain swerve;
     private StateManager stateManager;
     private States[] stateList = { States.L4, States.L3, States.L2, States.L1 };
-    private Joystick driver;
+    private CommandXboxController driver;
 
     public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
-            Joystick driver, SwerveSubsystem swerve, StateManager stateManager) {
+            CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
         this.climber = climber;
         this.elevator = elevator;
         this.intakeRollers = intakeRollers;
@@ -201,7 +202,7 @@ public class CommandFactory {
                         index == 1 ? States.L1 : index == 2 ? States.L2 : index == 3 ? States.L3 : States.L4,
                         stateManager),
                 new ParallelCommandGroup(
-                        new DriveToTarget(swerve, Limelight2, 10), //TODO: find the actual safety distance
+                        new DriveToTarget(swerve, Limelight2, 0), //TODO: find the actual safety distance
                         new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4,
                                 CommandConstants.ELEVATOR_KEY, 4)),
                 new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED, true),
@@ -216,6 +217,18 @@ public class CommandFactory {
                         new WaitCommand(2),
                         new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false)),
                 new returnToIdle(stateManager, States.INTAKE_ALGAE_GROUND)).finallyDo((key) -> interupted(key));
+    }
+
+
+
+    private Command scoreTest(){
+        return new SequentialCommandGroup(
+            new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+            new ParallelDeadlineGroup(
+                    new WaitCommand(2),
+                    new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false))
+        ).finallyDo((key) -> interupted(key));
     }
 
     public Command interupted(boolean wasInteruppted) {

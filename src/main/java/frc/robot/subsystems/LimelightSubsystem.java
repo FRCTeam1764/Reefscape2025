@@ -18,7 +18,7 @@ public class LimelightSubsystem extends SubsystemBase {
  // private double horizontal_offset = 0;
   private String Limelight;
 //  private Pose2d botpose;
-  private SwerveSubsystem driveTrain;
+  private CommandSwerveDrivetrain driveTrain;
 
   private double txoffset;
   private double tyoffset;
@@ -29,7 +29,7 @@ public class LimelightSubsystem extends SubsystemBase {
    
 //note: we may in the future need to hvae rotpitch/roll but for now im im not implimenting that. it sucks! 3dvectors are awful
 
-  public LimelightSubsystem(SwerveSubsystem swerve, String LimelightName,double txoffset, double tyoffset, double rotyaw) {
+  public LimelightSubsystem(CommandSwerveDrivetrain swerve, String LimelightName,double txoffset, double tyoffset, double rotyaw) {
     /**
      * tx - Horizontal Offset
      * ty - Vertical Offset 

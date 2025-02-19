@@ -125,16 +125,6 @@ this.stateManager = stateManager;
   }
   
 
-  
-  //TODO: find not safe encoder values
-  // public boolean isFlexSafe(){
-  //   return Math.abs(getEncoderPos()) > 180 && Math.abs(getEncoderPos()) <90;
-  // }
-
-  public boolean flexOutSafe(Elevator elevator, IntakeWrist intake) {
-    return elevator.getEncoderValue() >= CommandConstants.ELEVATOR_STOP_SAFE || 
-      (intake.getEncoderPos() >= CommandConstants.WRIST_DOWN-1 && intake.getEncoderPos() <= CommandConstants.WRIST_DOWN+1);
-  }
 
 
   public boolean isFlexSafe(){

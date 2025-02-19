@@ -160,23 +160,6 @@ public class Elevator extends SubsystemBase {
     return (Math.abs(getEncoderValue2()) > 3 && Math.abs(getEncoderValue2()) <80)|| (getEncoderValue() < 10 && (double) stateManager.getCurrentData("IntakeAngle") < 30 );
   }
   
-  public int retriveLevelEncoder(int level) {
-    //if level == 1, return intake level one, else...
-    return (level == 1) ? CommandConstants.ELEVATOR_LEVEL_ONE : 
-    //if level == 2, return intake level two, else...
-    (level == 2) ? CommandConstants.ELEVATOR_LEVEL_TWO :
-    (level == 3) ? CommandConstants.ELEVATOR_LEVEL_THREE :
-                   CommandConstants.ELEVATOR_LEVEL_FOUR;
-  }
-
-  public int retriveAngleEncoder(int level) {
-    //if level == 1, return intake level one, else...
-    return (level == 1) ? CommandConstants.WRIST_LEVEL_ONE : 
-    //if level == 2, return intake level two, else...
-    (level == 2) ? CommandConstants.WRIST_LEVEL_TWO :
-    (level == 3) ? CommandConstants.WRIST_LEVEL_THREE :
-                   CommandConstants.WRIST_LEVEL_FOUR;
-  }
 
 public boolean getLimitSwitches(){
     if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){

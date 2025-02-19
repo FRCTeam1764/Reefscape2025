@@ -4,75 +4,88 @@
 
 package frc.robot.commands.DriveCommands;
 
-import edu.wpi.first.math.MathUtil;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+
+import java.util.function.Supplier;
+
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.SwerveConstantsYAGSL;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.generated.TunerConstants;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.subsystems.SwerveSubsystem;
 
 public class LockOnAprilTag extends Command {
-  /** Creates a new LockOnAprilTag. */
-   
-  private LimelightSubsystem LimeLight;
-  private SwerveSubsystem Drivetrain;
-  private boolean fieldRelative;
-  private Joystick controller;
-  private int pipeline;
-  private PIDController thetaController = new PIDController(SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kP, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kI, SwerveConstantsYAGSL.AutonConstants.ANGLE_PID.kD);
-  public LockOnAprilTag(SwerveSubsystem drivetrain, LimelightSubsystem limelight, int pipeline, Joystick controller,boolean fieldRelative) {
+  private LimelightSubsystem m_Limelight;
+  private frc.robot.subsystems.CommandSwerveDrivetrain m_Drivetrain;
+  private int m_pipeline;
+  private PIDController thetaController = new PIDController(.4, 0, .1);
+  private boolean targeting = false;
+  private CommandXboxController controller;
+  private Supplier<Double> m_skew ; 
+  //(swerve, Limelight2, 0, driver, false
+  public LockOnAprilTag(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, CommandXboxController controller, boolean robotcentric) {
     addRequirements(drivetrain);
-    this.Drivetrain = drivetrain;
-    this.LimeLight = limelight;
+    m_Drivetrain = drivetrain;
+    m_Limelight = Limelight;
+    m_pipeline = pipeline;
     this.controller = controller;
-    this.fieldRelative = fieldRelative;
-    this.pipeline = pipeline;
+   // m_skew = skewDegrees;
   }
+    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+
+  private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+    .withDriveRequestType(DriveRequestType.OpenLoopVoltage).withDeadband(MaxSpeed * 0.1);
+  private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+  private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    m_Limelight.setPipeline(m_pipeline);
+    targeting = false;
     thetaController.reset();
-    thetaController.setTolerance(Math.toRadians(1)); //fix later?
-    LimeLight.setPipeline(pipeline);
+    thetaController.setTolerance(Math.toRadians(1.5));
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-
+    SmartDashboard.putBoolean("AllignOnLLTarget running", true);
     double thetaOutput = 0;
-    double xOutput =MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftY.value),SwerveConstantsYAGSL.OperatorConstants.LEFT_Y_DEADBAND)*SwerveConstantsYAGSL.MAX_SPEED;
-    double yOutput = MathUtil.applyDeadband(-controller.getRawAxis(XboxController.Axis.kLeftX.value),SwerveConstantsYAGSL.OperatorConstants.RIGHT_X_DEADBAND)*SwerveConstantsYAGSL.MAX_SPEED;
-    double horizontal_amgle = -(LimeLight.getHorizontalAngleOfErrorDegrees());
-
-		if (LimeLight.hasTarget()){
-      
-			double setpoint = Math.toRadians(horizontal_amgle)+Drivetrain.getPose().getRotation().getRadians();
+    double xOutput = controller.getLeftX();
+    double yOutput = controller.getLeftY();
+		if (m_Limelight.hasTarget()){
+			double vertical_angle = m_Limelight.getHorizontalAngleOfErrorDegrees();
+			double horizontal_angle = -m_Limelight.getVerticalAngleOfErrorDegrees() ;
+			double setpoint = Math.toRadians(horizontal_angle)+ m_Drivetrain.getPose().getRotation().getRadians() + Math.toRadians(m_skew.get());
       thetaController.setSetpoint(setpoint);
-
-			if (!thetaController.atSetpoint()){
-				thetaOutput = thetaController.calculate(Drivetrain.getPose().getRotation().getRadians(), setpoint);
-			}
-      System.out.print(String.valueOf(thetaOutput));
+      targeting = true;
+			if (!thetaController.atSetpoint() ){
+				thetaOutput = thetaController.calculate(m_Drivetrain.getPose().getRotation().getRadians(), setpoint);
+			} 
+      SmartDashboard.putNumber("targeting error", horizontal_angle);
 		} 
-    Drivetrain.drive(new Translation2d(xOutput,yOutput),thetaOutput,fieldRelative);
+    else {
+			System.out.println("NO TARGET");
+		}
+    m_Drivetrain.setControl(drive.withVelocityX(xOutput).withVelocityY(yOutput).withRotationalRate(thetaOutput));
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    LimeLight.setPipeline(pipeline);
-    Drivetrain.drive(new Translation2d(0,0),0,false);
+    SmartDashboard.putBoolean("AllignOnLLTarget running", false);
+    m_Drivetrain.setControl(drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return targeting &&  Math.abs(m_Limelight.getVerticalAngleOfErrorDegrees() ) <= 3;
   }
 }
