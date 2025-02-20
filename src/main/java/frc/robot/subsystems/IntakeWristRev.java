@@ -80,7 +80,7 @@ this.stateManager = stateManager;
 
 
     SparkMaxConfig jankconfig = new SparkMaxConfig();
-    SmartDashboard.putNumber("rotationswrist", 0);
+    SmartDashboard.putNumber("rotationswrist", 40);
 
     AbsoluteEncoderConfig encoderConfig = new AbsoluteEncoderConfig(); 
     encoderConfig.inverted(true);
@@ -146,8 +146,7 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
     
 
-    flexOn(SmartDashboard.getNumber("rotationswrist", 28));
-    // startflex1();
+    flexOn(SmartDashboard.getNumber("rotationswrist", 40));
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
     
   }

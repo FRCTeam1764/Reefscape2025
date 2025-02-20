@@ -39,6 +39,8 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom1;
   public DigitalInput limitSwitchBottom2;
   private VoltageOut voltageOut = new VoltageOut(0.0);
+  private double maxdutycycle = 0.2;
+  
 
 
   private PositionVoltage setVoltage;
@@ -70,6 +72,7 @@ public class Elevator extends SubsystemBase {
 
     limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
     limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
+    SmartDashboard.putNumber("elevatorencoder", 0);
 
     
     SetUpClimberMotors();
@@ -85,29 +88,30 @@ public class Elevator extends SubsystemBase {
 
     TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config.Slot0.kP = 0.2; // p pid
-    config.Slot0.kD = 0.0005; // d pid
-    config.Slot0.kV = 0.12394;
-    config.Slot0.kA = 0.018365;
-    config.Slot0.kG = 0.4434;
+    config.Slot0.kP = 4.1; // p pid
+    config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
+    config.Slot0.kV = 0.117825;
+    config.Slot0.kA = 0.01267925;
+    config.Slot0.kG = 0.249545025;
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = .4;
-    config.MotorOutput.PeakReverseDutyCycle = -.4; // can bump up to 12 or something
+    config.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
+    config.MotorOutput.PeakReverseDutyCycle = -maxdutycycle; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
-    config2.Slot0.kP = 0.2; // p pid
-    config2.Slot0.kD = 0.0005; // d pid
-    config2.Slot0.kV = 0.12394;
-    config2.Slot0.kA = 0.018365;
-    config2.Slot0.kG = 0.4434;
+    config2.Slot0.kP = 4.1; //prev 3
+    config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .52
+    config2.Slot0.kV = 0.117825;
+    config2.Slot0.kA = 0.01267925;
+    config2.Slot0.kG = 0.249545025;
+
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle =.4;
-    config2.MotorOutput.PeakReverseDutyCycle = -.4; // can bump up to 12 or something
+    config2.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
+    config2.MotorOutput.PeakReverseDutyCycle = -maxdutycycle ; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
@@ -145,7 +149,7 @@ public class Elevator extends SubsystemBase {
     return desiredEncoder;
   }
   public double getEncoderValue() {
-    return elevatorMotor1.getPosition().getValueAsDouble(); //all the way 24
+    return elevatorMotor1.getPosition().getValueAsDouble(); //all the way 24.8
   }
 
   public double getEncoderValue2() {
@@ -179,7 +183,7 @@ public boolean getLimitSwitches(){
 
   @Override
   public void periodic() {
-    elevatorOn(23);
+    elevatorOn(SmartDashboard.getNumber("elevatorencoder", 0));
 
 
     SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
@@ -204,7 +208,7 @@ public boolean getLimitSwitches(){
       setEncoders(0);
       
     }else if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
-      setEncoders(24); //TODO: FIND MAX ENCODER HEIGHT
+      setEncoders(24.5); //TODO: FIND MAX ENCODER HEIGHT
     }
 
   

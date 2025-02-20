@@ -12,6 +12,7 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Climber;
@@ -70,14 +71,15 @@ public class RobotContainer {
 
         // // Run SysId routines when holding back/start and X/Y.
         // // Note that each routine should be run exactly once in a single log.
-        // joystick.back().and(joystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        // joystick.back().and(joystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        // joystick.start().and(joystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        // joystick.start().and(joystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+        // joystick.x().whileTrue(elevator.sysIdDynamic(Direction.kForward));
+        // joystick.y().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
+        // joystick.a().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
+        // joystick.b().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
         joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
+        joystick.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
+        joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

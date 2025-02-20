@@ -62,7 +62,6 @@ Limelight = LimelightName;
 
   public double getHorizontalAngleOfErrorDegrees(){
     return getTx();
-
   }
 
   public double getVerticalAngleOfErrorDegrees(){
