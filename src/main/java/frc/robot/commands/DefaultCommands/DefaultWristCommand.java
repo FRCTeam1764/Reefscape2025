@@ -8,14 +8,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.IntakeWrist;
+import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.StateManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class DefaultWristCommand extends Command {
   /** Creates a new DefaultWristCommand. */
-  IntakeWrist wrist;
+  IntakeWristRev wrist;
   StateManager stateManager;
-  public DefaultWristCommand(IntakeWrist wrist, StateManager stateManager) {
+  public DefaultWristCommand(IntakeWristRev wrist, StateManager stateManager) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.wrist = wrist;
     this.stateManager = stateManager;
@@ -32,11 +33,11 @@ public class DefaultWristCommand extends Command {
   @Override
   public void execute() {
     if(stateManager.getDesiredData(CommandConstants.INTAKE_KEY) != null) {
-      if (wrist.isFlexSafe())
+      //if (wrist.isFlexSafe())
         SmartDashboard.putBoolean("WristSafe", true);
         wrist.flexOn((double) stateManager.getDesiredData(CommandConstants.INTAKE_KEY));
-    } else {
-      SmartDashboard.putBoolean("WristSafe", false);
+    //} else {
+      //SmartDashboard.putBoolean("WristSafe", false);
     }
   }
   

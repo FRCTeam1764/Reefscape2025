@@ -125,7 +125,7 @@ public class StateManager extends SubsystemBase {
   
 
   public void returnToIdle(States state) {
-    if ((boolean) currentData.get("IntakeLimitSwitch")) {
+    if (false) { //(boolean) currentData.get("IntakeLimitSwitch")
       if (state == States.INTAKE_CORAL) {
         requestNewState(States.IDLE_CORAL);
       } else if (state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW
@@ -204,11 +204,13 @@ public class StateManager extends SubsystemBase {
       String key = entry.getKey();
       Object value = entry.getValue();
 
-      if (value instanceof Double || value instanceof Integer) {
+      if (value instanceof Double) {
         SmartDashboard.putNumber(key, (Double) value);
       }else if (value instanceof Boolean) {
         SmartDashboard.putBoolean(key, (Boolean) value);
-      } 
+      }else if (value instanceof Integer ){
+        SmartDashboard.putNumber(key, (Integer) value);
+      }
   }
 
     // This method will be called once per scheduler run

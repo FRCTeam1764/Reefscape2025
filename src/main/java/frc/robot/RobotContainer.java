@@ -13,16 +13,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.StateManager;
+import frc.robot.subsystems.StateManager.States;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWristRev;
-
-
+import frc.robot.commands.BasicCommands.ElevatorCommandSpeed;
+import frc.robot.commands.BasicCommands.RequestStateChange;
+import frc.robot.commands.BasicCommands.WristCommand;
+import frc.robot.commands.ComplexCommands.returnToIdle;
+import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
+import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
+import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.generated.TunerConstants;
+import frc.robot.state.IDLE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
@@ -31,7 +39,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -49,6 +57,7 @@ public class RobotContainer {
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
 
     public RobotContainer() {
+        stateManager.requestNewState(States.IDLE);
         configureBindings();
     }
 
@@ -71,15 +80,24 @@ public class RobotContainer {
 
         // // Run SysId routines when holding back/start and X/Y.
         // // Note that each routine should be run exactly once in a single log.
-        // joystick.x().whileTrue(elevator.sysIdDynamic(Direction.kForward));
-        // joystick.y().whileTrue(elevator.sysIdDynamic(Direction.kReverse));
-        // joystick.a().whileTrue(elevator.sysIdQuasistatic(Direction.kForward));
-        // joystick.b().whileTrue(elevator.sysIdQuasistatic(Direction.kReverse));
+         joystick.x().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+         joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+         joystick.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+         joystick.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
         // reset the field-centric heading on left bumper press
-        joystick.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        joystick.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
-        joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
+        elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, stateManager));
+        wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
+     //   rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
+
+         joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+        // joystick.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
+        // joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
+        //  joystick.a().onTrue(new RequestStateChange(States.L4, stateManager));
+        //  joystick.a().onFalse(new returnToIdle(stateManager,States.IDLE));
+      //WORKS! joystick.a().onFalse(new SequentialCommandGroup(new WristCommand(wrist, 40), new returnToIdle(stateManager)));
+        //joystick.a().whileTrue(new ElevatorCommandSpeed(elevator, 0.1, rollers, wrist));
+    
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

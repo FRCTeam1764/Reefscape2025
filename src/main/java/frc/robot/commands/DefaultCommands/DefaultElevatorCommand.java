@@ -6,6 +6,7 @@ package frc.robot.commands.DefaultCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.StateManager;
 
@@ -31,14 +32,15 @@ public class DefaultElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(stateManager.getDesiredData("ElevatorPosition") != null){
-      if (elevator.Motor1IsSafe() && elevator.Motor2IsSafe()) {
-        SmartDashboard.putBoolean("ElevatorSafe", true);
-        elevator.elevatorOn((double) stateManager.getCurrentData("ElevatorPosition"));
-      } else {
-        SmartDashboard.putBoolean("ElevatorSafe", false);
+    if(stateManager.getDesiredData(CommandConstants.ELEVATOR_KEY) != null){// && (double) stateManager.getDesiredData(CommandConstants.ELEVATOR_KEY) > (double)stateManager.getCurrentData(CommandConstants.ELEVATOR_KEY)){
+      //if (elevator.Motor1IsSafe()){} //&& elevator.Motor2IsSafe()) {
+        elevator.elevatorOn((double) stateManager.getDesiredData(CommandConstants.ELEVATOR_KEY));
+      //} else {
+        //SmartDashboard.putBoolean("ElevatorSafe", false);
       }
-    }
+    //} else {
+      //elevator.
+  
   }
 
   // Called once the command ends or is interrupted.

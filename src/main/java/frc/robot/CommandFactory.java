@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.RequestStateChange;
+import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.BasicCommands.ClimberCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
@@ -32,6 +33,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
+import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
@@ -63,7 +65,7 @@ public class CommandFactory {
     private Climber climber;
     private Elevator elevator;
     private IntakeRollers intakeRollers;
-    private IntakeWrist intakeWrist;
+    private IntakeWristRev intakeWrist;
     private LimelightSubsystem Limelight4;
     private LimelightSubsystem Limelight3;
     private LimelightSubsystem Limelight2;
@@ -72,7 +74,7 @@ public class CommandFactory {
     private States[] stateList = { States.L4, States.L3, States.L2, States.L1 };
     private CommandXboxController driver;
 
-    public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,
+    public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
             CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
         this.climber = climber;
@@ -223,8 +225,9 @@ public class CommandFactory {
 
     private Command scoreTest(){
         return new SequentialCommandGroup(
-            new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
-            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
+            new RequestStateChange(States.L4, stateManager),
+            new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, .1,CommandConstants.ELEVATOR_KEY, .1),
+            new WristCommand(intakeWrist, 50),
             new ParallelDeadlineGroup(
                     new WaitCommand(2),
                     new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false))
@@ -242,6 +245,7 @@ public class CommandFactory {
     public Command getDesiredAction() {
         return getAction(currentAction);
     }
+
 
     public Command getAction(desiredAction action) {
 

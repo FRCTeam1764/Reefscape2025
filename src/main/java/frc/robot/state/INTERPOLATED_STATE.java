@@ -11,7 +11,7 @@ public boolean matches(States state){
 
 public void execute(StateManager stateManager){
     stateManager.clearDesiredData();
-    stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 5);
-    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 5);
+    stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 30.0);
+    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 10.0);
 }
 }

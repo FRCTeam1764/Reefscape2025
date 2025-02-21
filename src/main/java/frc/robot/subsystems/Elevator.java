@@ -9,6 +9,8 @@ import static edu.wpi.first.units.Units.Volts;
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
@@ -19,6 +21,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.units.VoltageUnit;
 import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -39,7 +42,7 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom1;
   public DigitalInput limitSwitchBottom2;
   private VoltageOut voltageOut = new VoltageOut(0.0);
-  private double maxdutycycle = 0.2;
+  private double maxdutycycle = 0.15;
   
 
 
@@ -88,30 +91,31 @@ public class Elevator extends SubsystemBase {
 
     TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config.Slot0.kP = 4.1; // p pid
+    config.Slot0.kP = 2.85; // p pid //4.1
     config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
-    config.Slot0.kV = 0.117825;
-    config.Slot0.kA = 0.01267925;
-    config.Slot0.kG = 0.249545025;
+    config.Slot0.kV = 0;
+    config.Slot0.kA = 0;
+    config.Slot0.kG = 0.75;
+    
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
-    config.MotorOutput.PeakReverseDutyCycle = -maxdutycycle; // can bump up to 12 or something
+    config.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
-    config2.Slot0.kP = 4.1; //prev 3
-    config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .52
-    config2.Slot0.kV = 0.117825;
-    config2.Slot0.kA = 0.01267925;
-    config2.Slot0.kG = 0.249545025;
+    config2.Slot0.kP = 2.85; // p pid //4.1
+    config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
+    config2.Slot0.kV = 0;
+    config2.Slot0.kA = 0;
+    config2.Slot0.kG = 0.75;
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config2.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
-    config2.MotorOutput.PeakReverseDutyCycle = -maxdutycycle ; // can bump up to 12 or something
+    config2.MotorOutput.PeakReverseDutyCycle = -.05 ; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
@@ -131,16 +135,19 @@ public class Elevator extends SubsystemBase {
   }
   
   public void elevatorOn(double desiredEncoderValue){
-    desiredEncoder = desiredEncoderValue;
     //TOOD: NEED FEEDFORWARD
 
     @SuppressWarnings("unused")
-    StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
+    StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));//.withLimitReverseMotion(true));
   }
 
   public void elevatorOnSpeed(double speed){
     elevatorMotor1.set(speed);
   }
+
+  // public void motionmagic(){
+  //   elevatorMotor1.setControl()
+  // }
 
   public void off() {
     elevatorMotor1.set(0);
@@ -183,8 +190,8 @@ public boolean getLimitSwitches(){
 
   @Override
   public void periodic() {
-    elevatorOn(SmartDashboard.getNumber("elevatorencoder", 0));
 
+    //elevatorOn(10);
 
     SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
@@ -204,11 +211,11 @@ public boolean getLimitSwitches(){
     SmartDashboard.putBoolean("ElevatorTopLimit2", limitSwitchTop2.get());
 
 //zeroing encoders
-    if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
+    if (limitSwitchBottom1.get() || limitSwitchBottom2.get()){
       setEncoders(0);
       
-    }else if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
-      setEncoders(24.5); //TODO: FIND MAX ENCODER HEIGHT
+    }else if(!limitSwitchTop1.get() || !limitSwitchTop2.get()){
+      setEncoders(24.8); //TODO: FIND MAX ENCODER HEIGHT
     }
 
   

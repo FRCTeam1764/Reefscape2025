@@ -6,13 +6,14 @@ package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.IntakeWrist;
+import frc.robot.subsystems.IntakeWristRev;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class WristCommand extends Command {
   /** Creates a new WristCommand. */
-  IntakeWrist intake;
+  IntakeWristRev intake;
   int desired;
-  public WristCommand(IntakeWrist intake, int desired) {
+  public WristCommand(IntakeWristRev intake, int desired) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.desired = desired;
@@ -38,6 +39,6 @@ public class WristCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this.intake.getEncoderPos() <= this.desired && this.intake.getEncoderPos() >= this.desired && intake.isFlexSafe();
+    return false; //this.intake.getEncoderPos() <= this.desired+1 && this.intake.getEncoderPos() >= this.desired-1;
   }
 }
