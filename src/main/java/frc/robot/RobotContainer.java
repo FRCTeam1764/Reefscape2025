@@ -121,6 +121,8 @@ public class RobotContainer {
     pilot.a().onFalse(new SequentialCommandGroup(new WristCommand(wrist, 40), new ParallelDeadlineGroup(new WaitCommand(2), new IntakeCommand(rollers, .2, false)), new returnToIdle(stateManager)));
 
 
+    pilot.rightTrigger(.8).onTrue(new RequestStateChange(States.L3, stateManager));
+    pilot.rightTrigger(.8).onFalse(new SequentialCommandGroup(new WristCommand(wrist, 40), new ParallelDeadlineGroup(new WaitCommand(2), new IntakeCommand(rollers, .2, false)), new returnToIdle(stateManager)));
 
     pilot.b().onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
     pilot.b().onFalse(new SequentialCommandGroup(

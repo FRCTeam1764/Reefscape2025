@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
@@ -50,6 +51,9 @@ public class Elevator extends SubsystemBase {
   private double desiredEncoder;
   private StateManager stateManager;
   int negative;
+// try using these
+  public static final double MOTION_MAGIC_ACCELERATION = 190.0;
+  public static final double MOTION_MAGIC_VELOCITY = 200.0;
 
   private final SysIdRoutine m_sysIdRoutine =
    new SysIdRoutine(
@@ -78,6 +82,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("elevatorencoder", 0);
 
     
+    
     SetUpClimberMotors();
     
     setVoltage = new PositionVoltage(0).withSlot(0).withFeedForward(0);
@@ -95,7 +100,7 @@ public class Elevator extends SubsystemBase {
     config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config.Slot0.kV = 0;
     config.Slot0.kA = 0;
-    config.Slot0.kG = 0.75;
+    config.Slot0.kG = 0.55;
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -110,7 +115,7 @@ public class Elevator extends SubsystemBase {
     config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config2.Slot0.kV = 0;
     config2.Slot0.kA = 0;
-    config2.Slot0.kG = 0.75;
+    config2.Slot0.kG = 0.55;
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -119,6 +124,11 @@ public class Elevator extends SubsystemBase {
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
+
+
+    MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
+    motionMagicConfigs.MotionMagicAcceleration =MOTION_MAGIC_ACCELERATION;
+    motionMagicConfigs.MotionMagicCruiseVelocity = MOTION_MAGIC_VELOCITY;
 
     elevatorMotor1.getConfigurator().apply(config);
     elevatorMotor2.getConfigurator().apply(config2);
