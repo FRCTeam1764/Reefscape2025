@@ -62,8 +62,8 @@ public class IntakeRollers extends SubsystemBase {
       negative = 1;
     }
 
-     if (!limitSwitchIntake.get() && negative ==1) {
-       m_intakeMotor.set(Math.max(speed, .1));
+     if (!limitSwitchIntake.get() && negative ==-1) {
+       m_intakeMotor.set(Math.min(speed, 0));
      } else {
        m_intakeMotor.set(getPercentFromBattery(speed));
      }
@@ -87,7 +87,7 @@ public class IntakeRollers extends SubsystemBase {
   public void periodic() {
     currentLog.append(m_intakeMotor.getMotorStallCurrent().getValueAsDouble());
     limitSwitchLog.append(getIntakeBreakbeam());
-    SmartDashboard.putBoolean("IntakeLimitSwitch", getIntakeBreakbeam());
+    SmartDashboard.putBoolean("IntakeLimitSwitch", getIntakeLimitSwitch());
     SmartDashboard.putBoolean("IntakeInternalBreakbeam",getIntakeBreakbeam());
     SmartDashboard.putNumber("IntakeCurrent", m_intakeMotor.getMotorStallCurrent().getValueAsDouble());  }
     

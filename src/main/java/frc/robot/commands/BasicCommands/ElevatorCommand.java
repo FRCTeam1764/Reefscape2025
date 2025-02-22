@@ -4,6 +4,7 @@
 
 package frc.robot.commands.BasicCommands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.subsystems.Elevator;
@@ -12,9 +13,9 @@ import frc.robot.subsystems.Elevator;
 public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
   Elevator elevator;
-  int desired;
+  double desired;
   boolean stopAtLimitSwitch;
-  public ElevatorCommand(Elevator elevator, int desired, boolean stopAtLimitSwitch) {
+  public ElevatorCommand(Elevator elevator, double desired, boolean stopAtLimitSwitch) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.stopAtLimitSwitch = stopAtLimitSwitch;
     this.elevator = elevator;
@@ -29,7 +30,9 @@ public class ElevatorCommand extends Command {
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    elevator.elevatorOn(desired);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
@@ -43,7 +46,7 @@ public class ElevatorCommand extends Command {
 
 
 
-    return elevator.getEncoderValue() > desired - .5 && elevator.getEncoderValue() < desired +.05;
+    return elevator.getEncoderValue() > (desired - .5) && elevator.getEncoderValue() < desired +.5;
 
 
     // if (stopAtLimitSwitch) {

@@ -20,7 +20,7 @@ public final class Constants {
 
     public static final int BLINKIN_SPARKPORT = 2;
     public static final int INTAKE_LIMITSWITCH = 7;
-    public static final int INTAKE_BREAKBEAM = 4;
+    public static final int INTAKE_BREAKBEAM = 9;
 
     public static final int ELEVATOR_SWITCHUP1 = 0; 
     public static final int ELEVATOR_SWITCHUP2 = 2;

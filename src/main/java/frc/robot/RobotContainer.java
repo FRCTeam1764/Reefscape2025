@@ -13,7 +13,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -39,6 +41,7 @@ import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.generated.TunerConstants;
 import frc.robot.libraries.external.drivers.Limelight;
 import frc.robot.state.IDLE;
+import frc.robot.state.INTERPOLATED_STATE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
@@ -47,7 +50,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
@@ -59,11 +62,11 @@ public class RobotContainer {
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    private final StateManager stateManager = new StateManager();
-    private final Climber climber = new Climber();
-    private final Elevator elevator = new Elevator(stateManager);
-    private final IntakeRollers rollers = new IntakeRollers();
-    private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
+   private final StateManager stateManager = new StateManager();
+    //  private final Climber climber = new Climber();
+     private final Elevator elevator = new Elevator(stateManager);
+     private final IntakeRollers rollers = new IntakeRollers();
+     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
 
 
 
@@ -114,38 +117,71 @@ public class RobotContainer {
 
 
 
-        // joystick.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
+        // pilot.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
         // joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
 
-    pilot.a().onTrue(new RequestStateChange(States.L4, stateManager));
-    pilot.a().onFalse(new SequentialCommandGroup(new WristCommand(wrist, 40), new ParallelDeadlineGroup(new WaitCommand(2), new IntakeCommand(rollers, .2, false)), new returnToIdle(stateManager)));
-
-
-    pilot.rightTrigger(.8).onTrue(new RequestStateChange(States.L3, stateManager));
-    pilot.rightTrigger(.8).onFalse(new SequentialCommandGroup(new WristCommand(wrist, 40), new ParallelDeadlineGroup(new WaitCommand(2), new IntakeCommand(rollers, .2, false)), new returnToIdle(stateManager)));
 
     pilot.b().onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
+    
     pilot.b().onFalse(new SequentialCommandGroup(
-        new ElevatorCommand(elevator, 5, true), //aleyah why would this ever NOT stop at limit switch? 
-        new returnToIdle(stateManager)
+        new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9, true)),
+        new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375, false)),
+        new WristCommand(wrist, 60), 
+        new RequestStateChange(States.IDLE, stateManager)
     ));
 
+    pilot.pov(0).onTrue(new RequestStateChange(States.L4, stateManager));
+    pilot.pov(0).onFalse(new SequentialCommandGroup(
+                                    new WristCommand(wrist, 40), 
+                                    new ParallelDeadlineGroup(
+                                        new WaitCommand(.5), 
+                                        new IntakeCommand(rollers, .2, false), 
+                                        new WristCommand(wrist, 40)), 
+                                        new returnToIdle(stateManager)));
+    
+    pilot.pov(90).onTrue(new RequestStateChange(States.L3, stateManager));
+    pilot.pov(90).onFalse(new SequentialCommandGroup(
+                                    new WristCommand(wrist, 40), 
+                                    new ParallelDeadlineGroup(
+                                        new WaitCommand(.5), 
+                                        new IntakeCommand(rollers, .2, false), 
+                                        new WristCommand(wrist, 40)), 
+                                    new RequestStateChange(States.IDLE, stateManager)));
+    
+    pilot.pov(180).onTrue(new RequestStateChange(States.L2, stateManager));
+    pilot.pov(180).onFalse(new SequentialCommandGroup(
+                                    new WristCommand(wrist, 40), 
+                                    new ParallelDeadlineGroup(
+                                        new WaitCommand(.5), 
+                                        new IntakeCommand(rollers, .2, false), 
+                                        new WristCommand(wrist, 40)), 
+                                    new RequestStateChange(States.IDLE, stateManager)));
+
+    // pilot.a().whileTrue(new InstantCommand(() -> climber.climberOn(.5))); //TODO: FIND VALUE
+    // pilot.a().onFalse(new InstantCommand(() -> climber.climberOn(0)));
+    // pilot.b().whileTrue(new InstantCommand(() -> climber.climberOn(-.5)));
+    // pilot.b().onFalse(new InstantCommand(() -> climber.climberOn(0)));
+
+    pilot.a().onTrue(new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager));
+    pilot.a().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
 
     pilot.x().onTrue(new RequestStateChange(States.INTAKE_ALGAE_LOW, stateManager));
     pilot.x().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
 
+    // pilot.leftTrigger(.8).onTrue(new RequestStateChange(States.INTAKE_ALGAE_LOW, stateManager));
+    // pilot.x().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
 
-    copilot.a().whileTrue(new InstantCommand(() -> climber.climberOn(20))); //TODO: FIND VALUE
-
+    // pilot.leftBumper().onTrue(new RequestStateChange(States.INTAKE_ALGAE_LOW, stateManager));
+    // pilot.x().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
 
 //OPTIONAL STUFF TO TEST LATER
-/* 
+
     pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
     pilot.leftBumper().whileTrue(new TurnToAngle(drivetrain, 90.0));
     //test if this works or not
     pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 2, 2));
         //joystick.a().whileTrue(new ElevatorCommandSpeed(elevator, 0.1, rollers, wrist));
-  */  
+  
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 

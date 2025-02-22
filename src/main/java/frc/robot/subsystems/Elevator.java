@@ -12,6 +12,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionDutyCycle;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
@@ -43,17 +44,17 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom1;
   public DigitalInput limitSwitchBottom2;
   private VoltageOut voltageOut = new VoltageOut(0.0);
-  private double maxdutycycle = 0.15;
+  private double maxdutycycle = 0.25;
   
 
 
-  private PositionVoltage setVoltage;
+  private MotionMagicVoltage setVoltage;
   private double desiredEncoder;
   private StateManager stateManager;
   int negative;
 // try using these
-  public static final double MOTION_MAGIC_ACCELERATION = 190.0;
-  public static final double MOTION_MAGIC_VELOCITY = 200.0;
+  public static final double MOTION_MAGIC_ACCELERATION = 120;//80
+  public static final double MOTION_MAGIC_VELOCITY = 170;//100
 
   private final SysIdRoutine m_sysIdRoutine =
    new SysIdRoutine(
@@ -85,7 +86,7 @@ public class Elevator extends SubsystemBase {
     
     SetUpClimberMotors();
     
-    setVoltage = new PositionVoltage(0).withSlot(0).withFeedForward(0);
+    setVoltage = new MotionMagicVoltage(0).withSlot(0);
     setVoltage.UpdateFreqHz = 10;
 
     this.stateManager = stateManager;
@@ -96,11 +97,11 @@ public class Elevator extends SubsystemBase {
 
     TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config.Slot0.kP = 2.85; // p pid //4.1
+    config.Slot0.kP = 3.75; // p pid //4.1
     config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config.Slot0.kV = 0;
     config.Slot0.kA = 0;
-    config.Slot0.kG = 0.55;
+    config.Slot0.kG = 0.65;
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -111,29 +112,31 @@ public class Elevator extends SubsystemBase {
     config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
-    config2.Slot0.kP = 2.85; // p pid //4.1
+    config2.Slot0.kP = 3.75; // p pid //4.1
     config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config2.Slot0.kV = 0;
     config2.Slot0.kA = 0;
-    config2.Slot0.kG = 0.55;
+    config2.Slot0.kG = 0.65;
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     config2.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
-    config2.MotorOutput.PeakReverseDutyCycle = -.05 ; // can bump up to 12 or something
+    config2.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
 
 
     MotionMagicConfigs motionMagicConfigs = new MotionMagicConfigs();
-    motionMagicConfigs.MotionMagicAcceleration =MOTION_MAGIC_ACCELERATION;
-    motionMagicConfigs.MotionMagicCruiseVelocity = MOTION_MAGIC_VELOCITY;
+    motionMagicConfigs.withMotionMagicAcceleration(MOTION_MAGIC_ACCELERATION).withMotionMagicCruiseVelocity(MOTION_MAGIC_VELOCITY);
 
     elevatorMotor1.getConfigurator().apply(config);
     elevatorMotor2.getConfigurator().apply(config2);
+    elevatorMotor1.getConfigurator().apply(motionMagicConfigs);
+    elevatorMotor2.getConfigurator().apply(motionMagicConfigs);
 
     elevatorMotor2.setControl(new StrictFollower(elevatorMotor1.getDeviceID()));
+
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

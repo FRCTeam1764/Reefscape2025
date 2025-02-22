@@ -7,7 +7,7 @@ import frc.robot.subsystems.StateManager.States;
 public class IDLE_ALGAE implements BasicState {
 public boolean matches(States state){
 
-    return state.equals(States.IDLE_CORAL);
+    return state.equals(States.IDLE_ALGAE);
 }
 
 public void execute(StateManager stateManager){

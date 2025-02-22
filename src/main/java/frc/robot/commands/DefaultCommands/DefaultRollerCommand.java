@@ -36,6 +36,10 @@ public class DefaultRollerCommand extends Command {
       //} else {
         rollers.wheelsIntake((double) stateManager.getDesiredData(CommandConstants.ROLLER_KEY));
       //}
+      SmartDashboard.putBoolean("elseroller", false);
+    }else{
+      rollers.wheelsIntake(0);
+      SmartDashboard.putBoolean("elseroller", true);
     }
   }
 

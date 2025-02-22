@@ -59,8 +59,11 @@ public class Climber extends SubsystemBase {
   
   public void climberOn(double desiredEncoderValue) {
     
-    @SuppressWarnings("unused")
-    StatusCode val =   m_climberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
+
+    m_climberMotor.set(desiredEncoderValue);
+    //@SuppressWarnings("unused")
+
+  //  StatusCode val =   m_climberMotor.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));
 
   }
 
