@@ -5,6 +5,7 @@
 package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -39,11 +40,17 @@ public class ElevatorCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if (stopAtLimitSwitch) {
-      return elevator.getLimitSwitches() || 
-          !(elevator.Motor1IsSafe() || elevator.Motor2IsSafe()); //and?
-    } else {
-      return false;
-    }
+
+
+
+    return elevator.getEncoderValue() > desired - .5 && elevator.getEncoderValue() < desired +.05;
+
+
+    // if (stopAtLimitSwitch) {
+    //   return elevator.getLimitSwitches() || 
+    //       !(elevator.Motor1IsSafe() || elevator.Motor2IsSafe()); //and?
+    // } else {
+    //   return false;
+    // }
   }
 }

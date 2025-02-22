@@ -3,8 +3,8 @@ package frc.robot.constants;
 public final class CommandConstants {
     // for talon fx, 0.916 inches per rotation\
     //speed
-    public static final double INTAKE_CORAL_PICKUP_SPEED = 0.6;
-    public static final double INTAKE_CORAL_OUT_SPEED = 0.6;
+    public static final double INTAKE_CORAL_PICKUP_SPEED = 0.2;
+    public static final double INTAKE_CORAL_OUT_SPEED = 0.2;
 
     public static final int INTAKE_BOUNCE_ALGAE_OUT = 0;
     public static final int INTAKE_GRAB_ALGAE_SPEED = 0;
@@ -33,4 +33,9 @@ public final class CommandConstants {
     public static final double kTurnRateToleranceRadPerS = 0.25;
 
 
+
+    public static final double drivekP = 2;
+    public static final double driveKi = 0;
+    public static final double drivekD = 0.1;
+    
 }

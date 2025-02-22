@@ -81,6 +81,14 @@ Limelight = LimelightName;
     return LimelightHelpers.getTA(Limelight);
   }
 
+  public double getXDistance(){
+    return LimelightHelpers.getCameraPose3d_RobotSpace(Limelight).getX();
+
+  }
+  public double getZDistance(){
+    return LimelightHelpers.getCameraPose3d_RobotSpace(Limelight).getZ();
+    
+  }
   public void setPipeline(int pipe){
 LimelightHelpers.setPipelineIndex(Limelight, pipe);
   }
@@ -121,7 +129,7 @@ public void updatePoseEstimation()
   poseEstimate.pose.transformBy(new Transform2d(txoffset, tyoffset, new Rotation2d(rotyaw)));
 
   
-
+//TODO use advantagescope to double check this is functional
   driveTrain.addVisionMeasurement(poseEstimate.pose,poseEstimate.timestampSeconds);
   }
 }

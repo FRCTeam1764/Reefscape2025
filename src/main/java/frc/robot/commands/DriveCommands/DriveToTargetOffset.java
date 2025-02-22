@@ -23,14 +23,18 @@ public class DriveToTargetOffset extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController thetaController = new PIDController(CommandConstants.kP, CommandConstants.kI, CommandConstants.kD);
+  private PIDController xController = new PIDController(CommandConstants.drivekP, CommandConstants.driveKi, CommandConstants.drivekD);
+  private PIDController yController = new PIDController(CommandConstants.drivekP, CommandConstants.driveKi, CommandConstants.drivekD);
+
   private boolean targeting = false;
   private double offset;
-  public DriveToTargetOffset(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, double offset, int pipeline) {
+  public DriveToTargetOffset(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, double offset, int pipeline, double targetx, double targety) {
     addRequirements(drivetrain);
     m_Drivetrain = drivetrain;
     m_Limelight = Limelight;
     m_pipeline = pipeline;
+    xController.setSetpoint(targetx);
+    yController.setSetpoint(targety);
     this.offset = offset;
   }
 
@@ -45,30 +49,29 @@ public class DriveToTargetOffset extends Command {
 
     m_Limelight.setPipeline(m_pipeline);
     targeting = false;
-    thetaController.reset();
-    thetaController.setTolerance(1);
+    xController.reset();
+    xController.setTolerance(1);
+    yController.reset();
+    yController.setTolerance(1);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     SmartDashboard.putBoolean("DriveToLLTarget running", true);
-    double thetaOutput = 0;
-    double xOutput = 0;
+    double xSpeed = 0;
+    double ySpeed = 0;
 		if (m_Limelight.hasTarget()){
-			double vertical_angle = m_Limelight.getVerticalAngleOfErrorDegrees();
-			double horizontal_angle = -m_Limelight.getHorizontalAngleOfErrorDegrees() ;
-			double setpoint = Math.toRadians(horizontal_angle)+ m_Drivetrain.getPose().getRotation().getRadians();
-      thetaController.setSetpoint(setpoint);
-      targeting = true;
-		
-			thetaOutput = thetaController.calculate(m_Drivetrain.getPose().getRotation().getRadians(), setpoint);
+			double y_distance = m_Limelight.getZDistance(); //THIS IS IN TERMS OF CAMERA WATCHOUT
+			double x_distance = -m_Limelight.getXDistance();
+			 xSpeed = xController.calculate(x_distance);
+       ySpeed = yController.calculate(y_distance);
+
       //xOutput = -m_throttle.get()*DrivetrainConstants.maxSpeedMetersPerSecond;
 		
-      SmartDashboard.putNumber("targeting error", horizontal_angle);
 		} 
     
-    m_Drivetrain.setControl(drive.withVelocityX(0).withRotationalRate(thetaOutput));
+    m_Drivetrain.setControl(drive.withVelocityX(xSpeed).withVelocityY(ySpeed).withRotationalRate(0));
   }
 
   // Called once the command ends or is interrupted.
@@ -81,6 +84,6 @@ public class DriveToTargetOffset extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return false; //TODO: FINISH CHECKINHG
   }
 }

@@ -46,7 +46,7 @@ public class Climber extends SubsystemBase {
     m_climberMotor.getConfigurator().apply(climbconfig);
 
     var slot0Configs = new Slot0Configs();
-    slot0Configs.kP = 0; 
+    slot0Configs.kP = 2; 
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 

@@ -192,7 +192,7 @@ public class CommandFactory {
             new RequestStateChange(States.INTAKE_CORAL, stateManager),
             new WaitUntilCommand(() -> intakeRollers.getIntakeLimitSwitch()),
             new ParallelDeadlineGroup( new WaitUntilCommand(() -> !intakeRollers.getIntakeLimitSwitch()), 
-            new ElevatorCommand(elevator, 2, true) //TODO: GET PROPER ANGLE
+            new ElevatorCommand(elevator, 3, true) //TODO: GET PROPER ANGLE
             )
         ).finallyDo((key) -> interupted(key));
     }
@@ -230,7 +230,7 @@ public class CommandFactory {
             new WristCommand(intakeWrist, 50),
             new ParallelDeadlineGroup(
                     new WaitCommand(2),
-                    new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false))
+                    new IntakeCommand(intakeRollers, CommandConstants.INTAKE_CORAL_OUT_SPEED, false))
         ).finallyDo((key) -> interupted(key));
     }
 

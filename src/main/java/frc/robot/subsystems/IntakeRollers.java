@@ -55,8 +55,7 @@ public class IntakeRollers extends SubsystemBase {
 
   double negative;
   public void wheelsIntake(double speed) {
-    m_intakeMotor.set(getPercentFromBattery(speed));
-    /* 
+    
     if (speed < 0) {
       negative = -1;
     } else {
@@ -64,11 +63,11 @@ public class IntakeRollers extends SubsystemBase {
     }
 
      if (!limitSwitchIntake.get() && negative ==1) {
-       m_intakeMotor.set(0);
+       m_intakeMotor.set(Math.max(speed, .1));
      } else {
        m_intakeMotor.set(getPercentFromBattery(speed));
      }
-     */
+
   }
   public double getPercentFromBattery(double speed){
     return speed * 12 / RobotController.getBatteryVoltage();
