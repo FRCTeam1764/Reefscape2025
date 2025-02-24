@@ -14,10 +14,8 @@ public class ElevatorCommand extends Command {
   /** Creates a new ElevatorCommand. */
   Elevator elevator;
   double desired;
-  boolean stopAtLimitSwitch;
-  public ElevatorCommand(Elevator elevator, double desired, boolean stopAtLimitSwitch) {
+  boolean stopAtLimitSwitch;public ElevatorCommand(Elevator elevator, double desired) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.stopAtLimitSwitch = stopAtLimitSwitch;
     this.elevator = elevator;
     this.desired = desired;
   }

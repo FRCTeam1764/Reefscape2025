@@ -5,37 +5,31 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.StateManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class waitUntilPosition extends Command {
+public class waitUntilPositionIndex extends Command {
   /** Creates a new waitUntilCondition. */
-    //TODO: MAKE
 
-StateManager stateManager;
-String key;
-double error;
-String key2;
-double error2;
+  StateManager stateManager;
+  String key;
+  double error;
+  double index;
 
-  public waitUntilPosition(StateManager manager, String key1, double error1, String key2, double error2) {
+  public waitUntilPositionIndex(StateManager manager, String key, double error, double index) {
     // Use addRequirements() here to declare subsystem dependencies.
     stateManager = manager;
-    this.key = key1;
-    this.error = error1;
-    this.key2 = key2;
-    this.error2 = error2;
+    this.key = key;
+    this.error = error;
+    this.index = index;
   }
 
-  public waitUntilPosition(StateManager manager) {
+  public waitUntilPositionIndex(StateManager manager, String key, double index) {
     // Use addRequirements() here to declare subsystem dependencies.
     stateManager = manager;
-    key = CommandConstants.ELEVATOR_KEY;
-    error = 4;
-    key2 = CommandConstants.INTAKE_KEY;
-    error2 = 4;
-
+    this.key = key;
+    error = .5;
+    this.index = index;
   }
 
   // Called when the command is initially scheduled.
@@ -53,12 +47,8 @@ double error2;
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ( (double) stateManager.getCurrentData(key) <=  (double) stateManager.getDesiredData(key) +error
-     ||
-    (double) stateManager.getCurrentData(key) <= (double) stateManager.getDesiredData(key) -error
-     ) && ( (double) stateManager.getCurrentData(key2) <=  (double) stateManager.getDesiredData(key2) +error2
-     ||
-    (double) stateManager.getCurrentData(key2) <= (double) stateManager.getDesiredData(key2) -error2
-     );
+    return ( (double) stateManager.getCurrentData(key) <= index +error ||
+             (double) stateManager.getCurrentData(key) <= index -error
+    );
   }
 }
