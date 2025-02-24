@@ -122,8 +122,8 @@ public class CommandFactory {
                 new ParallelDeadlineGroup(
                     new WaitUntilCommand(() -> intakeRollers.getIntakeLimitSwitch()),
                     new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
-                new returnToIdle(stateManager)).finallyDo((key) -> interupted(key));
+                    new WristCommand(intakeWrist, 40))
+               ).finallyDo((key) -> interupted(key));
     }
 
     public Command algaeGroundPosition() {

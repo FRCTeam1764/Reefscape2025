@@ -81,7 +81,6 @@ public class RobotContainer {
         configureBindings();
     }
 
-    //code waits for no man
     private void configureBindings() {
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
@@ -106,7 +105,6 @@ public class RobotContainer {
         //  joystick.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         //  joystick.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // reset the field-centric heading on left bumper press
         elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, stateManager));
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));

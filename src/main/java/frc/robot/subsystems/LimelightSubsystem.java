@@ -112,6 +112,9 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
   public double getTxAngleRadians(){
     return   Units.degreesToRadians(getTx());
   }
+  public double getTargetAprilTagID(){
+    return LimelightHelpers.getFiducialID(Limelight);
+  }
 public void updatePoseEstimation()
 {
   if (SwerveDriveTelemetry.isSimulation){
