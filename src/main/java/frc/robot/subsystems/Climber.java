@@ -26,7 +26,7 @@ public class Climber extends SubsystemBase {
   public TalonFX m_climberMotor;
 
   public Climber() {
-    m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id,Constants.CLIMBER_MOTOR.busName);
+    //m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id,Constants.CLIMBER_MOTOR.busName);
 
     setVoltage = new PositionDutyCycle(0).withSlot(0);
     
@@ -43,14 +43,14 @@ public class Climber extends SubsystemBase {
     climbconfig.CurrentLimits.StatorCurrentLimitEnable = true;
     climbconfig.CurrentLimits.StatorCurrentLimit = 60; 
 
-    m_climberMotor.getConfigurator().apply(climbconfig);
+    //m_climberMotor.getConfigurator().apply(climbconfig);
 
     var slot0Configs = new Slot0Configs();
     slot0Configs.kP = 2; 
     slot0Configs.kI = 0;
     slot0Configs.kD = 0;
 
-    m_climberMotor.getConfigurator().apply(slot0Configs);
+    //m_climberMotor.getConfigurator().apply(slot0Configs);
   }
 
   public double getEncoderPos() {

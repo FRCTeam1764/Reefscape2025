@@ -64,7 +64,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-    private final Climber climber = new Climber();
+    //private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -74,10 +74,11 @@ public class RobotContainer {
     private final LimelightSubsystem limelight3 = new LimelightSubsystem(drivetrain,"limelight-three",0,0,0);
     private final LimelightSubsystem limelight2 = new LimelightSubsystem(drivetrain, "Limelight-two",0,0,0);
 
-    private final CommandFactory commandFactory = new CommandFactory(climber, elevator, rollers, wrist, limelight4, limelight3, limelight2, copilot, drivetrain, stateManager);
+    private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, copilot, drivetrain, stateManager);
 
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
+        drivetrain.seedFieldCentric();
         configureBindings();
     }
 
@@ -111,10 +112,11 @@ public class RobotContainer {
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         
-        pilot.b().onTrue(commandFactory.IntakeCoralTest());
+        pilot.b().onTrue(commandFactory.algaeProcessorPosition());
+        pilot.b().onFalse(commandFactory.algaeProcessorScore());
         pilot.x().onTrue(commandFactory.algaeLowPosition());
         pilot.x().onFalse(commandFactory.algaeIdle());
-        pilot.a().onTrue(commandFactory.algaeGroundPosition());
+        pilot.a().onTrue(commandFactory.algaeHighPosition());
         pilot.a().onFalse(commandFactory.algaeIdle());
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
 
@@ -124,8 +126,12 @@ public class RobotContainer {
         pilot.pov(90).onFalse(commandFactory.LevelScore());
         pilot.pov(180).onTrue(commandFactory.LevelPosition(2));
         pilot.pov(180).onFalse(commandFactory.LevelScore());
+        pilot.pov(270).onTrue(commandFactory.LevelPosition(1));
+        pilot.pov(270).onFalse(commandFactory.LevelScore());
 
-        climber.climberOn(Math.abs(pilot.getLeftX())<0.07 ? 0 : pilot.getLeftX()/2);
+    //    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
+
+        
 
         //OPTIONAL STUFF TO TEST LATER
         pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
@@ -138,14 +144,14 @@ public class RobotContainer {
       //  // pilot.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
       //  // joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
 
-    // pilot.b().onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
+    pilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
     
-    // pilot.b().onFalse(new SequentialCommandGroup(
-    //     new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9),
-    //     new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-    //     new WristCommand(wrist, 60), 
-    //     new RequestStateChange(States.IDLE, stateManager)
-    // )));
+    pilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
+        new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9),
+        new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
+        new WristCommand(wrist, 60), 
+        new RequestStateChange(States.IDLE, stateManager)
+    )));
     
     // pilot.pov(0).onTrue(new RequestStateChange(States.L4, stateManager));
 

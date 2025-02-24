@@ -64,7 +64,7 @@ public class CommandFactory {
 
     public desiredAction currentAction;
     private boolean leftLimelight;
-    private Climber climber;
+    //private Climber climber;
     private Elevator elevator;
     private IntakeRollers intakeRollers;
     private IntakeWristRev intakeWrist;
@@ -76,10 +76,10 @@ public class CommandFactory {
     private States[] stateList = { States.L4, States.L3, States.L2, States.L1 };
     private CommandXboxController driver;
 
-    public CommandFactory(Climber climber, Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
+    public CommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
             CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
-        this.climber = climber;
+      //  this.climber = climber;
         this.elevator = elevator;
         this.intakeRollers = intakeRollers;
         this.intakeWrist = intakeWrist;
@@ -146,12 +146,14 @@ public class CommandFactory {
         return new RequestStateChange(States.PROCESSOR, stateManager);
     }
 
+    
+
     public Command algaeProcessorScore() {
         return new SequentialCommandGroup(
             new ParallelDeadlineGroup(
                 new WaitCommand(1),
                 new IntakeCommand(intakeRollers, .3, false)),
-            new returnToIdle(stateManager)
+            new RequestStateChange(States.IDLE, stateManager)
         );
     }
 
@@ -185,11 +187,7 @@ public class CommandFactory {
                 new returnToIdle(stateManager, States.IDLE).finallyDo((key) -> interupted(key)));
     }
 
-    private Command Climber() {
-        return new SequentialCommandGroup(
-                new ClimberCommand(climber, CommandConstants.CLIMBER_DOWN)
-        );
-    }
+    
 
     private Command AlgaeGround() {
         return new SequentialCommandGroup(
@@ -282,8 +280,8 @@ public class CommandFactory {
                 return AlgaeKnock(false);
             case BARGE:
                 return Barge();
-            case CLIMBER:
-                return Climber();
+            // case CLIMBER:
+            //     return Climber();
             case INTAKE_ALGAE_GROUND:
                 return AlgaeGround();
             case INTAKE_ALGAE_HIGH:
