@@ -120,10 +120,11 @@ public class CommandFactory {
         return new SequentialCommandGroup(
                 new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
-                    new WaitUntilCommand(() -> intakeRollers.getIntakeLimitSwitch()),
+                    new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40))
-               ).finallyDo((key) -> interupted(key));
+                    new WristCommand(intakeWrist, 40)),
+                new returnToIdle(stateManager)
+               );
     }
 
     public Command algaeGroundPosition() {

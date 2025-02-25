@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimelightSubsystem;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 public class LockOnAprilTag extends Command {
   private LimelightSubsystem m_Limelight;
@@ -26,7 +28,9 @@ public class LockOnAprilTag extends Command {
   private PIDController thetaController = new PIDController(.4, 0, .1);
   private boolean targeting = false;
   private CommandXboxController controller;
-  private Supplier<Double> m_skew ; 
+  private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+  private double offsetOfDesired = 0;
+  
   //(swerve, Limelight2, 0, driver, false
   public LockOnAprilTag(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, CommandXboxController controller, boolean robotcentric) {
     addRequirements(drivetrain);
@@ -34,7 +38,16 @@ public class LockOnAprilTag extends Command {
     m_Limelight = Limelight;
     m_pipeline = pipeline;
     this.controller = controller;
-   // m_skew = skewDegrees;
+    //m_skew = skewDegrees;
+  }
+  public LockOnAprilTag(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, CommandXboxController controller, boolean robotcentric, double offsetOfDesired) {
+    addRequirements(drivetrain);
+    m_Drivetrain = drivetrain;
+    m_Limelight = Limelight;
+    m_pipeline = pipeline;
+    this.controller = controller;
+    this.offsetOfDesired = offsetOfDesired;
+    //m_skew = skewDegrees;
   }
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
 
@@ -61,19 +74,20 @@ public class LockOnAprilTag extends Command {
     double yOutput = controller.getLeftY();
 		if (m_Limelight.hasTarget()){
 			double vertical_angle = m_Limelight.getHorizontalAngleOfErrorDegrees();
-			double horizontal_angle = -m_Limelight.getVerticalAngleOfErrorDegrees() ;
-			double setpoint = Math.toRadians(horizontal_angle)+ m_Drivetrain.getPose().getRotation().getRadians() + Math.toRadians(m_skew.get());
+			double horizontal_angle = -m_Limelight.getHorizontalAngleOfErrorDegrees() ;
+			double setpoint = offsetOfDesired;// + Math.toRadians(m_skew.get());
       thetaController.setSetpoint(setpoint);
       targeting = true;
 			if (!thetaController.atSetpoint() ){
-				thetaOutput = thetaController.calculate(m_Drivetrain.getPose().getRotation().getRadians(), setpoint);
-			} 
+        SmartDashboard.putNumber("setpoint", setpoint);
+				thetaOutput = thetaController.calculate(horizontal_angle, setpoint);
+			}
       SmartDashboard.putNumber("targeting error", horizontal_angle);
 		} 
     else {
 			System.out.println("NO TARGET");
 		}
-    m_Drivetrain.setControl(drive.withVelocityX(xOutput).withVelocityY(yOutput).withRotationalRate(thetaOutput));
+    m_Drivetrain.setControl(drive.withVelocityX(xOutput*MaxSpeed).withVelocityY(yOutput*MaxSpeed).withRotationalRate(thetaOutput*MaxAngularRate));
   }
 
   // Called once the command ends or is interrupted.

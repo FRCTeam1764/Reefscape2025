@@ -70,11 +70,15 @@ public class RobotContainer {
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
 
     
-    private final LimelightSubsystem limelight4 = new LimelightSubsystem( drivetrain,"Limelight",0,0,0);
-    private final LimelightSubsystem limelight3 = new LimelightSubsystem(drivetrain,"limelight-three",0,0,0);
-    private final LimelightSubsystem limelight2 = new LimelightSubsystem(drivetrain, "Limelight-two",0,0,0);
+
+    
+    private final LimelightSubsystem limelight3 = new LimelightSubsystem( drivetrain,"Limelight",0,0,0);
+    private final LimelightSubsystem limelight2 = new LimelightSubsystem(drivetrain,"limelight-two",0,0,0);
+    private final LimelightSubsystem limelight4 = new LimelightSubsystem(drivetrain, "limelight-four",0,0,0);
 
     private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, copilot, drivetrain, stateManager);
+
+    private final cheaterDPAD dpad = new cheaterDPAD(commandFactory, stateManager);
 
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
@@ -129,7 +133,19 @@ public class RobotContainer {
         pilot.pov(270).onTrue(commandFactory.LevelPosition(1));
         pilot.pov(270).onFalse(commandFactory.LevelScore());
 
-    //    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
+    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
+
+        // pilot.pov(0).onTrue(dpad.fetchUpPress());
+        // pilot.pov(0).onTrue(dpad.fetchUpPress());
+        // pilot.pov(90).onTrue(dpad.fetchRightPress());
+        // pilot.pov(90).onTrue(dpad.fetchRightPress());
+        // pilot.pov(180).onTrue(dpad.fetchDownPress());
+        // pilot.pov(180).onTrue(dpad.fetchDownPress());
+        // pilot.pov(270).onTrue(dpad.fetchLeftPress());
+        // pilot.pov(270).onTrue(dpad.fetchLeftPress());
+
+        // pilot.back().onTrue(dpad.algaeMode());
+        // pilot.start().onTrue(dpad.coralMode());
 
         
 
