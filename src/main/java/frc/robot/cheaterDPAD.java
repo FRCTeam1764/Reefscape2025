@@ -14,8 +14,8 @@ public class cheaterDPAD {
   private CommandFactory factory;
   private StateManager stateManager;
   private boolean coralMode = true;
-  private String action = "L2";
-  private String mode = "Coral";
+  private String coralAction = "L2";
+  private String algaeAction = "processor";
 
   public cheaterDPAD(CommandFactory factory, StateManager stateManager) {
     this.factory = factory;
@@ -94,10 +94,109 @@ public class cheaterDPAD {
     }
   }
 
-  public void set(String wantedMode, String wantedAction) {
-    action = wantedAction;
-    mode = wantedMode;
+  public Command dpadAction(String button){
+    switch (button) {
+      case ("pressUp"):
+        return coralMode ? factory.Level4Position() : factory.algaeHighPosition();
+      case ("releaseUp"):
+        return coralMode ? factory.Level4Score() : new RequestStateChange(States.IDLE_ALGAE, stateManager);
+      case ("pressRight"):
+        return coralMode ? factory.LevelPosition(3) : factory.algaeLowPosition();
+      case ("releaseRight"):
+        return coralMode ? factory.LevelScore() : new RequestStateChange(States.IDLE_ALGAE, stateManager);
+      case ("pressDown"):
+        return coralMode ? factory.LevelPosition(2) : new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager);
+      case ("releaseDown"):
+        return coralMode ? factory.LevelScore() : new RequestStateChange(States.IDLE_ALGAE, stateManager);
+      case ("pressLeft"):
+        return coralMode ? factory.LevelPosition(1) : factory.algaeProcessorPosition();
+      case ("releaseLeft"):
+        return coralMode ? factory.LevelScore() : factory.algaeProcessorScore();
+      default:
+        return new RequestStateChange(States.IDLE, stateManager);
+    }
   }
 
+  public Command coralInitiate() {
+    switch (coralAction) {
+      case ("level4"):
+        return factory.Level4Position();
+      case ("level3"):
+        return factory.LevelPosition(3);
+      case ("level2"):
+        return factory.LevelPosition(2);
+      case ("level1"):
+        return factory.LevelPosition(1);
+      default:
+        return factory.LevelPosition(2);
+    }
+  }
 
+  public Command algaeInitiate() {
+    switch (algaeAction) {
+      case ("lowposition"):
+        return factory.algaeLowPosition();
+      case ("highposition"):
+        return factory.algaeHighPosition();
+      case ("groundpickup"):
+        return factory.algaeGroundPosition();
+      case ("processor"):
+        return factory.algaeProcessorPosition();
+      default:
+        return factory.algaeProcessorPosition();
+    }
+  }
+
+  public Command coralRelease(boolean four) {
+    return coralAction.contains("4") ? factory.Level4Score() : factory.LevelScore();
+  }
+
+  public Command algaeRelease() {
+    switch (algaeAction) {
+      case ("processor"):
+        return factory.algaeProcessorScore();
+      default:
+        return new RequestStateChange(States.IDLE_ALGAE, stateManager);
+    }
+  }
+
+  public void dpadActionNotUsed(String button){
+    if (coralMode) {
+      switch (button) {
+        case ("pressUp"):
+          coralAction = "level4";
+          break;
+        case ("pressRight"):
+          coralAction = "level3";
+          break;
+        case ("pressDown"):
+          coralAction = "level2";
+          break;
+        case ("pressLeft"):
+          coralAction = "level1";
+          break;
+        default:
+          coralAction = "level2";
+          break;
+      }
+    } else {
+      switch (button) {
+        case ("pressUp"):
+          algaeAction = "highposition";
+          break;
+        case ("pressRight"):
+          algaeAction = "lowposition";
+          break;
+        case ("pressDown"):
+          algaeAction = "groundpickup";
+          break;
+        case ("pressLeft"):
+          algaeAction = "processor";
+          break;
+        default:
+          algaeAction = "processor";
+          break;
+      }
+    }
+  }
 }

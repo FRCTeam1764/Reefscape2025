@@ -133,7 +133,18 @@ public class RobotContainer {
         pilot.pov(270).onTrue(commandFactory.LevelPosition(1));
         pilot.pov(270).onFalse(commandFactory.LevelScore());
 
-    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
+    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());        
+
+        //OPTIONAL STUFF TO TEST LATER
+        pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
+        pilot.leftBumper().whileTrue(new TurnToAngle(drivetrain, 90.0));
+        //test if this works or not
+        pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 2, 2));
+
+    // // pilot.a().whileTrue(new InstantCommand(() -> climber.climberOn(.5)));
+    // // pilot.a().onFalse(new InstantCommand(() -> climber.climberOn(0)));
+    // // pilot.b().whileTrue(new InstantCommand(() -> climber.climberOn(-.5)));
+    // // pilot.b().onFalse(new InstantCommand(() -> climber.climberOn(0)));
 
         // pilot.pov(0).onTrue(dpad.fetchUpPress());
         // pilot.pov(0).onTrue(dpad.fetchUpPress());
@@ -147,71 +158,7 @@ public class RobotContainer {
         // pilot.back().onTrue(dpad.algaeMode());
         // pilot.start().onTrue(dpad.coralMode());
 
-        
-
-        //OPTIONAL STUFF TO TEST LATER
-        pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
-        pilot.leftBumper().whileTrue(new TurnToAngle(drivetrain, 90.0));
-        //test if this works or not
-        pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 2, 2));
-
-
-//old code 
-      //  // pilot.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
-      //  // joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
-
-    pilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
-    
-    pilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
-        new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9),
-        new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-        new WristCommand(wrist, 60), 
-        new RequestStateChange(States.IDLE, stateManager)
-    )));
-    
-    // pilot.pov(0).onTrue(new RequestStateChange(States.L4, stateManager));
-
-    
-    // pilot.pov(0).onTrue(new RequestStateChange(States.L4, stateManager));
-    // pilot.pov(0).onFalse(new SequentialCommandGroup(
-    //                                 new WristCommand(wrist, 40), 
-    //                                 new ParallelDeadlineGroup(
-    //                                     new WaitCommand(.5), 
-    //                                     new IntakeCommand(rollers, .2, false), 
-    //                                     new WristCommand(wrist, 40)), 
-    //                                     new returnToIdle(stateManager)));
-    
-    // pilot.pov(90).onTrue(new RequestStateChange(States.L3, stateManager));
-    // pilot.pov(90).onFalse(new SequentialCommandGroup(
-    //                                 new WristCommand(wrist, 40), 
-    //                                 new ParallelDeadlineGroup(
-    //                                     new WaitCommand(.5), 
-    //                                     new IntakeCommand(rollers, .2, false), 
-    //                                     new WristCommand(wrist, 40)), 
-    //                                 new RequestStateChange(States.IDLE, stateManager)));
-    
-    // pilot.pov(180).onTrue(new RequestStateChange(States.L2, stateManager));
-    // pilot.pov(180).onFalse(new SequentialCommandGroup(
-    //                                 new WristCommand(wrist, 40), 
-    //                                 new ParallelDeadlineGroup(
-    //                                     new WaitCommand(.5), 
-    //                                     new IntakeCommand(rollers, .2, false), 
-    //                                     new WristCommand(wrist, 40)), 
-    //                                 new RequestStateChange(States.IDLE, stateManager)));
-
-    // // pilot.a().whileTrue(new InstantCommand(() -> climber.climberOn(.5))); //TODO: FIND VALUE
-    // // pilot.a().onFalse(new InstantCommand(() -> climber.climberOn(0)));
-    // // pilot.b().whileTrue(new InstantCommand(() -> climber.climberOn(-.5)));
-    // // pilot.b().onFalse(new InstantCommand(() -> climber.climberOn(0)));
-    // climber.climberOn(Math.abs(pilot.getLeftX())<0.07 ? 0 : pilot.getLeftX()/2);
-
-    // pilot.a().onTrue(new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager));
-    // pilot.a().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
-
-    // pilot.x().onTrue(new RequestStateChange(States.INTAKE_ALGAE_LOW, stateManager));
-    // pilot.x().onFalse(new RequestStateChange(States.IDLE_ALGAE,stateManager));
-
-
+        // pilot.pov(0).onTrue(dpad.)
   
         drivetrain.registerTelemetry(logger::telemeterize);
     }
