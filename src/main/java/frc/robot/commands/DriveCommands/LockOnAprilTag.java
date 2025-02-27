@@ -25,7 +25,7 @@ public class LockOnAprilTag extends Command {
   private LimelightSubsystem m_Limelight;
   private frc.robot.subsystems.CommandSwerveDrivetrain m_Drivetrain;
   private int m_pipeline;
-  private PIDController thetaController = new PIDController(.4, 0, .1);
+  private PIDController thetaController = new PIDController(.03, 0, 0.0015);
   private boolean targeting = false;
   private CommandXboxController controller;
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
@@ -70,11 +70,11 @@ public class LockOnAprilTag extends Command {
   public void execute() {
     SmartDashboard.putBoolean("AllignOnLLTarget running", true);
     double thetaOutput = 0;
-    double xOutput = controller.getLeftX();
-    double yOutput = controller.getLeftY();
+    double xOutput = controller.getLeftY();
+    double yOutput = controller.getLeftX();
 		if (m_Limelight.hasTarget()){
 			double vertical_angle = m_Limelight.getHorizontalAngleOfErrorDegrees();
-			double horizontal_angle = -m_Limelight.getHorizontalAngleOfErrorDegrees() ;
+			double horizontal_angle = m_Limelight.getHorizontalAngleOfErrorDegrees() ;
 			double setpoint = offsetOfDesired;// + Math.toRadians(m_skew.get());
       thetaController.setSetpoint(setpoint);
       targeting = true;
@@ -87,7 +87,7 @@ public class LockOnAprilTag extends Command {
     else {
 			System.out.println("NO TARGET");
 		}
-    m_Drivetrain.setControl(drive.withVelocityX(xOutput*MaxSpeed).withVelocityY(yOutput*MaxSpeed).withRotationalRate(thetaOutput*MaxAngularRate));
+    m_Drivetrain.setControl(drive.withVelocityX(-xOutput*MaxSpeed).withVelocityY(-yOutput*MaxSpeed).withRotationalRate(thetaOutput*MaxAngularRate));
   }
 
   // Called once the command ends or is interrupted.
@@ -100,6 +100,6 @@ public class LockOnAprilTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return targeting &&  Math.abs(m_Limelight.getVerticalAngleOfErrorDegrees() ) <= 3;
+    return false;//return targeting &&  Math.abs(m_Limelight.getVerticalAngleOfErrorDegrees() ) <= 3;
   }
 }

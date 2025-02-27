@@ -23,8 +23,10 @@ public class DriveToTargetOffset extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController xController = new PIDController(CommandConstants.drivekP, CommandConstants.driveKi, CommandConstants.drivekD);
-  private PIDController yController = new PIDController(CommandConstants.drivekP, CommandConstants.driveKi, CommandConstants.drivekD);
+  private PIDController xController = new PIDController(0.05, CommandConstants.driveKi, 0.002);
+  private PIDController yController = new PIDController(0.4, CommandConstants.driveKi, 0.002);
+  private double targetx;
+  private double targety;
 
   private boolean targeting = false;
   private double offset;
@@ -33,6 +35,8 @@ public class DriveToTargetOffset extends Command {
     m_Drivetrain = drivetrain;
     m_Limelight = Limelight;
     m_pipeline = pipeline;
+    this.targetx = targetx;
+    this.targety=targety;
     xController.setSetpoint(targetx);
     yController.setSetpoint(targety);
     this.offset = offset;
@@ -62,16 +66,19 @@ public class DriveToTargetOffset extends Command {
     double xSpeed = 0;
     double ySpeed = 0;
 		if (m_Limelight.hasTarget()){
-			double y_distance = m_Limelight.getZDistance(); //THIS IS IN TERMS OF CAMERA WATCHOUT
-			double x_distance = -m_Limelight.getXDistance();
-			 xSpeed = xController.calculate(x_distance);
-       ySpeed = yController.calculate(y_distance);
+			double z_distance = m_Limelight.getTa(); //THIS IS IN TERMS OF CAMERA WATCHOUT
+			double x_distance = m_Limelight.getTx();
+			 xSpeed = xController.calculate(x_distance, targetx);
+       ySpeed = yController.calculate(z_distance, targety);
+       SmartDashboard.putNumber("Alimelight", ySpeed);
+       SmartDashboard.putNumber("Xlimelight", xSpeed);
+
 
       //xOutput = -m_throttle.get()*DrivetrainConstants.maxSpeedMetersPerSecond;
 		
 		} 
     
-    m_Drivetrain.setControl(drive.withVelocityX(xSpeed*CommandConstants.MaxSpeed).withVelocityY(ySpeed*CommandConstants.MaxSpeed).withRotationalRate(0));
+    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*CommandConstants.MaxSpeed).withVelocityY(xSpeed*CommandConstants.MaxSpeed).withRotationalRate(0));
   }
 
   // Called once the command ends or is interrupted.
@@ -85,5 +92,6 @@ public class DriveToTargetOffset extends Command {
   @Override
   public boolean isFinished() {
     return false; //TODO: FINISH CHECKINHG
+    //return Math.abs(m_Limelight.getTa()-targety) <= 0.4 && Math.abs(m_Limelight.getTx()-targetx)<=0.25;
   }
 }

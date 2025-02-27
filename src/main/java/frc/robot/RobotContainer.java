@@ -36,6 +36,7 @@ import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
 import frc.robot.commands.DefaultCommands.DefaultWristCommand;
+import frc.robot.commands.DriveCommands.DriveToLimeLightVisionOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TurnToAngle;
@@ -72,7 +73,7 @@ public class RobotContainer {
     
 
     
-    private final LimelightSubsystem limelight3 = new LimelightSubsystem( drivetrain,"Limelight",0,0,0);
+    private final LimelightSubsystem limelight3 = new LimelightSubsystem( drivetrain,"limelight-three",0,0,0);
     private final LimelightSubsystem limelight2 = new LimelightSubsystem(drivetrain,"limelight-two",0,0,0);
     private final LimelightSubsystem limelight4 = new LimelightSubsystem(drivetrain, "limelight-four",0,0,0);
 
@@ -133,7 +134,7 @@ public class RobotContainer {
         pilot.pov(270).onTrue(commandFactory.LevelPosition(1));
         pilot.pov(270).onFalse(commandFactory.LevelScore());
 
-    pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
+    //pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
 
         // pilot.pov(0).onTrue(dpad.fetchUpPress());
         // pilot.pov(0).onTrue(dpad.fetchUpPress());
@@ -147,27 +148,28 @@ public class RobotContainer {
         // pilot.back().onTrue(dpad.algaeMode());
         // pilot.start().onTrue(dpad.coralMode());
 
-        
+         
 
         //OPTIONAL STUFF TO TEST LATER
-        pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
+        pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
         pilot.leftBumper().whileTrue(new TurnToAngle(drivetrain, 90.0));
         //test if this works or not
-        pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 2, 2));
-
+        pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -16.93,  11.7));
+        pilot.rightTrigger().whileTrue(new DriveToLimeLightVisionOffset(drivetrain, limelight3, 0, false));
+       
 
 //old code 
       //  // pilot.x().whileTrue(new InstantCommand(() -> rollers.wheelsIntake(0.2)));
       //  // joystick.x().onFalse(new InstantCommand(() -> rollers.wheelsIntake(0)));
 
-    pilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
+    // pilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
     
-    pilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
-        new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9),
-        new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-        new WristCommand(wrist, 60), 
-        new RequestStateChange(States.IDLE, stateManager)
-    )));
+    // pilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
+    //     new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 9),
+    //     new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
+    //     new WristCommand(wrist, 60), 
+    //     new RequestStateChange(States.IDLE, stateManager)
+    // )));
     
     // pilot.pov(0).onTrue(new RequestStateChange(States.L4, stateManager));
 

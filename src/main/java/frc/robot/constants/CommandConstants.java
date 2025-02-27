@@ -40,9 +40,9 @@ public final class CommandConstants {
 
 
 
-    public static final double drivekP = 2;
+    public static final double drivekP = .1;
     public static final double driveKi = 0;
-    public static final double drivekD = 0.1;
+    public static final double drivekD = 0;
 
     
     public static final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
