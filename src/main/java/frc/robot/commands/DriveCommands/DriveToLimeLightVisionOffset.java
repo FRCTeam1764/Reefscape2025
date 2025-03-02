@@ -5,6 +5,7 @@
 package frc.robot.commands.DriveCommands;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.libraries.external.drivers.Limelight;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -23,6 +24,8 @@ public class DriveToLimeLightVisionOffset extends SequentialCommandGroup {
 
 
   public double getRotation(int tagID) {
+    SmartDashboard.putNumber("Tagid", tagID);
+    System.out.println("MADE IT: " + tagID);
     switch (tagID) {
         // BLUE ALLIANCE ONES - GYRO MUST BE ZEROD CORRECTLY
         case 18:
@@ -69,9 +72,9 @@ public double getTYValues(boolean right){
     // addCommands(new FooCommand(), new BarCommand());
 
 
-    
+   
     addCommands(
-      new TurnToAngle(swerve,getRotation((int) limelight.getTargetAprilTagID()))
+     // new TurnToAngle(swerve,getRotation(limelight.getTargetAprilTagID()))
       //new DriveToTargetOffset(swerve, limelight, 0, pipeline, getTXValues(right), getTYValues(right))
     );
   }

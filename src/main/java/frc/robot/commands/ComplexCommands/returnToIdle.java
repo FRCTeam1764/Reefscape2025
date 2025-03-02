@@ -29,10 +29,9 @@ public class returnToIdle extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      
-    new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
-    new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
-    new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
+      new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
+      new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
+      new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
     );
   }
 
@@ -44,10 +43,9 @@ public class returnToIdle extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
-      
-    new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
-    new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
-    new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
+      new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
+      new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
+      new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
     );
   }
 }

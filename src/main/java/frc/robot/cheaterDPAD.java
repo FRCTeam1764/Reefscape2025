@@ -6,6 +6,10 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.BasicCommands.RequestStateChange;
+import frc.robot.commands.DriveCommands.DriveToTargetOffset;
+import frc.robot.libraries.external.drivers.Limelight;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
 
@@ -16,6 +20,7 @@ public class cheaterDPAD {
   private boolean coralMode = true;
   private String action = "L2";
   private String mode = "Coral";
+  private boolean left = true;
 
   public cheaterDPAD(CommandFactory factory, StateManager stateManager) {
     this.factory = factory;
@@ -92,6 +97,18 @@ public class cheaterDPAD {
     } else {
       return factory.algaeProcessorScore();
     }
+  }
+
+  public void leftLimeLight() {
+    left = true;
+  }  
+
+  public void rightLimeLight() {
+    left = false;
+  }
+
+  public Command reefLimelight(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight3) {
+    return left ? new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -22,  13) : new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -16.93,  11.7);
   }
 
   public void set(String wantedMode, String wantedAction) {

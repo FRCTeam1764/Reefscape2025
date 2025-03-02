@@ -33,11 +33,8 @@ public class DefaultWristCommand extends Command {
   @Override
   public void execute() {
     if(stateManager.getDesiredData(CommandConstants.INTAKE_KEY) != null) {
-      //if (wrist.isFlexSafe())
-        SmartDashboard.putBoolean("WristSafe", true);
-        wrist.flexOn((double) stateManager.getDesiredData(CommandConstants.INTAKE_KEY));
-    //} else {
-      //SmartDashboard.putBoolean("WristSafe", false);
+      SmartDashboard.putBoolean("WristSafe", true);
+      wrist.flexOn((double) stateManager.getDesiredData(CommandConstants.INTAKE_KEY));
     }
   }
   

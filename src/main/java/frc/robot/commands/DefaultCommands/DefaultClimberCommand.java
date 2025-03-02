@@ -4,42 +4,42 @@
 
 package frc.robot.commands.DefaultCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.CommandConstants;
+import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.StateManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class DefaultElevatorCommand extends Command {
-  /** Creates a new DefaultElevatorCommand. */
-  Elevator elevator;
+public class DefaultClimberCommand extends Command {
+  /** Creates a new DefaultClimberCommand. */
+  Climber climber;
   StateManager stateManager;
-
-  public DefaultElevatorCommand(Elevator elevator, StateManager stateManager) {
+  CommandXboxController value;
+  public DefaultClimberCommand(Climber climber, StateManager stateManager, CommandXboxController value) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.elevator = elevator;
+    this.climber = climber;
     this.stateManager = stateManager;
-    addRequirements(elevator);
+    this.value = value;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {
-
-  }
+  public void initialize() {}
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(stateManager.getDesiredData(CommandConstants.ELEVATOR_KEY) != null){
-      elevator.elevatorOn((double) stateManager.getDesiredData(CommandConstants.ELEVATOR_KEY));
-    }
+    climber.climberOn(value.getLeftX());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    climber.climberOn(0);
+
   }
 
   // Returns true when the command should end.

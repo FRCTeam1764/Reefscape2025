@@ -23,11 +23,50 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.generated.TunerConstants;
+import frc.robot.libraries.external.drivers.Limelight;
 import frc.robot.constants.CommandConstants;
 import frc.robot.constants.DrivetrainConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.LimelightSubsystem;
+
 
 public class TurnToAngle extends Command {
+
+	public double getRotation(int tagID) {
+		SmartDashboard.putNumber("Tagid", tagID);
+		System.out.println("MADE IT: " + tagID);
+		switch (tagID) {
+			// BLUE ALLIANCE ONES - GYRO MUST BE ZEROD CORRECTLY
+			case 18:
+				return 0.0;
+			case 19:
+				return 300;
+			case 20:
+				return 240;
+			case 21:
+				return 180;
+			case 22:
+				return 120;
+			case 17:
+				return 60;
+			// RED ALLIANCE ONES
+			case 7:
+				return 0.0;
+			case 8:
+				return 300;
+			case 9:
+				return 240;
+			case 10:
+				return 180;
+			case 11:
+				return 120;
+			case 6:
+				return 60;
+			default:
+				return 0.0;
+		}
+	}
+
   /** Creates a new TurnToAngle. */
  	private CommandSwerveDrivetrain m_drivetrain;
 	private CommandXboxController m_gamepad;
@@ -37,7 +76,7 @@ public class TurnToAngle extends Command {
 	private PIDController thetaController = new PIDController(6, CommandConstants.kI, CommandConstants.kD);
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
-
+	private LimelightSubsystem limelightSubsystem;
   private double m_angle;
  
 
@@ -53,19 +92,20 @@ public class TurnToAngle extends Command {
 	 * Constructor method for the GamepadDrive class
 	 * - Creates a new GamepadDrive object.
 	 */
-	public TurnToAngle(CommandSwerveDrivetrain drivetrain, Double angle) {
+	public TurnToAngle(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelightSubsystem) {
 		super();
 		addRequirements(drivetrain);
     thetaController.enableContinuousInput(-Math.PI, Math.PI);
 		m_drivetrain = drivetrain;
-		m_angle = angle;
+		m_angle = getRotation( limelightSubsystem.getTargetAprilTagID());
+		this.limelightSubsystem = limelightSubsystem;
 	}
 
 	@Override
 	public void execute() {
 		
 
-		
+		m_angle = getRotation(limelightSubsystem.getTargetAprilTagID());
     double thetaOutput = 0;
 		double horizontal_angle = m_angle;
 		double setpoint = Math.toRadians(horizontal_angle);

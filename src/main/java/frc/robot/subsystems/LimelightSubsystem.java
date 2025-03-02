@@ -7,9 +7,12 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.libraries.internal.LimelightHelpers;
 import frc.robot.libraries.internal.LimelightHelpers.PoseEstimate;
+import frc.robot.libraries.internal.LimelightHelpers.RawFiducial;
 import swervelib.telemetry.SwerveDriveTelemetry;
 
 public class LimelightSubsystem extends SubsystemBase {
@@ -37,13 +40,11 @@ public class LimelightSubsystem extends SubsystemBase {
      * tv - Target Visible
      */
 
-
-this.driveTrain = swerve;
-this.txoffset = txoffset;
-this.tyoffset = tyoffset;
-this.rotyaw = rotyaw;
-Limelight = LimelightName;
-
+    this.driveTrain = swerve;
+    this.txoffset = txoffset;
+    this.tyoffset = tyoffset;
+    this.rotyaw = rotyaw;
+    Limelight = LimelightName;
 
   }
 
@@ -56,8 +57,7 @@ Limelight = LimelightName;
   public void periodic() {
     // This method will be called once per scheduler run
     updatePoseEstimation();
-
-    
+    //SmartDashboard.putNumber("newID", getTargetAprilTagID());
   }
 
   public double getHorizontalAngleOfErrorDegrees(){
@@ -112,9 +112,25 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
   public double getTxAngleRadians(){
     return   Units.degreesToRadians(getTx());
   }
-  public double getTargetAprilTagID(){
-    return LimelightHelpers.getFiducialID(Limelight);
+  public int getTargetAprilTagID(){
+    RawFiducial[] temp =  LimelightHelpers.getRawFiducials(Limelight);
+    int id = -1;
+    for (RawFiducial fiducial : temp) {
+
+      id = fiducial.id;
+      break;
+//TODO: ADD LOGIC LATER TO GET BEST APRILTAG TX OFFSET WISE
+      // double txnc = fiducial.txnc;             // X offset (no crosshair)
+      // double tync = fiducial.tync;             // Y offset (no crosshair)
+      // double ta = fiducial.ta;                 // Target area
+      // double distToCamera = fiducial.distToCamera;  // Distance to camera
+      // double distToRobot = fiducial.distToRobot;    // Distance to robot
+      // double ambiguity = fiducial.ambiguity;   // Tag pose ambiguity
   }
+  
+    
+    return  id;
+}
 public void updatePoseEstimation()
 {
   if (SwerveDriveTelemetry.isSimulation){

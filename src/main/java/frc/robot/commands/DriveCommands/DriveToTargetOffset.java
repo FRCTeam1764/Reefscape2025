@@ -24,7 +24,7 @@ public class DriveToTargetOffset extends Command {
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
   private PIDController xController = new PIDController(0.05, CommandConstants.driveKi, 0.002);
-  private PIDController yController = new PIDController(0.4, CommandConstants.driveKi, 0.002);
+  private PIDController yController = new PIDController(0.25, CommandConstants.driveKi, 0.002);
   private double targetx;
   private double targety;
 
