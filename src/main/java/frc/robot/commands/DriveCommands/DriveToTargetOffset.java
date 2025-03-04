@@ -23,8 +23,8 @@ public class DriveToTargetOffset extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController xController = new PIDController(0.02, CommandConstants.driveKi, 0 );
-  private PIDController yController = new PIDController(0.11, CommandConstants.driveKi, 0);
+  private PIDController xController = new PIDController(0.02, 0.0001, 0.0085);//.0045);
+  private PIDController yController = new PIDController(0.04, 0.0001, 0.02);
   private double targetx;
   private double targety;
 

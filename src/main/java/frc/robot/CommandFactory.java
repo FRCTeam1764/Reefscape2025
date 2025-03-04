@@ -77,6 +77,7 @@ public class CommandFactory {
     private StateManager stateManager;
     private States[] stateList = { States.L4, States.L3, States.L2, States.L1 };
     private CommandXboxController driver;
+    private boolean left = true;
 
     public CommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
@@ -306,13 +307,13 @@ public class CommandFactory {
             case INTAKE_ALGAE_LOW:
                 return TurnToAngle();
             case SCOREL4:
-                return DriveToTargetOffset3();
+                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
             case SCOREL3:
-                return DriveToTargetOffset3();
+                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
             case SCOREL2:
-                return DriveToTargetOffset3();
+                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
             case SCOREL1:
-                return DriveToTargetOffset3();
+                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
             default:
                 return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
         }
