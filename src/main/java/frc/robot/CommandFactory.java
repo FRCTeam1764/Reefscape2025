@@ -26,7 +26,9 @@ import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveToTarget;
+import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
+import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
 import frc.robot.state.ALGAE_KNOCK_HIGH;
 import frc.robot.state.ALGAE_KNOCK_LOW;
@@ -62,7 +64,7 @@ public class CommandFactory {
         PROCESSOR
     }
 
-    public desiredAction currentAction;
+    public desiredAction currentAction = desiredAction.SCOREL2;
     private boolean leftLimelight;
     //private Climber climber;
     private Elevator elevator;
@@ -159,20 +161,33 @@ public class CommandFactory {
     }
 
     public Command IntakeCoralTest() {
-        return new SequentialCommandGroup( 
-            new RequestStateChange(States.INTAKE_CORAL, stateManager),
-            new waitUntilPosition(stateManager),
-            new ParallelCommandGroup(
-                new WaitCommand(1.5), 
-                new ElevatorCommand(elevator, 9)),
-            new ParallelRaceGroup(
-                new WaitCommand(0.25), 
-                new ElevatorCommand(elevator, 9.375)),
-            new ParallelDeadlineGroup(
-                new WaitCommand(1), 
-                new WristCommand(intakeWrist, 60)), 
-            new RequestStateChange(States.IDLE, stateManager)
-        );
+        return new SequentialCommandGroup(
+            new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 8.8)),
+            new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
+            new ParallelDeadlineGroup(new WaitCommand(1), new WristCommand(intakeWrist, 60)), 
+            new RequestStateChange(States.IDLE, stateManager));
+    }
+
+    public Command IntakeCoralPosition() {
+        return new RequestStateChange(States.INTAKE_CORAL, stateManager);
+    }
+
+
+    //limalight
+    public Command LockOnAprilTag() {
+        return new LockOnAprilTag(swerve, Limelight3, 0, driver, false);
+    }
+
+    public Command TurnToAngle() {
+        return new TurnToAngle(swerve, Limelight3);
+    }
+
+    public Command DriveToTargetOffset3() {
+        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -15, 15);
+    }
+
+    public Command DriveToTargetOffset4() {
+        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -15, 15);
     }
 
     // AUTOMATED COMMANDS
@@ -214,55 +229,6 @@ public class CommandFactory {
                 new returnToIdle(stateManager, States.IDLE_ALGAE)).finallyDo((key) -> interupted(key));
     }
 
-    private Command IntakeCoral() {
-        return new SequentialCommandGroup(
-            new RequestStateChange(States.INTAKE_CORAL, stateManager),
-            new waitUntilPosition(stateManager, CommandConstants.ELEVATOR_KEY, 0, CommandConstants.INTAKE_KEY, 4),
-            new ParallelCommandGroup(
-                new WaitUntilCommand(() -> intakeRollers.getIntakeBreakbeam()),
-                new ElevatorCommand(elevator, 9)),
-            new ElevatorCommand(elevator, 9.4),
-            new WristCommand(intakeWrist, 60),
-            new RequestStateChange(States.IDLE, stateManager)
-        ).finallyDo((key) -> interupted(key));
-    }
-
-    private Command Level(int index) {
-        return new SequentialCommandGroup(
-                new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
-                new RequestStateChange(
-                        index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager),
-                new WristCommand(intakeWrist, 40),
-                new ParallelDeadlineGroup(
-                    new WaitCommand(.5),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
-                new RequestStateChange(States.IDLE, stateManager));
-    }
-
-    private Command Level4() {
-        return new SequentialCommandGroup(
-                new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
-                new RequestStateChange(States.L4, stateManager),
-                new waitUntilPosition(stateManager),
-                new WristCommand(intakeWrist, 40),
-                new ParallelDeadlineGroup(
-                    new WaitUntilCommand(() -> intakeRollers.getIntakeLimitSwitch()),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
-                new returnToIdle(stateManager)).finallyDo((key) -> interupted(key));
-    }
-
-    private Command AlgaeProcessor() {
-        return new SequentialCommandGroup(
-                new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
-                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
-                new ParallelDeadlineGroup(
-                        new WaitCommand(2),
-                        new IntakeCommand(intakeRollers, CommandConstants.ALGAE_OUT_SPEED, false)),
-                new RequestStateChange(States.IDLE, stateManager)).finallyDo((key) -> interupted(key));
-    }
-
 
     public Command interupted(boolean wasInteruppted) {
         if (wasInteruppted) {
@@ -272,39 +238,81 @@ public class CommandFactory {
         return new returnToIdle(stateManager);
     }
 
-    public Command getDesiredAction() {
-        return getAction(currentAction);
+    public Command getDesiredAction(boolean press) {
+        return press ? getTrueAction(currentAction) : getFalseAction();
     }
 
 
-    public Command getAction(desiredAction action) {
+    public Command getTrueAction(desiredAction action) {
         switch (action) {
-            case ALGAE_KNOCK_HIGH:
-                return AlgaeKnock(true);
-            case ALGAE_KNOCK_LOW:
-                return AlgaeKnock(false);
-            case BARGE:
-                return Barge();
+            // case ALGAE_KNOCK_HIGH:
+            //     return AlgaeKnock(true);
+            // case ALGAE_KNOCK_LOW:
+            //     return AlgaeKnock(false);
+            // case BARGE:
+            //     return Barge();
             // case CLIMBER:
             //     return Climber();
-            case INTAKE_ALGAE_GROUND:
-                return AlgaeGround();
+            // case INTAKE_ALGAE_GROUND:
+            //     return AlgaeGround();
             case INTAKE_ALGAE_HIGH:
                 return AlgaeReefIntake(false);
             case INTAKE_ALGAE_LOW:
                 return AlgaeReefIntake(true);
             case INTAKE_CORAL:
-                return IntakeCoral();
+                return IntakeCoralPosition();
             case SCOREL4:
-                return Level4();
+                return Level4Position();
             case SCOREL3:
-                return Level(3);
+                return LevelPosition(3);
             case SCOREL2:
-                return Level(2);
+                return LevelPosition(2);
             case SCOREL1:
-                return Level(1);
+                return LevelPosition(1);
             case PROCESSOR:
-                return AlgaeProcessor();
+                return algaeProcessorPosition();
+            default:
+                return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
+        }
+    }
+
+    public Command getFalseAction() {
+        switch (currentAction) {
+            case INTAKE_ALGAE_HIGH:
+                return algaeIdle();
+            case INTAKE_ALGAE_LOW:
+                return algaeIdle();
+            case INTAKE_CORAL:
+                return IntakeCoralTest();
+            case SCOREL4:
+                return Level4Score();
+            case SCOREL3:
+                return LevelScore();
+            case SCOREL2:
+                return LevelScore();
+            case SCOREL1:
+                return LevelScore();
+            case PROCESSOR:
+                return algaeProcessorScore();
+            default:
+                return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
+        }
+    }
+
+    public Command getLimelightAction() {
+        switch (currentAction) {
+            case INTAKE_ALGAE_HIGH:
+                return TurnToAngle();
+            case INTAKE_ALGAE_LOW:
+                return TurnToAngle();
+            case SCOREL4:
+                return DriveToTargetOffset3();
+            case SCOREL3:
+                return DriveToTargetOffset3();
+            case SCOREL2:
+                return DriveToTargetOffset3();
+            case SCOREL1:
+                return DriveToTargetOffset3();
             default:
                 return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
         }
@@ -313,4 +321,4 @@ public class CommandFactory {
     public void setDesiredAction(desiredAction currAction) {
         currentAction = currAction;
     }
-}
+} 

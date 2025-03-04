@@ -23,8 +23,8 @@ public class DriveToTargetOffset extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController xController = new PIDController(0.05, CommandConstants.driveKi, 0.002);
-  private PIDController yController = new PIDController(0.25, CommandConstants.driveKi, 0.002);
+  private PIDController xController = new PIDController(0.02, CommandConstants.driveKi, 0 );
+  private PIDController yController = new PIDController(0.11, CommandConstants.driveKi, 0);
   private double targetx;
   private double targety;
 
@@ -78,7 +78,7 @@ public class DriveToTargetOffset extends Command {
 		
 		} 
     
-    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*CommandConstants.MaxSpeed).withVelocityY(xSpeed*CommandConstants.MaxSpeed).withRotationalRate(0));
+    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/3)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/3)).withRotationalRate(0));
   }
 
   // Called once the command ends or is interrupted.

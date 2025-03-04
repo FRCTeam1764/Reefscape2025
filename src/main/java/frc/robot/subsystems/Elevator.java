@@ -44,7 +44,6 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom1;
   public DigitalInput limitSwitchBottom2;
   private VoltageOut voltageOut = new VoltageOut(0.0);
-  private double maxdutycycle = 0.25;
   
 
 
@@ -105,7 +104,7 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
+    config.MotorOutput.PeakForwardDutyCycle = 0.275;
     config.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -120,7 +119,7 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = maxdutycycle;
+    config2.MotorOutput.PeakForwardDutyCycle = 0.275;
     config2.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
