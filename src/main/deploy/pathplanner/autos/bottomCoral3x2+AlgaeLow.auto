@@ -1,0 +1,119 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "bottomStartToBottomRightReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelThreePosition"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToOffsetLeft"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "bottomRightToBottomAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickup"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "bottomAlgaeToBottomLeftReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelThreePosition"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToOffsetLeft"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AlgaeLow"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

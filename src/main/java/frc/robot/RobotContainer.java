@@ -8,6 +8,7 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -44,6 +45,7 @@ import frc.robot.commands.DriveCommands.DriveToLimeLightVisionOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TurnToAngle;
+import frc.robot.constants.CommandConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.libraries.external.drivers.Limelight;
 import frc.robot.state.IDLE;
@@ -84,7 +86,8 @@ public class RobotContainer {
     private final LimelightSubsystem limelight2 = new LimelightSubsystem(drivetrain,"limelight-two",0,0,0);
     private final LimelightSubsystem limelight4 = new LimelightSubsystem(drivetrain, "limelight-four",0,0,0);
 
-    private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, copilot, drivetrain, stateManager);
+    private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
+    private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
 
     private final cheaterDPAD dpad = new cheaterDPAD(commandFactory, stateManager);
 
@@ -92,6 +95,7 @@ public class RobotContainer {
         stateManager.requestNewState(States.IDLE);
         //drivetrain.seedFieldCentric();
         configureBindings();
+        autoFactory.configAutonomousCommands();
     }
 
     private void configureBindings() {
@@ -106,18 +110,6 @@ public class RobotContainer {
             )
         );
 
-        // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        // joystick.b().whileTrue(drivetrain.applyRequest(() ->
-        //     point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))
-        // ));
-
-        // // Run SysId routines when holding back/start and X/Y.
-        // // Note that each routine should be run exactly once in a single log.
-        //  joystick.x().whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        //  joystick.y().whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        //  joystick.a().whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        //  joystick.b().whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
         elevator.setDefaultCommand(new DefaultElevatorCommand(elevator, stateManager));
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
@@ -125,35 +117,14 @@ public class RobotContainer {
         //climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-        
-        // pilot.b().onTrue(commandFactory.algaeProcessorPosition());
-        // pilot.b().onFalse(commandFactory.algaeProcessorScore());
-        // pilot.x().onTrue(commandFactory.algaeLowPosition());
-        // pilot.x().onFalse(commandFactory.algaeIdle());
-        // pilot.a().onTrue(commandFactory.algaeHighPosition());
-        // pilot.a().onFalse(commandFactory.algaeIdle());
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
 
-        // pilot.leftTrigger(.7).whileTrue(commandFactory.getDesiredAction(true));
-        // pilot.leftTrigger().onFalse(commandFactory.getDesiredAction(false));
+        configureOldBindings();
 
-        // //pilot.a().onTrue(commandFactory.getLimelightAction());
+        drivetrain.registerTelemetry(logger::telemeterize);
+    }
 
-
-        // copilot.leftTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
-        // copilot.leftBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
-        // copilot.rightTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
-        // copilot.rightBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
-
-        // copilot.y().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH));
-        // copilot.b().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW));
-        // //copilot.a().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND));
-        // //copilot.x().onTrue(commandFactory.setDesiredAction(desiredAction.CLIMBER));
-
-        // copilot.pov(180).onTrue(commandFactory.setDesiredAction(desiredAction.PROCESSOR));
-
-
-
+    private void configureOldBindings() {
         pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
         pilot.leftTrigger().onFalse(commandFactory.LevelScore());
         pilot.leftBumper().onTrue(commandFactory.LevelPosition(2));
@@ -166,15 +137,14 @@ public class RobotContainer {
         
 
         pilot.b().whileTrue(new InstantCommand( ()-> drivetrain.applyRequest(() ->
-        robotCentricDrive.withVelocityX(-pilot.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-pilot.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-pilot.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
-    ) );
+            robotCentricDrive.withVelocityX(-pilot.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
+                .withVelocityY(-pilot.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+                .withRotationalRate(-pilot.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
+        ));
 
         pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
         pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
         pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
-     //   pilot.b().whileTrue(dpad.reefLimelight(drivetrain, limelight4));
         //pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, -22, 13));
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.1));
         pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight4));
@@ -189,60 +159,32 @@ public class RobotContainer {
 
 
         copilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
-    
-    copilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
-        new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 8.8)),
-        new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-        new ParallelDeadlineGroup(new WaitCommand(1), new WristCommand(wrist, 60)), 
-        new RequestStateChange(States.IDLE, stateManager)
-    ));
+        copilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
+            new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 8.8)),
+            new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
+            new ParallelDeadlineGroup(new WaitCommand(1), new WristCommand(wrist, 60)), 
+            new RequestStateChange(States.IDLE, stateManager)
+        ));
+    }
+
+    private void configureCueBindings() {
+        // pilot.leftTrigger(.7).whileTrue(commandFactory.getDesiredAction(true));
+        // pilot.leftTrigger().onFalse(commandFactory.getDesiredAction(false));
+
+        // //pilot.a().onTrue(commandFactory.getLimelightAction());
 
 
+        // copilot.leftTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
+        // copilot.leftBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
+        // copilot.rightTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
+        // copilot.rightBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
 
+        // copilot.y().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH));
+        // copilot.b().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW));
+        //copilot.a().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND));
+        //copilot.x().onTrue(commandFactory.setDesiredAction(desiredAction.CLIMBER));
 
-
-    //old old code
-        //copilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
-
-        // copilot.a().whileTrue(new InstantCommand(() -> climber.climberOn(.9)));
-        // copilot.a().onFalse(new InstantCommand(() -> climber.climberOn(0)));
-        // copilot.x().whileTrue(new InstantCommand(() -> climber.climberOn(-.9)));
-        // copilot.x().onFalse(new InstantCommand(() -> climber.climberOn(0)));
-
-        // climber.climberOn(Math.abs(copilot.getLeftX())<0.07 ? 0 : copilot.getLeftX());
-        // SmartDashboard.putNumber("climberspeed", Math.abs(copilot.getLeftX())<0.07 ? 0 : copilot.getLeftX()/3);
-
-        // copilot.back().onTrue(new InstantCommand(() -> dpad.rightLimeLight()));
-        // copilot.start().onTrue(new InstantCommand(() -> dpad.leftLimeLight()));
-        
-
-    //pilot.rightTrigger().onTrue(commandFactory.IntakeCoralTest());
-
-        // pilot.pov(0).onTrue(dpad.fetchUpPress());
-        // pilot.pov(0).onTrue(dpad.fetchUpPress());
-        // pilot.pov(90).onTrue(dpad.fetchRightPress());
-        // pilot.pov(90).onTrue(dpad.fetchRightPress());
-        // pilot.pov(180).onTrue(dpad.fetchDownPress());
-        // pilot.pov(180).onTrue(dpad.fetchDownPress());
-        // pilot.pov(270).onTrue(dpad.fetchLeftPress());
-        // pilot.pov(270).onTrue(dpad.fetchLeftPress());
-
-        // pilot.back().onTrue(dpad.algaeMode());
-        // pilot.start().onTrue(dpad.coralMode());
-
-         
-
-        //OPTIONAL STUFF TO TEST LATER
-        // pilot.rightBumper().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
-        // pilot.leftBumper().whileTrue(new TurnToAngle(drivetrain, 90.0));
-        // //test if this works or not
-        // pilot.leftTrigger(.5).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -16.93,  11.7));
-        // pilot.rightTrigger().whileTrue(new DriveToLimeLightVisionOffset(drivetrain, limelight3, 0, false));
-
-
-    
-  
-        drivetrain.registerTelemetry(logger::telemeterize);
+        //copilot.pov(180).onTrue(commandFactory.setDesiredAction(desiredAction.PROCESSOR));
     }
 
     public Command getAutonomousCommand() {
