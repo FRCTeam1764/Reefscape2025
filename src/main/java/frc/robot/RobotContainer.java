@@ -144,10 +144,12 @@ public class RobotContainer {
 
         pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
         pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
+        //pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
         //pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, -22, 13));
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight4));
+        //pilot.pov(270).whileTrue(new TurnToAngle(drivetrain, limelight3));
+        pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
 
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
@@ -158,13 +160,14 @@ public class RobotContainer {
         copilot.y().onFalse(commandFactory.algaeIdle());
 
 
-        copilot.rightTrigger(.7).onTrue(new RequestStateChange(States.INTAKE_CORAL, stateManager));
-        copilot.rightTrigger(.7).onFalse(new SequentialCommandGroup(
-            new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 8.8)),
-            new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-            new ParallelDeadlineGroup(new WaitCommand(1), new WristCommand(wrist, 60)), 
-            new RequestStateChange(States.IDLE, stateManager)
-        ));
+        copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
+        copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
+
+        copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
+        copilot.pov(180).onFalse(commandFactory.algaeIdle());
+        copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
+        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
+
     }
 
     private void configureCueBindings() {

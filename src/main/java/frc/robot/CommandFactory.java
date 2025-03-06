@@ -163,9 +163,9 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ParallelCommandGroup(new WaitCommand(1.5), new ElevatorCommand(elevator, 8.8)),
-            new ParallelRaceGroup(new WaitCommand(0.25), new ElevatorCommand(elevator, 9.375)),
-            new ParallelDeadlineGroup(new WaitCommand(1), new WristCommand(intakeWrist, 60)), 
+            new ParallelCommandGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 8.8)),
+            new RequestStateChange(States.INTAKE_CORAL, stateManager),
+            new ParallelDeadlineGroup(new WaitCommand(0.5), new WristCommand(intakeWrist, 60)), 
             new RequestStateChange(States.IDLE, stateManager));
     }
 
