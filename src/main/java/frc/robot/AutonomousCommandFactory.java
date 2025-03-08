@@ -132,6 +132,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffset4());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset3());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
+        NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
         
     }
 
