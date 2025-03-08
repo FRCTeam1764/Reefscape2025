@@ -44,7 +44,7 @@ public class ElevatorCommand extends Command {
 
 
 
-    return elevator.getEncoderValue() > (desired - .5) && elevator.getEncoderValue() < desired +.5;
+    return false;
 
 
     // if (stopAtLimitSwitch) {

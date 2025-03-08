@@ -8,9 +8,12 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -91,11 +94,15 @@ public class RobotContainer {
 
     private final cheaterDPAD dpad = new cheaterDPAD(commandFactory, stateManager);
 
+    private final SendableChooser<Command> chooser ;
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
+    chooser= AutoBuilder.buildAutoChooser("tests");
+    SmartDashboard.putData("Autos",chooser);
         //drivetrain.seedFieldCentric();
+       // configureCueBindings();
         configureBindings();
-        autoFactory.configAutonomousCommands();
+      //  autoFactory.configAutonomousCommands();
     }
 
     private void configureBindings() {
@@ -118,8 +125,8 @@ public class RobotContainer {
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
-
         configureOldBindings();
+       // configureOldBindings();
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
@@ -171,26 +178,26 @@ public class RobotContainer {
     }
 
     private void configureCueBindings() {
-        // pilot.leftTrigger(.7).whileTrue(commandFactory.getDesiredAction(true));
-        // pilot.leftTrigger().onFalse(commandFactory.getDesiredAction(false));
+         pilot.leftTrigger(.7).onTrue(new InstantCommand( ()->commandFactory.getDesiredAction(true)));
+         pilot.leftTrigger().onFalse(new InstantCommand(()->commandFactory.getDesiredAction(false)));
 
         // //pilot.a().onTrue(commandFactory.getLimelightAction());
 
 
-        // copilot.leftTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
-        // copilot.leftBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
-        // copilot.rightTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
-        // copilot.rightBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
+         copilot.leftTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
+         copilot.leftBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
+         copilot.rightTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
+         copilot.rightBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
 
-        // copilot.y().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH));
-        // copilot.b().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW));
-        //copilot.a().onTrue(commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND));
-        //copilot.x().onTrue(commandFactory.setDesiredAction(desiredAction.CLIMBER));
+         copilot.y().onTrue(new InstantCommand( ()-> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH)));
+         copilot.b().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW)));
+        copilot.a().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND)));
+        copilot.x().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.CLIMBER)));
 
-        //copilot.pov(180).onTrue(commandFactory.setDesiredAction(desiredAction.PROCESSOR));
+        copilot.pov(180).onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.PROCESSOR)));
     }
 
     public Command getAutonomousCommand() {
-        return Commands.print("No autonomous command configured");
+        return    chooser.getSelected();
     }
 }

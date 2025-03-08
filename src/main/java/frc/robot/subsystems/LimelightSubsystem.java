@@ -149,7 +149,7 @@ public void updatePoseEstimation()
 
   
 //TODO use advantagescope to double check this is functional
-  driveTrain.addVisionMeasurement(poseEstimate.pose,poseEstimate.timestampSeconds);
+ // driveTrain.addVisionMeasurement(poseEstimate.pose,poseEstimate.timestampSeconds);
   }
 }
 
