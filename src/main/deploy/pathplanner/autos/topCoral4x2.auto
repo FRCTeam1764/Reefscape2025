@@ -5,22 +5,9 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "startToTopRightReef"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LevelThreePosition"
-                }
-              }
-            ]
+            "pathName": "startToTopRightReef"
           }
         },
         {
@@ -28,15 +15,15 @@
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.0
+                  "name": "DriveToOffsetRight"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "LevelFourPosition"
                 }
               }
             ]
@@ -45,7 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "LevelScore"
+            "name": "DriveForward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
           }
         },
         {
@@ -67,19 +60,19 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "wait",
+                "type": "named",
                 "data": {
-                  "waitTime": 1.0
+                  "name": "DriveToOffsetLeft"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "LevelFourPosition"
                 }
               }
             ]
@@ -88,13 +81,13 @@
         {
           "type": "named",
           "data": {
-            "name": "LevelScore"
+            "name": "DriveForward"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AlgaeLow"
+            "name": "LevelFourScore"
           }
         }
       ]

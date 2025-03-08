@@ -16,6 +16,7 @@ import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
+import frc.robot.commands.DriveCommands.DriveForward;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
@@ -133,7 +134,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset3());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
-        
+        NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));
     }
 
 }
