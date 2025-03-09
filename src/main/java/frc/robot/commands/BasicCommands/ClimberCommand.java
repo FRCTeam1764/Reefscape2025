@@ -17,6 +17,7 @@ public class ClimberCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.climber = climber;
     this.desired = desired;
+    addRequirements(climber);
   }
 
   // Called when the command is initially scheduled.

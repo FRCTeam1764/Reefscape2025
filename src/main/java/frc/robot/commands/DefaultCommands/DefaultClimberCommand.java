@@ -32,7 +32,7 @@ public class DefaultClimberCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climber.climberOn(value.getLeftX());
+    climber.climberOn((value.getLeftX()/3));
   }
 
   // Called once the command ends or is interrupted.

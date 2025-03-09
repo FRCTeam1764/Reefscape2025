@@ -44,7 +44,7 @@ public class returnToIdle extends SequentialCommandGroup {
 
     addCommands(
       new RequestStateChange(States.INTERPOLATED_STATE, stateManager),
-      new waitUntilPosition(stateManager,CommandConstants.INTAKE_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
+      new waitUntilPosition(stateManager,CommandConstants.ELEVATOR_KEY, 1, CommandConstants.ELEVATOR_KEY, 1),
       new InstantCommand (() -> stateManager.returnToIdle(this.state)) 
     );
   }

@@ -23,6 +23,8 @@ import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveForward;
+import frc.robot.commands.DriveCommands.LockOnAprilTag;
+import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
@@ -41,6 +43,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     private LimelightSubsystem Limelight4;
     private LimelightSubsystem Limelight3;
     private LimelightSubsystem Limelight2;
+    private CommandXboxController driver;
     private CommandSwerveDrivetrain swerve;
     private StateManager stateManager;
 
@@ -55,6 +58,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         this.Limelight3 = Limelight3;
         this.Limelight2 = Limelight2;
         this.swerve = swerve;
+        this.driver = driver;
         this.stateManager = stateManager;
         configAutonomousCommands();
     }
@@ -85,7 +89,9 @@ public class AutonomousCommandFactory extends CommandFactory{
     // }
 
     public Command autoLevel4Position() {
-        return new RequestStateChange(States.L4, stateManager);
+        return new ParallelCommandGroup(
+            new RequestStateChange(States.L4, stateManager), 
+                new waitUntilPosition(stateManager));
     }
     
     public Command autoLevel4Score() {
@@ -113,7 +119,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new ParallelCommandGroup(
             new RequestStateChange(
                 index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager), 
-                new waitUntilPosition(stateManager, CommandConstants.ELEVATOR_KEY, 4, CommandConstants.INTAKE_KEY, 4));
+                new waitUntilPosition(stateManager, CommandConstants.ELEVATOR_KEY, 4, CommandConstants.ELEVATOR_KEY, 4));
     }
 
     public Command autoAlgaeLow() {
@@ -130,6 +136,13 @@ public class AutonomousCommandFactory extends CommandFactory{
             new RequestStateChange(States.IDLE_ALGAE, stateManager));
     }
 
+    public Command autoAlignCoral() {
+        return new ParallelDeadlineGroup(
+            new WaitCommand(1), 
+            new LockOnAprilTag(swerve, Limelight2, 1, driver, leftLimelight)
+        );
+    }
+
     public void configAutonomousCommands() {
         NamedCommands.registerCommand("LevelOnePosition", autoLevelPosition(1));
         NamedCommands.registerCommand("LevelTwoPosition", autoLevelPosition(2));
@@ -142,6 +155,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffset3());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset4());
+        NamedCommands.registerCommand("AlignToCoral", autoAlignCoral());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));

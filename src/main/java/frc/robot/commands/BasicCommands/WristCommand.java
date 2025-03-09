@@ -17,6 +17,7 @@ public class WristCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
     this.desired = desired;
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.

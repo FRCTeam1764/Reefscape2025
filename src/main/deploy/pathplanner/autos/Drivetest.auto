@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "dontmove"
+            "pathName": "Drivetest"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelThreePosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelScore"
           }
         }
       ]

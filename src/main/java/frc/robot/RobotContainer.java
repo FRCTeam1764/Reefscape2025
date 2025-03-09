@@ -47,6 +47,7 @@ import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.commands.DriveCommands.DriveToLimeLightVisionOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
+import frc.robot.commands.DriveCommands.TrackObject;
 import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
 import frc.robot.generated.TunerConstants;
@@ -77,7 +78,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-    //private final Climber climber = new Climber();
+    private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -121,7 +122,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
 
-        //climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
+        climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
@@ -140,6 +141,11 @@ public class RobotContainer {
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
+        pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 30, pilot));
+        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false));
+
+
+
 
         
 
@@ -156,7 +162,7 @@ public class RobotContainer {
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight4));
         //pilot.pov(270).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
+        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
 
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());

@@ -85,6 +85,7 @@ public class IntakeRollers extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     SmartDashboard.putBoolean("IntakeLimitSwitch", getIntakeLimitSwitch());
     SmartDashboard.putBoolean("IntakeInternalBreakbeam",getIntakeBreakbeam());
     SmartDashboard.putNumber("IntakeRollerCurrent", m_intakeMotor.getStatorCurrent().getValueAsDouble());  }
