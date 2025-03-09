@@ -5,13 +5,19 @@
     "data": {
       "commands": [
         {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 0.2
+                }
+              },
+              {
                 "type": "path",
                 "data": {
-                  "pathName": "startToTopRightReef"
+                  "pathName": "topStartToTopRightReef"
                 }
               },
               {
@@ -30,13 +36,13 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "DriveToOffsetLeft"
                 }
               }
             ]
@@ -55,18 +61,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "CoralPickup"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "topAlgaeToTopLeftReef"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -79,7 +73,63 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "CoralPickup"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveForward"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "idle"
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "topAlgaeToTopLeftReef"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelThreePosition"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToOffsetLeft"
                 }
               }
             ]
@@ -89,12 +139,6 @@
           "type": "named",
           "data": {
             "name": "LevelScore"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlgaeLow"
           }
         }
       ]

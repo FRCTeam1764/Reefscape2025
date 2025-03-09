@@ -140,17 +140,17 @@ public void updatePoseEstimation()
   //TODO: REPLACE AND IMPLIMENT BRAD CODE LATER
   
 
-  LimelightHelpers.SetRobotOrientation(Limelight, driveTrain.getPose().getRotation().getDegrees(),0,0,0,0,0);
+//  LimelightHelpers.SetRobotOrientation(Limelight, driveTrain.getPose().getRotation().getDegrees(),0,0,0,0,0);
 
-  PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Limelight);
-  if (poseEstimate != null && poseEstimate.pose.getX() != 0.0 && poseEstimate.pose.getY() != 0.0) {
+//    PoseEstimate poseEstimate = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(Limelight);
+//    if (poseEstimate != null && poseEstimate.pose.getX() != 0.0 && poseEstimate.pose.getY() != 0.0) {
 
-  poseEstimate.pose.transformBy(new Transform2d(txoffset, tyoffset, new Rotation2d(rotyaw)));
+  // poseEstimate.pose.transformBy(new Transform2d(txoffset, tyoffset, new Rotation2d(rotyaw)));
 
   
 //TODO use advantagescope to double check this is functional
  // driveTrain.addVisionMeasurement(poseEstimate.pose,poseEstimate.timestampSeconds);
-  }
+  //}
 }
 
 

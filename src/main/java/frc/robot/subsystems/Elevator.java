@@ -214,8 +214,6 @@ public boolean getLimitSwitches(){
     SmartDashboard.putNumber("ElevatorMotor1Current", elevatorMotor1.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Current", elevatorMotor2.getStatorCurrent().getValueAsDouble());
 
-    SmartDashboard.putNumber("ElevatorMotor1Voltage", elevatorMotor1.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("ElevatorMotor2Voltage", elevatorMotor2.getMotorVoltage().getValueAsDouble());
 
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
     SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());

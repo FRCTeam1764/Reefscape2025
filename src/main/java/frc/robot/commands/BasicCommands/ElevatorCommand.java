@@ -18,6 +18,7 @@ public class ElevatorCommand extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
     this.desired = desired;
+    addRequirements(elevator);
   }
 
   // Called when the command is initially scheduled.
@@ -44,7 +45,7 @@ public class ElevatorCommand extends Command {
 
 
 
-    return false;
+    return  this.elevator.getEncoderValue() <= this.desired+2 && this.elevator.getEncoderValue() >= this.desired-2;// false;
 
 
     // if (stopAtLimitSwitch) {

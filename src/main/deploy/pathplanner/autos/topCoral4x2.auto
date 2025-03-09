@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "startToTopRightReef"
+            "pathName": "topStartToTopRightReef"
           }
         },
         {
@@ -17,13 +17,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "LevelFourPosition"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LevelFourPosition"
+                  "name": "DriveToOffsetRight"
                 }
               }
             ]
