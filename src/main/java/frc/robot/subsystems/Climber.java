@@ -79,6 +79,5 @@ public class Climber extends SubsystemBase {
 
     SmartDashboard.putNumber("ClimbMotorCurrent", m_climberMotor.getStatorCurrent().getValueAsDouble());
 
-    SmartDashboard.putNumber("ElevatorMotorVoltage", m_climberMotor.getMotorVoltage().getValueAsDouble());
   }
 }

@@ -79,10 +79,10 @@ public class Elevator extends SubsystemBase {
 
     limitSwitchTop1 = new DigitalInput(Constants.ELEVATOR_SWITCHUP1);
     limitSwitchTop2 = new DigitalInput(Constants.ELEVATOR_SWITCHUP2);
-    SmartDashboard.putNumber("elevatorencoder", 0);
 
-    
-    
+ 
+
+
     SetUpClimberMotors();
     
     setVoltage = new MotionMagicVoltage(0).withSlot(0);
@@ -205,23 +205,7 @@ public boolean getLimitSwitches(){
 
     //elevatorOn(10);
 
-    SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
-
-    SmartDashboard.putNumber("ElevatorMotor1Temperature", elevatorMotor1.getDeviceTemp().getValueAsDouble());
-    SmartDashboard.putNumber("ElevatorMotor2Temperature", elevatorMotor2.getDeviceTemp().getValueAsDouble());
-
-    SmartDashboard.putNumber("ElevatorMotor1Current", elevatorMotor1.getStatorCurrent().getValueAsDouble());
-    SmartDashboard.putNumber("ElevatorMotor2Current", elevatorMotor2.getStatorCurrent().getValueAsDouble());
-
-    SmartDashboard.putNumber("ElevatorMotor1Voltage", elevatorMotor1.getMotorVoltage().getValueAsDouble());
-    SmartDashboard.putNumber("ElevatorMotor2Voltage", elevatorMotor2.getMotorVoltage().getValueAsDouble());
-
-    SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
-    SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());
-    SmartDashboard.putBoolean("ElevatorTopLimit1", limitSwitchTop1.get());
-    SmartDashboard.putBoolean("ElevatorTopLimit2", limitSwitchTop2.get());
-
+   
 //zeroing encoders
     if (limitSwitchBottom1.get() || limitSwitchBottom2.get()){
       setEncoders(0);
@@ -229,7 +213,16 @@ public boolean getLimitSwitches(){
     }else if(!limitSwitchTop1.get() || !limitSwitchTop2.get()){
       setEncoders(24.8); //TODO: FIND MAX ENCODER HEIGHT
     }
+    SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
 
+    SmartDashboard.putNumber("ElevatorMotor1Current", elevatorMotor1.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Current", elevatorMotor2.getStatorCurrent().getValueAsDouble());
+
+    SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
+    SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());
+    SmartDashboard.putBoolean("ElevatorTopLimit1", limitSwitchTop1.get());
+    SmartDashboard.putBoolean("ElevatorTopLimit2", limitSwitchTop2.get());
   
     stateManager.updateCurrentData("ElevatorPosition", elevatorMotor1.getPosition().getValueAsDouble());
  
