@@ -78,7 +78,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-    private final Climber climber = new Climber();
+    // private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -122,7 +122,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
 
-        climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
+        // climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
@@ -142,7 +142,7 @@ public class RobotContainer {
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
         pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 30, pilot));
-        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false));
+        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false,-6));
 
 
 

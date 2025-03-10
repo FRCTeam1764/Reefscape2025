@@ -21,7 +21,7 @@ import frc.robot.subsystems.LimelightSubsystem;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-public class LockOnAprilTag extends Command {
+public class LockOnAprilTagAuto extends Command {
   private LimelightSubsystem m_Limelight;
   private frc.robot.subsystems.CommandSwerveDrivetrain m_Drivetrain;
   private int m_pipeline;
@@ -32,20 +32,18 @@ public class LockOnAprilTag extends Command {
   private double offsetOfDesired = 0;
   
   //(swerve, Limelight2, 0, driver, false
-  public LockOnAprilTag(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, CommandXboxController controller, boolean robotcentric) {
+  public LockOnAprilTagAuto(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline , boolean robotcentric) {
     addRequirements(drivetrain);
     m_Drivetrain = drivetrain;
     m_Limelight = Limelight;
     m_pipeline = pipeline;
-    this.controller = controller;
-   // m_skew = skewDegrees;
+    //m_skew = skewDegrees;
   }
-  public LockOnAprilTag(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, CommandXboxController controller, boolean robotcentric, double offsetOfDesired) {
+  public LockOnAprilTagAuto(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, int pipeline, boolean robotcentric, double offsetOfDesired) {
     addRequirements(drivetrain);
     m_Drivetrain = drivetrain;
     m_Limelight = Limelight;
     m_pipeline = pipeline;
-    this.controller = controller;
     this.offsetOfDesired = offsetOfDesired;
     //m_skew = skewDegrees;
   }
@@ -70,8 +68,8 @@ public class LockOnAprilTag extends Command {
   public void execute() {
     SmartDashboard.putBoolean("AllignOnLLTarget running", true);
     double thetaOutput = 0;
-    double xOutput = controller.getLeftY();
-    double yOutput = controller.getLeftX();
+    double xOutput = .1;
+    double yOutput = 0;
 		if (m_Limelight.hasTarget()){
 			double vertical_angle = m_Limelight.getHorizontalAngleOfErrorDegrees();
 			double horizontal_angle = m_Limelight.getHorizontalAngleOfErrorDegrees() ;

@@ -6,6 +6,7 @@ package frc.robot;
 
 import java.lang.module.Configuration;
 
+import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -17,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
+import frc.robot.commands.BasicCommands.AutoIntake;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
@@ -24,6 +26,7 @@ import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveForward;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
+import frc.robot.commands.DriveCommands.LockOnAprilTagAuto;
 import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -136,14 +139,28 @@ public class AutonomousCommandFactory extends CommandFactory{
             new RequestStateChange(States.IDLE_ALGAE, stateManager));
     }
 
+    public Command wristIdle(){
+        return new WristCommand(intakeWrist, 20);
+    }
     public Command autoAlignCoral() {
         return new ParallelDeadlineGroup(
             new WaitCommand(1), 
-            new LockOnAprilTag(swerve, Limelight2, 1, driver, leftLimelight)
+            new LockOnAprilTagAuto(swerve, Limelight2, 1, leftLimelight,-6)
         );
     }
 
+    public Command autoCoralPickup(){
+        return new ParallelCommandGroup( new WristCommand(intakeWrist, 150), 
+        new IntakeCommand(intakeRollers, -.2, false));
+    }
+
+    public Command autoCoralReturn(){
+        return new InstantCommand().alongWith(new AutoIntake(intakeWrist, 20))
+        .alongWith(new IntakeCommand(intakeRollers, 0, false));
+    }
+
     public void configAutonomousCommands() {
+
         NamedCommands.registerCommand("LevelOnePosition", autoLevelPosition(1));
         NamedCommands.registerCommand("LevelTwoPosition", autoLevelPosition(2));
         NamedCommands.registerCommand("LevelThreePosition", autoLevelPosition(3));
@@ -159,7 +176,8 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));
-        NamedCommands.registerCommand("CoralPickup", algaeGroundPosition());
+        NamedCommands.registerCommand("CoralPickup", autoCoralPickup());
+        NamedCommands.registerCommand("CoralPickupReturn", autoCoralReturn());
         NamedCommands.registerCommand("idle", new RequestStateChange(States.IDLE, stateManager));
         
         

@@ -143,7 +143,7 @@ public class CommandFactory {
     }
 
     public Command algaeIdle() {
-        return new RequestStateChange(States.IDLE_ALGAE, stateManager);
+        return new RequestStateChange(States.IDLE, stateManager);
     }
 
     public Command algaeProcessorPosition() {
