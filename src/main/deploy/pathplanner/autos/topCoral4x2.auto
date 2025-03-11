@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "wristIdle"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "topStartToTopRightReef"
@@ -48,9 +54,28 @@
           }
         },
         {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "CoralPickup"
+            "name": "CoralPickupReturn"
           }
         },
         {

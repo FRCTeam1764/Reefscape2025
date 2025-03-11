@@ -102,8 +102,8 @@ public class AutonomousCommandFactory extends CommandFactory{
                 new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
+                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
+                    new WristCommand(intakeWrist, 40)).asProxy(),
                 new returnToIdle(stateManager)
                );
     }
@@ -113,8 +113,8 @@ public class AutonomousCommandFactory extends CommandFactory{
                 new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
+                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
+                    new WristCommand(intakeWrist, 40)).asProxy(),
                 new RequestStateChange(States.IDLE, stateManager));
     }
 
@@ -140,7 +140,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
 
     public Command wristIdle(){
-        return new WristCommand(intakeWrist, 20);
+        return new AutoIntake(intakeWrist, 20);
     }
     public Command autoAlignCoral() {
         return new ParallelDeadlineGroup(
