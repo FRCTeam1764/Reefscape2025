@@ -99,7 +99,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40),
+                new WristCommand(intakeWrist, 40).asProxy(),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -110,7 +110,7 @@ public class AutonomousCommandFactory extends CommandFactory{
 
     public Command autoLevelScore() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40),
+                new WristCommand(intakeWrist, 40).asProxy(),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -144,7 +144,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new ParallelDeadlineGroup(
-            new WaitCommand(1), 
+            new WaitCommand(2), 
             new LockOnAprilTagAuto(swerve, Limelight2, 1, leftLimelight,-6)
         );
     }

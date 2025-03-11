@@ -107,7 +107,7 @@ public class CommandFactory {
 
     public Command LevelScore() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40),
+                new WristCommand(intakeWrist, 40).asProxy(),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -121,7 +121,7 @@ public class CommandFactory {
     
     public Command Level4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40),
+                new WristCommand(intakeWrist, 40).asProxy(),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -143,7 +143,7 @@ public class CommandFactory {
     }
 
     public Command algaeIdle() {
-        return new RequestStateChange(States.IDLE, stateManager);
+        return new RequestStateChange(States.IDLE_ALGAE, stateManager);
     }
 
     public Command algaeProcessorPosition() {
@@ -163,8 +163,8 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 8.8).asProxy()),
-           new RequestStateChange(States.IDLE_CORAL, stateManager),
+            new ParallelDeadlineGroup(new WaitCommand(0.90), new ElevatorCommand(elevator, 8.50)),
+        new ParallelDeadlineGroup(new WaitCommand(0.9), new ElevatorCommand(elevator, 9.75)),
          
          //   new WaitCommand(1),
             new ParallelDeadlineGroup(new WaitCommand(0.5), new WristCommand(intakeWrist, 60).asProxy()), 
@@ -174,6 +174,8 @@ public class CommandFactory {
     public Command IntakeCoralPosition() {
         return new RequestStateChange(States.INTAKE_CORAL, stateManager);
     }
+
+    
 
 
     //limalight
@@ -186,7 +188,7 @@ public class CommandFactory {
     }
 
     public Command DriveToTargetOffset3() {
-        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -15, 15);
+        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -12.1, 21);
     }
 
     public Command DriveToTargetOffset4() {

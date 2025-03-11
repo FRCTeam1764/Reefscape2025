@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "topStartToTopRightReef"
@@ -15,6 +21,12 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.0
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "LevelFourPosition"
@@ -23,7 +35,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "DriveToOffsetLeft"
                 }
               }
             ]
@@ -48,7 +60,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -79,19 +91,19 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "deadline",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetLeft"
+                  "name": "LevelFourPosition"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "LevelFourPosition"
+                  "name": "DriveToOffsetRight"
                 }
               }
             ]

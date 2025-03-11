@@ -21,6 +21,12 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "LevelFourPosition"
@@ -33,12 +39,6 @@
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveForward"
           }
         },
         {
@@ -89,6 +89,12 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 1.5
+                }
+              },
+              {
                 "type": "named",
                 "data": {
                   "name": "LevelFourPosition"
@@ -97,16 +103,10 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetRight"
+                  "name": "DriveToOffsetLeft"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveForward"
           }
         },
         {

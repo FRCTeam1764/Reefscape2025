@@ -36,6 +36,7 @@ import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.CommandFactory.desiredAction;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
+import frc.robot.commands.BasicCommands.ElevatorCommandLimit;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
@@ -65,8 +66,9 @@ public class RobotContainer {
             .withDeadband(MaxSpeed * 0.06).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-    private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric().withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
-    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+    // private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric().withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.05)
+
+    private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric().withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.025).withDriveRequestType(DriveRequestType.OpenLoopVoltage).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -141,15 +143,13 @@ public class RobotContainer {
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
-        pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 30, pilot));
+        pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
         pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false,-6));
-
-
 
 
         
 
-        pilot.b().whileTrue(new InstantCommand( ()-> drivetrain.applyRequest(() ->
+        pilot.b().whileTrue(new InstantCommand(()-> drivetrain.applyRequest(() ->
             robotCentricDrive.withVelocityX(-pilot.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                 .withVelocityY(-pilot.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .withRotationalRate(-pilot.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
@@ -181,8 +181,9 @@ public class RobotContainer {
         copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
-    }
+        copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
 
+    }
     private void configureCueBindings() {
          pilot.leftTrigger(.7).onTrue(new InstantCommand( ()->commandFactory.getDesiredAction(true)));
          pilot.leftTrigger().onFalse(new InstantCommand(()->commandFactory.getDesiredAction(false)));
