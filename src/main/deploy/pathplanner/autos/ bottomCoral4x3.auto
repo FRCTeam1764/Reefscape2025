@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "wristIdle"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "bottomStartToBottomRightReef"

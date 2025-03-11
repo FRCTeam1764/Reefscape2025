@@ -140,7 +140,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
 
     public Command wristIdle(){
-        return new AutoIntake(intakeWrist, 20);
+        return new AutoIntake(intakeWrist, 20).asProxy();
     }
     public Command autoAlignCoral() {
         return new ParallelDeadlineGroup(
@@ -150,13 +150,11 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
 
     public Command autoCoralPickup(){
-        return new ParallelCommandGroup( new WristCommand(intakeWrist, 150), 
-        new IntakeCommand(intakeRollers, -.2, false));
+        return  algaeGroundPosition();
     }
 
     public Command autoCoralReturn(){
-        return new InstantCommand().alongWith(new AutoIntake(intakeWrist, 20))
-        .alongWith(new IntakeCommand(intakeRollers, 0, false));
+        return new RequestStateChange(States.IDLE, stateManager);
     }
 
     public void configAutonomousCommands() {

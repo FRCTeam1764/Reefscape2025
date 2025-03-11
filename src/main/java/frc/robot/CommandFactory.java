@@ -110,8 +110,8 @@ public class CommandFactory {
                 new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
+                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
+                    new WristCommand(intakeWrist, 40)).asProxy(),
                 new RequestStateChange(States.IDLE, stateManager));
     }
 
@@ -124,8 +124,8 @@ public class CommandFactory {
                 new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
-                    new IntakeCommand(intakeRollers, .2, false),
-                    new WristCommand(intakeWrist, 40)),
+                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
+                    new WristCommand(intakeWrist, 40).asProxy()),
                 new returnToIdle(stateManager)
                );
     }
@@ -163,11 +163,11 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 8.8)),
+            new ParallelDeadlineGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 8.8).asProxy()),
            new RequestStateChange(States.IDLE_CORAL, stateManager),
-           new ElevatorCommand(elevator, 9.5),
+         
          //   new WaitCommand(1),
-            new ParallelDeadlineGroup(new WaitCommand(0.5), new WristCommand(intakeWrist, 60)), 
+            new ParallelDeadlineGroup(new WaitCommand(0.5), new WristCommand(intakeWrist, 60).asProxy()), 
             new RequestStateChange(States.IDLE, stateManager));
     }
 
