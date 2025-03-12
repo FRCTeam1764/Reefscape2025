@@ -149,7 +149,7 @@ public class RobotContainer {
 
         
 
-        pilot.b().whileTrue(new InstantCommand(()-> drivetrain.applyRequest(() ->
+        pilot.b().whileTrue(new InstantCommand(()-> drivetrain.setControl(
             robotCentricDrive.withVelocityX(-pilot.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
                 .withVelocityY(-pilot.getLeftX() * MaxSpeed) // Drive left with negative X (left)
                 .withRotationalRate(-pilot.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
