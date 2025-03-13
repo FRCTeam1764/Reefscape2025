@@ -24,13 +24,18 @@ public class Climber extends SubsystemBase {
   public DigitalInput limitSwitch;
   private PositionDutyCycle setVoltage;
   public TalonFX m_climberMotor;
+  private boolean zeroClimber;
 
   public Climber() {
     m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id,Constants.CLIMBER_MOTOR.busName);
 
     setVoltage = new PositionDutyCycle(0).withSlot(0);
+
+    SmartDashboard.putBoolean("ClimberZero", false);
+
     
     SetUpClimberMotors();
+
     
   }
 
@@ -78,6 +83,11 @@ public class Climber extends SubsystemBase {
     SmartDashboard.putNumber("ClimbMotorTemperature", m_climberMotor.getDeviceTemp().getValueAsDouble());
 
     SmartDashboard.putNumber("ClimbMotorCurrent", m_climberMotor.getStatorCurrent().getValueAsDouble());
+    if (SmartDashboard.getBoolean("ClimberZero", true)) {
+      zeroEncoder();
+      SmartDashboard.putBoolean("ClimberZero", false);
+
+    }
 
   }
 }

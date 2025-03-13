@@ -13,6 +13,6 @@ public void execute(StateManager stateManager){
     stateManager.clearDesiredData();
     stateManager.addDesiredData(CommandConstants.ROLLER_KEY, -.5);
     stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 13.0);
-    stateManager.addDesiredData(CommandConstants.INTAKE_KEY,75.0 );
+    stateManager.addDesiredData(CommandConstants.INTAKE_KEY,65.0 );
 }
 }

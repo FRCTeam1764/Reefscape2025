@@ -35,6 +35,8 @@ import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.CommandFactory.desiredAction;
+import frc.robot.commands.BasicCommands.ClimberCommand;
+import frc.robot.commands.BasicCommands.ClimberPosition;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommandLimit;
 import frc.robot.commands.BasicCommands.IntakeCommand;
@@ -45,6 +47,7 @@ import frc.robot.commands.DefaultCommands.DefaultClimberCommand;
 import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
 import frc.robot.commands.DefaultCommands.DefaultWristCommand;
+import frc.robot.commands.DriveCommands.DriveRobotCentric;
 import frc.robot.commands.DriveCommands.DriveToLimeLightVisionOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
@@ -80,7 +83,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-    // private final Climber climber = new Climber();
+      private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -124,7 +127,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
 
-        // climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
+        climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
@@ -143,17 +146,14 @@ public class RobotContainer {
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
-        pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
-        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false,-6));
+        //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
+        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false,0)); //-6
+        pilot.back().whileTrue(new ClimberPosition(climber));
 
 
         
 
-        pilot.b().whileTrue(new InstantCommand(()-> drivetrain.setControl(
-            robotCentricDrive.withVelocityX(-pilot.getLeftY() * MaxSpeed) // Drive forward with negative Y (forward)
-                .withVelocityY(-pilot.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-pilot.getRightX() * MaxAngularRate)) // Drive counterclockwise with negative X (left)
-        ));
+        pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
         pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
         pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
@@ -162,7 +162,7 @@ public class RobotContainer {
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight4));
         //pilot.pov(270).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
+        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18.6, 16.1));
 
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());

@@ -99,11 +99,11 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40).asProxy(),
+                new WristCommand(intakeWrist, 50).asProxy(),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
-                    new WristCommand(intakeWrist, 40)).asProxy(),
+                    new WristCommand(intakeWrist, 50)).asProxy(),
                 new returnToIdle(stateManager)
                );
     }
@@ -145,7 +145,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     public Command autoAlignCoral() {
         return new ParallelDeadlineGroup(
             new WaitCommand(2), 
-            new LockOnAprilTagAuto(swerve, Limelight2, 1, leftLimelight,-6)
+            new LockOnAprilTagAuto(swerve, Limelight3, 1, leftLimelight,-6)
         );
     }
 
@@ -168,8 +168,8 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("AlgaeLow", autoAlgaeLow());
         NamedCommands.registerCommand("AlgaeHigh", autoAlgaeHigh());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
-        NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffset3());
-        NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset4());
+        NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffset4());
+        NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset3());
         NamedCommands.registerCommand("AlignToCoral", autoAlignCoral());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
