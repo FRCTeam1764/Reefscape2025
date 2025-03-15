@@ -68,7 +68,7 @@ public class LockOnAprilTagAuto extends Command {
   public void execute() {
     SmartDashboard.putBoolean("AllignOnLLTarget running", true);
     double thetaOutput = 0;
-    double xOutput = .15;
+    double xOutput = 0;
     double yOutput = 0;
 		if (m_Limelight.hasTarget()){
 			double vertical_angle = m_Limelight.getHorizontalAngleOfErrorDegrees();

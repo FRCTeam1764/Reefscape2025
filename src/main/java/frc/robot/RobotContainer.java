@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -83,7 +84,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-      private final Climber climber = new Climber();
+     // private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -108,6 +109,7 @@ public class RobotContainer {
         //drivetrain.seedFieldCentric();
        // configureCueBindings();
         configureBindings();
+        //CameraServer.startAutomaticCapture();
       //  autoFactory.configAutonomousCommands();
     }
 
@@ -127,7 +129,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
 
-        climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
+        //climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
@@ -140,18 +142,19 @@ public class RobotContainer {
     private void configureOldBindings() {
         pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
         pilot.leftTrigger().onFalse(commandFactory.LevelScore());
-        pilot.leftBumper().onTrue(commandFactory.LevelPosition(2));
+        pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
         pilot.leftBumper().onFalse(commandFactory.LevelScore());
         pilot.rightTrigger().onTrue(commandFactory.Level4Position());
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
         //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
-        pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false,0)); //-6
-        pilot.back().whileTrue(new ClimberPosition(climber));
-
-
-        
+        //pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false,0)); //-6
+        //copilot.start().whileTrue(new ClimberPosition(climber));
+        // copilot.start().onTrue(autoFactory.autoCoralPickup());
+        // copilot.start().onFalse(autoFactory.autoCoralReturn());
+        // copilot.back().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, true, -20.0));
+        //copilot.back().onTrue(autoFactory.autoAlignCoral());
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
@@ -159,10 +162,13 @@ public class RobotContainer {
         pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
         //pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
         //pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, -22, 13));
+        //pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.2, 10.9));
+        //pilot.pov(180).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -20.9, 15.4));
+
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
-        pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight4));
-        //pilot.pov(270).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18.6, 16.1));
+        pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight4));
+        //pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight3));
+        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -20.8, 17.4));//-15.7, 7.4));
 
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
@@ -182,6 +188,8 @@ public class RobotContainer {
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
+        // copilot.back().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(true)));
+        // copilot.start().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(false)));
 
     }
     private void configureCueBindings() {

@@ -72,8 +72,8 @@ this.stateManager = stateManager;
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
     flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.3;
-    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.3; 
+    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.4;
+    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.4; 
     flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flexConfig.CurrentLimits.StatorCurrentLimit = 60;
 
@@ -144,6 +144,8 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putNumber("IntakeWristPosition",jank.getAbsoluteEncoder().getPosition());
     SmartDashboard.putNumber("IntakeWristTempature",m_flexMotor.getDeviceTemp().getValueAsDouble());
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
+    SmartDashboard.putBoolean("WristHappy", m_flexMotor.getStatorCurrent().getValueAsDouble()<30);
+    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + 1);
     
 
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());

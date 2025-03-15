@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
@@ -101,14 +102,34 @@ public class cheaterDPAD {
 
   public void leftLimeLight() {
     left = true;
+    SmartDashboard.putBoolean("limalight", left);
   }  
 
   public void rightLimeLight() {
     left = false;
+    SmartDashboard.putBoolean("limalight", left);
+
   }
 
-  public Command reefLimelight(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight3) {
-    return left ? new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -22,  13) : new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -16.93,  11.7);
+  public Command reefLimelight(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight3, LimelightSubsystem limelight4) {
+    return left ? new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18.6, 16.1) : new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3);
+  }
+
+  public double getTargetX() {
+    SmartDashboard.putBoolean("limalight", left);
+    return left ?-18.6: 17.3;
+
+  }
+
+  public double getTargetY() {
+    SmartDashboard.putBoolean("limalight", left);
+    
+    return left ?16.1: 9.3;
+    
+  }
+
+  public LimelightSubsystem getLimelight(LimelightSubsystem limelight3, LimelightSubsystem limelight4) {
+    return left ? limelight3 : limelight4;
   }
 
   public void set(String wantedMode, String wantedAction) {

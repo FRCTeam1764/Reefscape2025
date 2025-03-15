@@ -77,6 +77,12 @@ public class DriveToTargetOffset extends Command {
       //xOutput = -m_throttle.get()*DrivetrainConstants.maxSpeedMetersPerSecond;
 		
 		} 
+
+    if (Math.abs(m_Limelight.getTa()-targety) <= 0.4 && Math.abs(m_Limelight.getTx()-targetx)<=0.25) {
+      SmartDashboard.putBoolean("Aligned", true);
+    } else {
+      SmartDashboard.putBoolean("Aligned", false);
+    }
     
     m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/3)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/3)).withRotationalRate(0));
   }
@@ -91,6 +97,7 @@ public class DriveToTargetOffset extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+   
     return false; //TODO: FINISH CHECKINHG
     //return Math.abs(m_Limelight.getTa()-targety) <= 0.4 && Math.abs(m_Limelight.getTx()-targetx)<=0.25;
   }

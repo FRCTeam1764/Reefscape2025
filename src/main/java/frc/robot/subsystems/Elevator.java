@@ -104,8 +104,8 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.275;
-    config.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
+    config.MotorOutput.PeakForwardDutyCycle = 0.30; //prev .275
+    config.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
@@ -119,8 +119,8 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.275;
-    config2.MotorOutput.PeakReverseDutyCycle = -.05; // can bump up to 12 or something
+    config2.MotorOutput.PeakForwardDutyCycle = 0.30;
+    config2.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 
@@ -219,6 +219,16 @@ public boolean getLimitSwitches(){
     SmartDashboard.putNumber("ElevatorMotor1Current", elevatorMotor1.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Current", elevatorMotor2.getStatorCurrent().getValueAsDouble());
 
+    SmartDashboard.putNumber("ElevatorMotor1Temp", elevatorMotor1.getDeviceTemp().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Temp", elevatorMotor2.getDeviceTemp().getValueAsDouble());
+
+    SmartDashboard.putNumber("ElevatorMotor1Speed", elevatorMotor1.getRotorVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("ElevatorMotor2Speed", elevatorMotor2.getRotorVelocity().getValueAsDouble());
+
+
+    SmartDashboard.putBoolean("ElevatorHappy", elevatorMotor1.getStatorCurrent().getValueAsDouble()<30 && elevatorMotor2.getStatorCurrent().getValueAsDouble()<30);
+
+    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + 1);
 
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
     SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());

@@ -40,6 +40,6 @@ public class WristCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return this.intake.getEncoderPos() <= this.desired+2 && this.intake.getEncoderPos() >= this.desired-2;
+    return this.intake.getEncoderPos() <= this.desired+1 && this.intake.getEncoderPos() >= this.desired-1;
   }
 }

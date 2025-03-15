@@ -95,14 +95,32 @@ public class CommandFactory {
     }
 
     public void changeLimelightOrienation(boolean leftLimelight) {
-        this.leftLimelight = leftLimelight;
+        left = leftLimelight;
+        SmartDashboard.putBoolean("limalight", left);
+
+    }
+
+    public boolean getOrientation() {
+        return left;
     }
 
     // TESTING COMMANDS
 
+    public Command reefLimelight(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight3, LimelightSubsystem limelight4, boolean trying) {
+        
+        return trying ? new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18.6, 16.1) : new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3);
+    }
+
     public Command LevelPosition(int index) {
         return new RequestStateChange(
             index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager);
+    }
+
+    public Command LevelPosition(int index, boolean test) {
+        return new SequentialCommandGroup(
+            new RequestStateChange(
+            index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager),
+            reefLimelight(swerve, Limelight3, Limelight4, test));
     }
 
     public Command LevelScore() {
@@ -112,6 +130,9 @@ public class CommandFactory {
                     new WaitCommand(.75),
                     new IntakeCommand(intakeRollers, .2, false),
                     new WristCommand(intakeWrist, 40)),
+                    new ParallelRaceGroup(new WaitCommand(.3),
+                    new WristCommand(intakeWrist, 30)),
+                    
                 new RequestStateChange(States.IDLE, stateManager));
     }
 
@@ -127,6 +148,8 @@ public class CommandFactory {
                     new WaitCommand(0.75),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
                     new WristCommand(intakeWrist, 50)),
+                    new ParallelRaceGroup(new WaitCommand(.3),
+                    new WristCommand(intakeWrist, 30)),
                 new returnToIdle(stateManager)
                );
     }
@@ -164,13 +187,13 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(new WaitCommand(0.50), new ElevatorCommand(elevator, 8.7)),
-        new ParallelDeadlineGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 9.6)),
+            new ParallelDeadlineGroup(new WaitCommand(0.30), new ElevatorCommand(elevator, 8.7)),
+        new ParallelDeadlineGroup(new WaitCommand(0.3), new ElevatorCommand(elevator, 9.6)),
         //new ElevatorCommand(elevator, 8.7).asProxy(),
        // new ParallelDeadlineGroup(new WaitCommand(0.9), new ElevatorCommand(elevator, 9).asProxy()),
         //new ElevatorCommand(elevator, 9.6).asProxy(),
          //   new WaitCommand(1),
-            new ParallelDeadlineGroup(new WaitCommand(0.5), new WristCommand(intakeWrist, 60)), 
+            new ParallelDeadlineGroup(new WaitCommand(0.3), new WristCommand(intakeWrist, 60)), 
             new RequestStateChange(States.IDLE, stateManager));
     }
 
@@ -307,24 +330,24 @@ public class CommandFactory {
         }
     }
 
-    public Command getLimelightAction() {
-        switch (currentAction) {
-            case INTAKE_ALGAE_HIGH:
-                return TurnToAngle();
-            case INTAKE_ALGAE_LOW:
-                return TurnToAngle();
-            case SCOREL4:
-                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
-            case SCOREL3:
-                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
-            case SCOREL2:
-                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
-            case SCOREL1:
-                return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
-            default:
-                return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
-        }
-    }
+    // public Command getLimelightAction() {
+    //     switch (currentAction) {
+    //         case INTAKE_ALGAE_HIGH:
+    //             return TurnToAngle();
+    //         case INTAKE_ALGAE_LOW:
+    //             return TurnToAngle();
+    //         case SCOREL4:
+    //             return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
+    //         case SCOREL3:
+    //             return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
+    //         case SCOREL2:
+    //             return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
+    //         case SCOREL1:
+    //             return left ? DriveToTargetOffset4() : DriveToTargetOffset3();
+    //         default:
+    //             return new InstantCommand(); // EQUIVALNT TO NULL, CHECK LATER TODO:
+    //     }
+    // }
 
     public void setDesiredAction(desiredAction currAction) {
         currentAction = currAction;

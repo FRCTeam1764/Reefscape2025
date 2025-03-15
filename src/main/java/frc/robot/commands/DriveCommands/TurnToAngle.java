@@ -38,17 +38,17 @@ public class TurnToAngle extends Command {
 		switch (tagID) {
 			// BLUE ALLIANCE ONES - GYRO MUST BE ZEROD CORRECTLY
 			case 18:
-				return 0.0;
+				return 0.0 +180 ;
 			case 19:
-				return 300;
+				return 300 +180;
 			case 20:
-				return 240;
+				return 240 +180 ;
 			case 21:
-				return 180;
+				return 180 +180 ;
 			case 22:
-				return 120;
+				return 120+180;
 			case 17:
-				return 60;
+				return 60+180;
 			// RED ALLIANCE ONES
 			case 7:
 				return 0.0;

@@ -143,14 +143,16 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new AutoIntake(intakeWrist, 20).asProxy();
     }
     public Command autoAlignCoral() {
-        return new ParallelDeadlineGroup(
-            new WaitCommand(2), 
-            new LockOnAprilTagAuto(swerve, Limelight3, 1, leftLimelight,-6)
-        );
+        return new SequentialCommandGroup(  new ParallelDeadlineGroup(
+            new WaitCommand(.5), 
+            new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-2)
+        ), new ParallelDeadlineGroup(new WaitCommand(1),
+        new DriveForward(swerve)
+        ));
     }
 
     public Command autoCoralPickup(){
-        return  algaeGroundPosition();
+        return algaeGroundPosition();
     }
 
     public Command autoCoralReturn(){

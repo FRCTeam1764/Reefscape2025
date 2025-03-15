@@ -15,7 +15,7 @@ public void execute(StateManager stateManager){
     stateManager.clearDesiredData();
 
     stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 20.0);
-    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 11.5);
+    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 11.0);
 
 }
 
