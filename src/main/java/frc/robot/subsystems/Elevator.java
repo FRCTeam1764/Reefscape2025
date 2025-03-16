@@ -228,7 +228,7 @@ public boolean getLimitSwitches(){
 
     SmartDashboard.putBoolean("ElevatorHappy", elevatorMotor1.getStatorCurrent().getValueAsDouble()<30 && elevatorMotor2.getStatorCurrent().getValueAsDouble()<30);
 
-    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + 1);
+    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + (SmartDashboard.getBoolean("ElevatorHappy", true) ? 0: 1));
 
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
     SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());

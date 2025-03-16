@@ -145,7 +145,7 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putNumber("IntakeWristTempature",m_flexMotor.getDeviceTemp().getValueAsDouble());
     SmartDashboard.putNumber("IntakeWristCurrent", m_flexMotor.getStatorCurrent().getValueAsDouble());
     SmartDashboard.putBoolean("WristHappy", m_flexMotor.getStatorCurrent().getValueAsDouble()<30);
-    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + 1);
+    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + (SmartDashboard.getBoolean("ElevatorHappy", true) ? 0: 1));
     
 
 stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
