@@ -34,21 +34,21 @@ public class TurnToAngle extends Command {
 
 	public double getRotation(int tagID) {
 		SmartDashboard.putNumber("Tagid", tagID);
-		System.out.println("MADE IT: " + tagID);
+		System.out.println("TAG ID: " + tagID);
 		switch (tagID) {
 			// BLUE ALLIANCE ONES - GYRO MUST BE ZEROD CORRECTLY
 			case 18:
-				return 0.0 +180 ;
+				return 0.0 +120 ;
 			case 19:
-				return 300 +180;
+				return 300 +120;
 			case 20:
-				return 240 +180 ;
+				return 240 +120 ;
 			case 21:
-				return 180 +180 ;
+				return 180 +120 ;
 			case 22:
-				return 120+180;
+				return 120+120;
 			case 17:
-				return 60+180;
+				return 60+120;
 			// RED ALLIANCE ONES
 			case 7:
 				return 0.0;

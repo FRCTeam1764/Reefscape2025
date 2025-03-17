@@ -213,12 +213,16 @@ public class CommandFactory {
         return new TurnToAngle(swerve, Limelight3);
     }
 
-    public Command DriveToTargetOffset3() {
-        return new  DriveToTargetOffset(swerve, Limelight4, 0, 0, 17.3, 9.3);
+    public Command DriveToTargetOffsetRight() {
+        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, 17.3, 9.3);
     }
 
-    public Command DriveToTargetOffset4() {
-        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -15, 15);
+    public Command DriveToTargetOffsetLeft() {
+        return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -18.0, 14.8);
+    }
+
+    public Command DriveToTargetOffsetMiddle() {
+        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, -20.5, 15.0);
     }
 
     // AUTOMATED COMMANDS

@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "sequential",
+          "type": "wait",
           "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 0.2
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "bottomStartToBottomRightReef"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LevelThreePosition"
-                }
-              }
-            ]
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "bottomStartToBottomRightRightReef"
           }
         },
         {
@@ -42,7 +29,13 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "DriveToOffsetLeft"
+                  "name": "LevelThreePosition"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "DriveToOffsetRight"
                 }
               }
             ]
@@ -57,7 +50,38 @@
         {
           "type": "path",
           "data": {
-            "pathName": "bottomRightToBottomAlgae"
+            "pathName": "bottomRightRightToBottomAlgae"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickupReturn"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "bottomAlgaeToBottomLeftReef"
           }
         },
         {
@@ -67,19 +91,19 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 1.0
+                  "waitTime": 2.0
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CoralPickup"
+                  "name": "LevelFourPosition"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignToCoral"
+                  "name": "DriveToOffsetRight"
                 }
               }
             ]
@@ -88,57 +112,7 @@
         {
           "type": "named",
           "data": {
-            "name": "DriveForward"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "idle"
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "bottomAlgaeToBottomLeftReef"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LevelThreePosition"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 1.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DriveToOffsetLeft"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LevelScore"
+            "name": "LevelFourScore"
           }
         }
       ]

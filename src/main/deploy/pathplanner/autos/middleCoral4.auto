@@ -65,61 +65,6 @@
           "data": {
             "name": "LevelFourScore"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "middleLeftToMid"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlgaeHigh"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "wait",
-                "data": {
-                  "waitTime": 2.0
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "DriveToOffsetMiddle"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlgaeHigh"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveForward"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "middleLeftOut"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AlgaeIdle"
-          }
         }
       ]
     }

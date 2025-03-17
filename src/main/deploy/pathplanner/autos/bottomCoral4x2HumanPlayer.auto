@@ -13,7 +13,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "topStartToTopRightRightReef"
+            "pathName": "bottomStartToBottomRightReef"
           }
         },
         {
@@ -58,6 +58,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveForward"
           }
         },
         {
@@ -67,40 +73,41 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "topRightRightReefToTopAlgae"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "named",
+                "type": "path",
                 "data": {
-                  "name": "AlignToCoral"
+                  "pathName": "bottomReefRightLeftToSource"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "CoralPickup"
+                  "name": "CoralIntake"
                 }
               }
             ]
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "CoralPickupReturn"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "topAlgaeToTopLeftRightReef"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "bottomSourceToReefLeftLeft"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralIntake"
+                }
+              }
+            ]
           }
         },
         {
@@ -145,6 +152,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveForward"
           }
         },
         {

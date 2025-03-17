@@ -153,8 +153,7 @@ public class RobotContainer {
         //copilot.start().whileTrue(new ClimberPosition(climber));
         // copilot.start().onTrue(autoFactory.autoCoralPickup());
         // copilot.start().onFalse(autoFactory.autoCoralReturn());
-        // copilot.back().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, true, -20.0));
-        //copilot.back().onTrue(autoFactory.autoAlignCoral());
+        // copilot.back().onTrue(autoFactory.autoAlignCoral());
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
@@ -166,9 +165,9 @@ public class RobotContainer {
         //pilot.pov(180).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -20.9, 15.4));
 
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
-        pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight4));
+        pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight3));
         //pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -20.8, 17.4));//-15.7, 7.4));
+        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
 
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
@@ -182,8 +181,8 @@ public class RobotContainer {
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
         copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
 
-        copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
-        copilot.pov(180).onFalse(commandFactory.algaeIdle());
+        // copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
+        // copilot.pov(180).onFalse();
         copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 

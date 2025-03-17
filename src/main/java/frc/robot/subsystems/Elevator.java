@@ -226,10 +226,16 @@ public boolean getLimitSwitches(){
     SmartDashboard.putNumber("ElevatorMotor2Speed", elevatorMotor2.getRotorVelocity().getValueAsDouble());
 
 
-    SmartDashboard.putBoolean("ElevatorHappy", elevatorMotor1.getStatorCurrent().getValueAsDouble()<30 && elevatorMotor2.getStatorCurrent().getValueAsDouble()<30);
+    if (elevatorMotor1.getStatorCurrent().getValueAsDouble()>30 || elevatorMotor2.getStatorCurrent().getValueAsDouble()>30) {
+      if (SmartDashboard.getBoolean("ElevatorHappy", true)) {
+        SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + 1);
+      }
+      SmartDashboard.putBoolean("ElevatorHappy", false);
+    } else {
+      SmartDashboard.putBoolean("ElevatorHappy", true);
 
-    SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + (SmartDashboard.getBoolean("ElevatorHappy", true) ? 0: 1));
-
+    }
+    
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
     SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());
     SmartDashboard.putBoolean("ElevatorTopLimit1", limitSwitchTop1.get());

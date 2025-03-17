@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 7.132684426229508,
-        "y": 1.8792008196721315
+        "x": 2.0434931506849314,
+        "y": 5.858133561643836
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.26119470020211,
-        "y": 1.8792008196721315
+        "x": 2.359032534246575,
+        "y": 5.783005136986301
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "topAlgae"
     },
     {
       "anchor": {
-        "x": 5.46975,
-        "y": 2.572249999999999
+        "x": 3.53925,
+        "y": 5.36075
       },
       "prevControl": {
-        "x": 5.980623287671234,
-        "y": 2.0764023972602725
+        "x": 2.8480684931506848,
+        "y": 5.946751712328767
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "bottomRightLeft"
+      "linkedName": "topLeftReef"
     }
   ],
   "rotationTargets": [],
@@ -42,7 +42,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 123.31063082456072
+    "rotation": -57.85723325421854
   },
   "reversed": false,
   "folder": null,

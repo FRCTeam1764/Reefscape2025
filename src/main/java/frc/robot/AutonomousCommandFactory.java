@@ -99,7 +99,9 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 50).asProxy(),
+                new ParallelDeadlineGroup(
+                    new WaitCommand(1), 
+                    new WristCommand(intakeWrist, 50).asProxy()),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -110,9 +112,11 @@ public class AutonomousCommandFactory extends CommandFactory{
 
     public Command autoLevelScore() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40).asProxy(),
                 new ParallelDeadlineGroup(
-                    new WaitCommand(.5),
+                    new WaitCommand(0.5), 
+                    new WristCommand(intakeWrist, 40).asProxy()),
+                new ParallelDeadlineGroup(
+                    new WaitCommand(0.75),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
                     new WristCommand(intakeWrist, 40)).asProxy(),
                 new RequestStateChange(States.IDLE, stateManager));
@@ -122,7 +126,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new ParallelCommandGroup(
             new RequestStateChange(
                 index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager), 
-                new waitUntilPosition(stateManager, CommandConstants.ELEVATOR_KEY, 4, CommandConstants.ELEVATOR_KEY, 4));
+                new waitUntilPosition(stateManager));
     }
 
     public Command autoAlgaeLow() {
@@ -134,7 +138,7 @@ public class AutonomousCommandFactory extends CommandFactory{
 
     public Command autoAlgaeHigh() {
         return new SequentialCommandGroup(
-            new RequestStateChange(States.INTAKE_ALGAE_LOW, stateManager),
+            new RequestStateChange(States.INTAKE_ALGAE_HIGH, stateManager),
             new waitUntilPosition(stateManager),
             new RequestStateChange(States.IDLE_ALGAE, stateManager));
     }
@@ -144,9 +148,9 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
-            new WaitCommand(.5), 
-            new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-2)
-        ), new ParallelDeadlineGroup(new WaitCommand(1),
+            new WaitCommand(1), 
+            new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
+        ), new ParallelDeadlineGroup(new WaitCommand(2),
         new DriveForward(swerve)
         ));
     }
@@ -167,14 +171,17 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("LevelFourPosition", autoLevel4Position());
         NamedCommands.registerCommand("LevelScore", autoLevelScore());
         NamedCommands.registerCommand("LevelFourScore", autoLevel4Score());
-        NamedCommands.registerCommand("AlgaeLow", autoAlgaeLow());
-        NamedCommands.registerCommand("AlgaeHigh", autoAlgaeHigh());
+        NamedCommands.registerCommand("AlgaeLow", algaeLowPosition());
+        NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
+        NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
-        NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffset4());
-        NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffset3());
+        NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
+        NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
+        NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());
         NamedCommands.registerCommand("AlignToCoral", autoAlignCoral());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
+        NamedCommands.registerCommand("CoralPosition", IntakeCoralPosition());
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));
         NamedCommands.registerCommand("CoralPickup", autoCoralPickup());
         NamedCommands.registerCommand("CoralPickupReturn", autoCoralReturn());
