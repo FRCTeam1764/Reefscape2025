@@ -24,6 +24,7 @@ import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
+import frc.robot.commands.DriveCommands.DriveBackward;
 import frc.robot.commands.DriveCommands.DriveForward;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.LockOnAprilTagAuto;
@@ -93,19 +94,17 @@ public class AutonomousCommandFactory extends CommandFactory{
 
     public Command autoLevel4Position() {
         return new ParallelCommandGroup(
-            new RequestStateChange(States.L4, stateManager), 
-                new waitUntilPosition(stateManager));
+            new RequestStateChange(States.L4, stateManager));
     }
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new ParallelDeadlineGroup(
-                    new WaitCommand(1), 
-                    new WristCommand(intakeWrist, 50).asProxy()),
-                new ParallelDeadlineGroup(
-                    new WaitCommand(0.5),
-                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
-                    new WristCommand(intakeWrist, 50)).asProxy(),
+                new WristCommand(intakeWrist, 50).asProxy(),
+                new ParallelCommandGroup(
+                    new WristCommand(intakeWrist, 50).asProxy(),
+                    new ParallelDeadlineGroup(
+                        new WaitCommand(0.5),
+                        new IntakeCommand(intakeRollers, .2, false).asProxy())),
                 new returnToIdle(stateManager)
                );
     }
@@ -148,9 +147,9 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
-            new WaitCommand(1), 
+            new WaitCommand(0.5), 
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
-        ), new ParallelDeadlineGroup(new WaitCommand(2),
+        ), new ParallelDeadlineGroup(new WaitCommand(2.0),
         new DriveForward(swerve)
         ));
     }
@@ -183,6 +182,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
         NamedCommands.registerCommand("CoralPosition", IntakeCoralPosition());
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));
+        NamedCommands.registerCommand("DriveBackward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveBackward(swerve)));
         NamedCommands.registerCommand("CoralPickup", autoCoralPickup());
         NamedCommands.registerCommand("CoralPickupReturn", autoCoralReturn());
         NamedCommands.registerCommand("idle", new RequestStateChange(States.IDLE, stateManager));

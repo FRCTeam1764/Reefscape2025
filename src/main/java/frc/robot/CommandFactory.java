@@ -222,7 +222,7 @@ public class CommandFactory {
     }
 
     public Command DriveToTargetOffsetMiddle() {
-        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, -20.5, 15.0);
+        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, 28.5, 5.0);
     }
 
     // AUTOMATED COMMANDS

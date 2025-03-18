@@ -84,7 +84,7 @@ public class DriveToTargetOffset extends Command {
       SmartDashboard.putBoolean("Aligned", false);
     }
     
-    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/3)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/3)).withRotationalRate(0));
+    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/2)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/2)).withRotationalRate(0));
   }
 
   // Called once the command ends or is interrupted.
