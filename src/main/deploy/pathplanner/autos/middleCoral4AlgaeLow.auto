@@ -75,7 +75,7 @@
         {
           "type": "named",
           "data": {
-            "name": "AlgaeHigh"
+            "name": "AlgaeLow"
           }
         },
         {
@@ -97,7 +97,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlgaeHigh"
+                  "name": "AlgaeLow"
                 }
               }
             ]

@@ -48,6 +48,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ChangePipelineGround"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "topRightRightReefToTopAlgae"

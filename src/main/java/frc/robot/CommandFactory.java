@@ -125,7 +125,22 @@ public class CommandFactory {
 
     public Command LevelScore() {
         return new SequentialCommandGroup(
+                new WristCommand(intakeWrist, 45),
+                new WaitCommand(.1),
+                new ParallelDeadlineGroup(
+                    new WaitCommand(.75),
+                    new IntakeCommand(intakeRollers, .1, false),
+                    new WristCommand(intakeWrist, 45)),
+                    new ParallelRaceGroup(new WaitCommand(.3),
+                    new WristCommand(intakeWrist, 30)),
+                    
+                new RequestStateChange(States.IDLE, stateManager));
+    }
+
+    public Command LevelScoreL2() {
+        return new SequentialCommandGroup(
                 new WristCommand(intakeWrist, 40),
+                new WaitCommand(.1),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.75),
                     new IntakeCommand(intakeRollers, .2, false),
@@ -135,18 +150,18 @@ public class CommandFactory {
                     
                 new RequestStateChange(States.IDLE, stateManager));
     }
-
     public Command Level4Position() {
         return new RequestStateChange(States.L4, stateManager);
     }
     
     public Command Level4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 40),
-                
+                new ParallelCommandGroup( 
+                    new IntakeCommand(intakeRollers, -.1, false).asProxy(),
+                    new WristCommand(intakeWrist, 40)),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.75),
-                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
+                    new IntakeCommand(intakeRollers, .1, false).asProxy(),
                     new WristCommand(intakeWrist, 50)),
                     new ParallelRaceGroup(new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),

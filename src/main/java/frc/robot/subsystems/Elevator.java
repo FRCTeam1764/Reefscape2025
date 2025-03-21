@@ -104,7 +104,7 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.4; //prev .275
+    config.MotorOutput.PeakForwardDutyCycle = 0.45; //prev .275
     config.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -119,7 +119,7 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.4;
+    config2.MotorOutput.PeakForwardDutyCycle = 0.45;
     config2.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -209,10 +209,10 @@ public boolean getLimitSwitches(){
 //zeroing encoders
     if (limitSwitchBottom1.get() || limitSwitchBottom2.get()){
       setEncoders(0);
-      
-    }else if(!limitSwitchTop1.get() || !limitSwitchTop2.get()){
-      setEncoders(24.8); //TODO: FIND MAX ENCODER HEIGHT
-    }
+    }  
+    // }else if(!limitSwitchTop1.get() || !limitSwitchTop2.get()){
+    //   setEncoders(24.8); //TODO: FIND MAX ENCODER HEIGHT
+    // }
     SmartDashboard.putNumber("ElevatorMotor1Position", elevatorMotor1.getPosition().getValueAsDouble());
     SmartDashboard.putNumber("ElevatorMotor2Position", elevatorMotor2.getPosition().getValueAsDouble());
 
@@ -245,4 +245,4 @@ public boolean getLimitSwitches(){
  
   }
 
-}
+  }

@@ -16,7 +16,7 @@ public void execute(StateManager stateManager){
 
     stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 105.0);
     stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 1.5);
-    stateManager.addDesiredData(CommandConstants.ROLLER_KEY, -.1);
+    stateManager.addDesiredData(CommandConstants.ROLLER_KEY, -.15);
 }
    
 }

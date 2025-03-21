@@ -83,9 +83,10 @@ public class LockOnAprilTag extends Command {
 				thetaOutput = thetaController.calculate(horizontal_angle, setpoint);
 			}
       SmartDashboard.putNumber("targeting error", horizontal_angle);
+      SmartDashboard.putBoolean("TARGET", true);
 		} 
     else {
-			System.out.println("NO TARGET");
+      SmartDashboard.putBoolean("TARGET", false);
 		}
     m_Drivetrain.setControl(drive.withVelocityX(-xOutput*MaxSpeed).withVelocityY(-yOutput*MaxSpeed).withRotationalRate(thetaOutput*MaxAngularRate));
   }

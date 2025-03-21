@@ -27,7 +27,7 @@ public class Climber extends SubsystemBase {
   private boolean zeroClimber;
 
   public Climber() {
-    m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id,Constants.CLIMBER_MOTOR.busName);
+   // m_climberMotor = new TalonFX(Constants.CLIMBER_MOTOR.id,Constants.CLIMBER_MOTOR.busName);
 
     setVoltage = new PositionDutyCycle(0).withSlot(0);
 

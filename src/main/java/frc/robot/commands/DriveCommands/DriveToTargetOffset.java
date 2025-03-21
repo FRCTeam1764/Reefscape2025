@@ -23,8 +23,8 @@ public class DriveToTargetOffset extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController xController = new PIDController(0.02, 0.0001, 0.0085);//.0045);
-  private PIDController yController = new PIDController(0.04, 0.0001, 0.02);
+  private PIDController xController = new PIDController(0.02, 0.0001, 0.00085);//.0045);
+  private PIDController yController = new PIDController(0.04, 0.0001, 0.002);
   private double targetx;
   private double targety;
 
@@ -40,6 +40,9 @@ public class DriveToTargetOffset extends Command {
     xController.setSetpoint(targetx);
     yController.setSetpoint(targety);
     this.offset = offset;
+    SmartDashboard.putBoolean("TARGET", false);
+    SmartDashboard.putBoolean("Aligned", false);
+
   }
 
   private final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
@@ -62,7 +65,6 @@ public class DriveToTargetOffset extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("DriveToLLTarget running", true);
     double xSpeed = 0;
     double ySpeed = 0;
 		if (m_Limelight.hasTarget()){
@@ -75,8 +77,11 @@ public class DriveToTargetOffset extends Command {
 
 
       //xOutput = -m_throttle.get()*DrivetrainConstants.maxSpeedMetersPerSecond;
-		
-		} 
+		SmartDashboard.putBoolean("TARGET", true);
+		}else{
+      SmartDashboard.putBoolean("TARGET", false);
+
+    }
 
     if (Math.abs(m_Limelight.getTa()-targety) <= 0.4 && Math.abs(m_Limelight.getTx()-targetx)<=0.25) {
       SmartDashboard.putBoolean("Aligned", true);
@@ -90,7 +95,6 @@ public class DriveToTargetOffset extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SmartDashboard.putBoolean("DriveToLLTarget running", true);
     m_Drivetrain.setControl(drive.withVelocityX(0).withVelocityY(0).withRotationalRate(0));
   }
 

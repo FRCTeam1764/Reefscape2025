@@ -140,10 +140,10 @@ public class RobotContainer {
     }
 
     private void configureOldBindings() {
-        pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
-        pilot.leftTrigger().onFalse(commandFactory.LevelScore());
+        //pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
+        //pilot.leftTrigger().onFalse(commandFactory.LevelScore());
         pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
-        pilot.leftBumper().onFalse(commandFactory.LevelScore());
+        pilot.leftBumper().onFalse(commandFactory.LevelScoreL2());
         pilot.rightTrigger().onTrue(commandFactory.Level4Position());
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));

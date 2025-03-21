@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -99,14 +100,16 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new WristCommand(intakeWrist, 50).asProxy(),
-                new ParallelCommandGroup(
-                    new WristCommand(intakeWrist, 50).asProxy(),
-                    new ParallelDeadlineGroup(
-                        new WaitCommand(0.5),
-                        new IntakeCommand(intakeRollers, .2, false).asProxy())),
-                new returnToIdle(stateManager)
-               );
+                new ParallelCommandGroup( 
+                    new IntakeCommand(intakeRollers, -.1, false).asProxy(),
+                    new WristCommand(intakeWrist, 40)),
+                new ParallelDeadlineGroup(
+                    new WaitCommand(0.75),
+                    new IntakeCommand(intakeRollers, .1, false),
+                    new WristCommand(intakeWrist, 50)),
+                    new ParallelRaceGroup(new WaitCommand(.3),
+                    new WristCommand(intakeWrist, 30)),
+                new returnToIdle(stateManager)).asProxy();
     }
 
     public Command autoLevelScore() {
@@ -147,12 +150,14 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
-            new WaitCommand(0.5), 
+            new WaitCommand(.75), 
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
-        ), new ParallelDeadlineGroup(new WaitCommand(2.0),
+        ), new ParallelDeadlineGroup(new WaitCommand(1.75),
         new DriveForward(swerve)
         ));
     }
+
+
 
     public Command autoCoralPickup(){
         return algaeGroundPosition();
@@ -161,6 +166,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     public Command autoCoralReturn(){
         return new RequestStateChange(States.IDLE, stateManager);
     }
+
 
     public void configAutonomousCommands() {
 
@@ -174,6 +180,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
         NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
+        NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(0)));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
         NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());
