@@ -11,15 +11,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "LevelFourPosition"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LevelFourScore"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
           }
         }
       ]

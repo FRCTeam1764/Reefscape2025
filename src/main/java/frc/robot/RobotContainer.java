@@ -183,10 +183,14 @@ public class RobotContainer {
 
         // copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
         // copilot.pov(180).onFalse();
+        
         copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
+        copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
+
+        
         // copilot.back().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(true)));
         // copilot.start().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(false)));
 

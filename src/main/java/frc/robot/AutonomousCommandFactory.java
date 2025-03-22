@@ -100,13 +100,12 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                new ParallelCommandGroup( 
-                    new IntakeCommand(intakeRollers, -.1, false).asProxy(),
-                    new WristCommand(intakeWrist, 40)),
+                    new WristCommand(intakeWrist, 50),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.75),
                     new IntakeCommand(intakeRollers, .1, false),
                     new WristCommand(intakeWrist, 50)),
+
                     new ParallelRaceGroup(new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
                 new returnToIdle(stateManager)).asProxy();
@@ -180,7 +179,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
         NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
-        NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(0)));
+        NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(1)));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
         NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());
