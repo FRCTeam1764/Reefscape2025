@@ -86,7 +86,7 @@ public class Elevator extends SubsystemBase {
 
     TalonFXConfiguration config2 = new TalonFXConfiguration();
 
-    config.Slot0.kP = 3.75; // p pid //4.1
+    config.Slot0.kP = 4.1; // p pid //4.1
     config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config.Slot0.kV = 0;
     config.Slot0.kA = 0;
@@ -94,14 +94,14 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.7; //prev .275
+    config.MotorOutput.PeakForwardDutyCycle = 0.8; //prev .275
     config.MotorOutput.PeakReverseDutyCycle = -.1; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
  
   
-    config2.Slot0.kP = 3.75; // p pid //4.1
+    config2.Slot0.kP = 4.1; // p pid //4.1
     config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config2.Slot0.kV = 0;
     config2.Slot0.kA = 0;
@@ -109,7 +109,7 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.7;
+    config2.MotorOutput.PeakForwardDutyCycle = 0.8;
     config2.MotorOutput.PeakReverseDutyCycle = -.1; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;

@@ -6,6 +6,8 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.*;
 
+import java.util.concurrent.CopyOnWriteArrayList;
+
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -127,7 +129,7 @@ public class RobotContainer {
         //copilot.start().whileTrue(new ClimberPosition(climber));
         // copilot.start().onTrue(autoFactory.autoCoralPickup());
         // copilot.start().onFalse(autoFactory.autoCoralReturn());
-        // copilot.back().onTrue(autoFactory.autoAlignCoral());
+         copilot.back().onTrue(autoFactory.autoAlignCoral());
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
@@ -145,22 +147,24 @@ public class RobotContainer {
         copilot.b().onFalse(commandFactory.algaeIdle());
         copilot.y().onTrue(commandFactory.algaeHighPosition());
         copilot.y().onFalse(commandFactory.algaeIdle());
+
+        
         copilot.a().onTrue(commandFactory.algaeBargePosition());
         //copilot.a().onFalse(commandFactory.algaeBargeBack());
-        
         //copilot.a().onFalse(commandFactory.algaeBargeScore());
 
 
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
         copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
 
+        
         // copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
         // copilot.pov(180).onFalse();
         
         copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
-        copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
+        //copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
     }
 
 

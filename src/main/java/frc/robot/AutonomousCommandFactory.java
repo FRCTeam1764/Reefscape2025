@@ -66,6 +66,15 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new ParallelCommandGroup(
             new RequestStateChange(States.L4, stateManager));
     }
+
+    // public Command autoLevel4Position() {
+    //     return new SequentialCommandGroup(
+    //         new RequestStateChange(States.L4, stateManager),
+    //         new ParallelDeadlineGroup(
+    //             new waitUntilPosition(stateManager), 
+    //             new IntakeCommand(intakeRollers, -0.1, false))
+    //         );
+    // }
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
@@ -120,8 +129,13 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
             new WaitCommand(.75), 
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
-        ), new ParallelDeadlineGroup(new WaitCommand(1.75),
-        new DriveForward(swerve)
+        ), 
+        new ParallelDeadlineGroup(
+            new WaitCommand(1.25),
+            new DriveForward(swerve)),
+        new ParallelCommandGroup(
+            new WristCommand(intakeWrist, 30),
+            new IntakeCommand(intakeRollers, 0.15, false)
         ));
     }
 
@@ -148,7 +162,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
         NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
-        NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(1)));
+        NamedCommands.registerCommand("ChangePipelineGround", new ParallelDeadlineGroup(new WaitCommand(0.1), new InstantCommand(() -> Limelight3.setPipeline(1))));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
         NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());

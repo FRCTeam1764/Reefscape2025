@@ -193,7 +193,8 @@ public class CommandFactory {
             new RequestStateChange(States.BARGE, stateManager),
             new waitUntilPositionIndex(stateManager, CommandConstants.ELEVATOR_KEY, 20),
             new ParallelDeadlineGroup(
-                new WaitCommand(0.6), 
+                new WaitCommand(0.8), 
+                new WristCommand(intakeWrist, 30).asProxy(),
                 new IntakeCommand(intakeRollers, 0.8, false)),
             new waitUntilPosition(stateManager),
             new returnToIdle(stateManager));
