@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.lang.constant.Constable;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -12,9 +11,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.util.datalog.BooleanLogEntry;
-import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -46,10 +43,6 @@ public class IntakeRollers extends SubsystemBase {
 
     limitSwitchIntake = new DigitalInput(Constants.INTAKE_LIMITSWITCH);
     internalbottomBreakbeam = new DigitalInput(Constants.INTAKE_BREAKBEAM);
-
-    DataLog log = DataLogManager.getLog();
- currentLog = new DoubleLogEntry(log, "IntakeCurrent");
- limitSwitchLog = new BooleanLogEntry(log, "IntakeLimitSwitch");
 
   }
 

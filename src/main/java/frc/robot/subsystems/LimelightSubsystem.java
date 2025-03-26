@@ -90,7 +90,7 @@ public class LimelightSubsystem extends SubsystemBase {
     
   }
   public void setPipeline(int pipe){
-LimelightHelpers.setPipelineIndex(Limelight, pipe);
+    LimelightHelpers.setPipelineIndex(Limelight, pipe);
   }
 
   public int getID(){
@@ -108,10 +108,10 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
     return LimelightHelpers.getTV(Limelight);
   }
 
-
   public double getTxAngleRadians(){
-    return   Units.degreesToRadians(getTx());
+    return Units.degreesToRadians(getTx());
   }
+
   public int getTargetAprilTagID(){
     RawFiducial[] temp =  LimelightHelpers.getRawFiducials(Limelight);
     int id = -1;
@@ -127,12 +127,10 @@ LimelightHelpers.setPipelineIndex(Limelight, pipe);
       // double distToRobot = fiducial.distToRobot;    // Distance to robot
       // double ambiguity = fiducial.ambiguity;   // Tag pose ambiguity
   }
-  
-    
-    return  id;
+  return id;
 }
-public void updatePoseEstimation()
-{
+  
+  public void updatePoseEstimation() {
   if (SwerveDriveTelemetry.isSimulation){
     //TODO: DO VISION STUFF FOR SIM 
   }

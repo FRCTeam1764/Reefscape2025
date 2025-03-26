@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 
 //TODO: FIND CONSTANTS FOR Limits, PID
@@ -62,18 +61,18 @@ public class IntakeWristRev extends SubsystemBase {
       )
    );
 
-  public IntakeWristRev( StateManager stateManager) {
+  public IntakeWristRev(StateManager stateManager) {
 
-  //configs
-this.stateManager = stateManager;
-
+    this.stateManager = stateManager;
+    
+    //configs
 
     //TODO figure out values
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
     flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.6;
-    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.6; 
+    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.7;
+    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.7; 
     flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flexConfig.CurrentLimits.StatorCurrentLimit = 60;
 
@@ -88,8 +87,6 @@ this.stateManager = stateManager;
     encoderConfig.positionConversionFactor(360);
     
 
-
-    
 
     jankconfig.absoluteEncoder.apply(encoderConfig);
     jank.configure(jankconfig, null, null);
@@ -107,9 +104,13 @@ this.stateManager = stateManager;
   }
 
   public void flexOn(double rotations) {
-    calculation = controller.calculate(revAbsoluteEncoder.getPosition(), rotations);
-    SmartDashboard.putNumber("INTAKE_WRIST_PID", calculation);
-    m_flexMotor.set(calculation);
+    if (getEncoderPos() > 300 || getEncoderPos() < 10 ){
+      m_flexMotor.set(0);
+    } else {
+      calculation = controller.calculate(revAbsoluteEncoder.getPosition(), rotations);
+      SmartDashboard.putNumber("INTAKE_WRIST_PID", calculation);
+      m_flexMotor.set(calculation);
+    }
   }
 
   public void startflex1(){
@@ -123,20 +124,6 @@ this.stateManager = stateManager;
   public double getEncoderPos() {
     return revAbsoluteEncoder.getPosition();
   }
-  
-
-
-
-  public boolean isFlexSafe(){
- 
-    double elevatorCurrentPos = (double) stateManager.getCurrentData("ElevatorPosition");
-
-    double wristCurrentPos = (double) stateManager.getCurrentData("WristEncoderPosition");
-    
-
-return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos < 30);
-  }
-
 
 
   @Override
@@ -147,8 +134,6 @@ return ( elevatorCurrentPos < 3 ) || (elevatorCurrentPos < 10 && wristCurrentPos
     SmartDashboard.putBoolean("WristHappy", m_flexMotor.getStatorCurrent().getValueAsDouble()<30);
     SmartDashboard.putNumber("UnhappyCount", SmartDashboard.getNumber("UnhappyCount", 0) + (SmartDashboard.getBoolean("ElevatorHappy", true) ? 0: 1));
     
-
-stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
-    
+    stateManager.updateCurrentData("WristEncoderPosition",revAbsoluteEncoder.getPosition());
   }
 }

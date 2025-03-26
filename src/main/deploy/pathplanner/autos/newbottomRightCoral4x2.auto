@@ -1,0 +1,158 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelFourPosition"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "bottomStartToBottomRightRightReef"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToOffsetRight"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ChangePipelineGround"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "bottomRightRightToBottomAlgae"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickupReturn"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelFourPosition"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "bottomAlgaeToBottomLeftRightReef"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.5
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToOffsetRight"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

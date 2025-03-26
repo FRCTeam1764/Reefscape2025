@@ -10,25 +10,18 @@ import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.MotionMagicDutyCycle;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
-import com.ctre.phoenix6.controls.PositionDutyCycle;
-import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.StrictFollower;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.units.VoltageUnit;
-import edu.wpi.first.units.measure.Voltage;
+
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.DutyCycle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.constants.CommandConstants;
 import frc.robot.constants.Constants;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -45,13 +38,10 @@ public class Elevator extends SubsystemBase {
   public DigitalInput limitSwitchBottom2;
   private VoltageOut voltageOut = new VoltageOut(0.0);
   
-
-
   private MotionMagicVoltage setVoltage;
-  private double desiredEncoder;
   private StateManager stateManager;
   int negative;
-// try using these
+  // try using these
   public static final double MOTION_MAGIC_ACCELERATION = 120;//80
   public static final double MOTION_MAGIC_VELOCITY = 170;//100
 
@@ -104,7 +94,7 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.45; //prev .275
+    config.MotorOutput.PeakForwardDutyCycle = 0.65; //prev .275
     config.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -119,7 +109,7 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.45;
+    config2.MotorOutput.PeakForwardDutyCycle = 0.65;
     config2.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -149,23 +139,20 @@ public class Elevator extends SubsystemBase {
   public void elevatorOn(double desiredEncoderValue){
     //TOOD: NEED FEEDFORWARD
 
-    @SuppressWarnings("unused")
-    StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));//.withLimitReverseMotion(true));
+    if (getEncoderValue() > 30 || getEncoderValue() < -2 || getEncoderValue2() > 30 || getEncoderValue2() < -2 ){
+      elevatorMotor1.set(0);
+    } else {
+      @SuppressWarnings("unused")
+      StatusCode val =   elevatorMotor1.setControl(setVoltage.withPosition(desiredEncoderValue).withSlot(0));//.withLimitReverseMotion(true));
+    }
   }
 
   public void elevatorOnSpeed(double speed){
     elevatorMotor1.set(speed);
   }
 
-  // public void motionmagic(){
-  //   elevatorMotor1.setControl()
-  // }
-
   public void off() {
     elevatorMotor1.set(0);
-  }
-  public double getDesiredEncoder(){
-    return desiredEncoder;
   }
   public double getEncoderValue() {
     return elevatorMotor1.getPosition().getValueAsDouble(); //all the way 24.8
@@ -174,24 +161,15 @@ public class Elevator extends SubsystemBase {
   public double getEncoderValue2() {
     return elevatorMotor2.getPosition().getValueAsDouble();
   }
-  //TODO: find not safe encoder values
-  //CHECKS IF ELEVATOR IS TOO LOW OR TOO HIGH, AS WELL AS ENSURING INTAKE WILL NOT BE RAMMED INTO THE GROUND 
-  public boolean Motor1IsSafe(){
-    return (Math.abs(getEncoderValue()) > 3 && Math.abs(getEncoderValue()) <80) || (getEncoderValue() < 10 && (double) stateManager.getCurrentData("IntakeAngle") < 30 );
-  }
-  public boolean Motor2IsSafe(){
-    return (Math.abs(getEncoderValue2()) > 3 && Math.abs(getEncoderValue2()) <80)|| (getEncoderValue() < 10 && (double) stateManager.getCurrentData("IntakeAngle") < 30 );
-  }
-  
 
-public boolean getLimitSwitches(){
+  public boolean getLimitSwitches(){
     if (limitSwitchBottom1.get() && limitSwitchBottom2.get()){
-  return true;
-    }else  if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
-  return true;
-      }
-      return false;
-}
+      return true;
+    } else if(!limitSwitchTop1.get() && !limitSwitchTop2.get()){
+      return true;
+    }
+    return false;
+  }
 
 
 
@@ -203,10 +181,7 @@ public boolean getLimitSwitches(){
   @Override
   public void periodic() {
 
-    //elevatorOn(10);
-
-   
-//zeroing encoders
+    //zeroing encoders
     if (limitSwitchBottom1.get() || limitSwitchBottom2.get()){
       setEncoders(0);
     }  
@@ -233,7 +208,6 @@ public boolean getLimitSwitches(){
       SmartDashboard.putBoolean("ElevatorHappy", false);
     } else {
       SmartDashboard.putBoolean("ElevatorHappy", true);
-
     }
     
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
@@ -244,5 +218,4 @@ public boolean getLimitSwitches(){
     stateManager.updateCurrentData("ElevatorPosition", elevatorMotor1.getPosition().getValueAsDouble());
  
   }
-
-  }
+}

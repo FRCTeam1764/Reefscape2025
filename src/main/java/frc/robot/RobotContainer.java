@@ -9,42 +9,23 @@ import static edu.wpi.first.units.Units.*;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 
-import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.subsystems.Climber;
+
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
-import swervelib.parser.SwerveParser;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.LimelightSubsystem;
-import frc.robot.CommandFactory.desiredAction;
-import frc.robot.commands.BasicCommands.ClimberCommand;
-import frc.robot.commands.BasicCommands.ClimberPosition;
-import frc.robot.commands.BasicCommands.ElevatorCommand;
+
 import frc.robot.commands.BasicCommands.ElevatorCommandLimit;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
-import frc.robot.commands.BasicCommands.WristCommand;
-import frc.robot.commands.ComplexCommands.returnToIdle;
-import frc.robot.commands.DefaultCommands.DefaultClimberCommand;
+
 import frc.robot.commands.DefaultCommands.DefaultElevatorCommand;
 import frc.robot.commands.DefaultCommands.DefaultRollerCommand;
 import frc.robot.commands.DefaultCommands.DefaultWristCommand;
@@ -104,13 +85,12 @@ public class RobotContainer {
     private final SendableChooser<Command> chooser ;
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
-    chooser= AutoBuilder.buildAutoChooser("tests");
-    SmartDashboard.putData("Autos",chooser);
+        chooser = AutoBuilder.buildAutoChooser("tests");
+        SmartDashboard.putData("Autos",chooser);
         //drivetrain.seedFieldCentric();
-       // configureCueBindings();
         configureBindings();
         //CameraServer.startAutomaticCapture();
-      //  autoFactory.configAutonomousCommands();
+        //autoFactory.configAutonomousCommands();
     }
 
     private void configureBindings() {
@@ -133,15 +113,12 @@ public class RobotContainer {
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
-        configureOldBindings();
-       // configureOldBindings();
+        configureMainBindings();
 
         drivetrain.registerTelemetry(logger::telemeterize);
     }
 
-    private void configureOldBindings() {
-        //pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
-        //pilot.leftTrigger().onFalse(commandFactory.LevelScore());
+    private void configureMainBindings() {
         pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
         pilot.leftBumper().onFalse(commandFactory.LevelScoreL2());
         pilot.rightTrigger().onTrue(commandFactory.Level4Position());
@@ -176,6 +153,10 @@ public class RobotContainer {
         copilot.b().onFalse(commandFactory.algaeIdle());
         copilot.y().onTrue(commandFactory.algaeHighPosition());
         copilot.y().onFalse(commandFactory.algaeIdle());
+        copilot.a().onTrue(commandFactory.algaeBargePosition());
+        //copilot.a().onFalse(commandFactory.algaeBargeBack());
+        
+        //copilot.a().onFalse(commandFactory.algaeBargeScore());
 
 
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
@@ -188,34 +169,11 @@ public class RobotContainer {
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
-        copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
-
-        
-        // copilot.back().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(true)));
-        // copilot.start().onTrue(new InstantCommand(() -> commandFactory.changeLimelightOrienation(false)));
-
+        //copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
     }
-    private void configureCueBindings() {
-         pilot.leftTrigger(.7).onTrue(new InstantCommand( ()->commandFactory.getDesiredAction(true)));
-         pilot.leftTrigger().onFalse(new InstantCommand(()->commandFactory.getDesiredAction(false)));
 
-        // //pilot.a().onTrue(commandFactory.getLimelightAction());
-
-
-         copilot.leftTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL1)));
-         copilot.leftBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL2)));
-         copilot.rightTrigger(.7).onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL4)));
-         copilot.rightBumper().onTrue(new InstantCommand(() -> commandFactory.setDesiredAction(desiredAction.SCOREL3)));
-
-         copilot.y().onTrue(new InstantCommand( ()-> commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_HIGH)));
-         copilot.b().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_LOW)));
-        copilot.a().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.INTAKE_ALGAE_GROUND)));
-        copilot.x().onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.CLIMBER)));
-
-        copilot.pov(180).onTrue(new InstantCommand( ()->commandFactory.setDesiredAction(desiredAction.PROCESSOR)));
-    }
 
     public Command getAutonomousCommand() {
-        return    chooser.getSelected();
+        return chooser.getSelected();
     }
 }

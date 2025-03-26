@@ -47,8 +47,8 @@ public class waitUntilPositionIndex extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return ( (double) stateManager.getCurrentData(key) <= index +error ||
-             (double) stateManager.getCurrentData(key) <= index -error
+    return ( (double) stateManager.getCurrentData(key) <= index +error &&
+             (double) stateManager.getCurrentData(key) >= index -error
     );
   }
 }

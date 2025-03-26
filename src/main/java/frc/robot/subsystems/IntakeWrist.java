@@ -31,8 +31,8 @@ public class IntakeWrist extends SubsystemBase {
 
   public IntakeWrist( StateManager stateManager) {
 
-  //configs
-this.stateManager = stateManager;
+    //configs
+    this.stateManager = stateManager;
 
 
     //TODO figure out values

@@ -4,12 +4,9 @@
 
 package frc.robot;
 
-import java.lang.module.Configuration;
 
-import com.fasterxml.jackson.databind.util.Named;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -20,17 +17,14 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.AutoIntake;
-import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveBackward;
 import frc.robot.commands.DriveCommands.DriveForward;
-import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.LockOnAprilTagAuto;
-import frc.robot.commands.DriveCommands.TurnToAngle;
-import frc.robot.constants.CommandConstants;
+
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;

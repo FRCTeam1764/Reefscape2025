@@ -1,0 +1,240 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelFourPosition"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "topStartToTopRightRightReef"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToOffsetRight"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ChangePipelineGround"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "topRightRightReefToTopAlgae"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickupReturn"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelFourPosition"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "topAlgaeToTopLeftRightReef"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToOffsetRight"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "topLeftRightToMiddleAlgae"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "AlignToCoral"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "CoralPickup"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickupReturn"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "LevelThreePosition"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "middleAlgaeToMiddleRight"
+                      }
+                    },
+                    {
+                      "type": "deadline",
+                      "data": {
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "DriveToOffsetRight"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelScore"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}
