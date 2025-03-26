@@ -94,8 +94,8 @@ public class Elevator extends SubsystemBase {
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.65; //prev .275
-    config.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
+    config.MotorOutput.PeakForwardDutyCycle = 0.7; //prev .275
+    config.MotorOutput.PeakReverseDutyCycle = -.1; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
     config.CurrentLimits.StatorCurrentLimit = 60; 
@@ -109,8 +109,8 @@ public class Elevator extends SubsystemBase {
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.65;
-    config2.MotorOutput.PeakReverseDutyCycle = -.075; // can bump up to 12 or something
+    config2.MotorOutput.PeakForwardDutyCycle = 0.7;
+    config2.MotorOutput.PeakReverseDutyCycle = -.1; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;
     config2.CurrentLimits.StatorCurrentLimit = 60; 

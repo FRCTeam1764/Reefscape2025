@@ -13,6 +13,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Elevator;
@@ -32,6 +33,7 @@ import frc.robot.commands.DefaultCommands.DefaultWristCommand;
 import frc.robot.commands.DriveCommands.DriveRobotCentric;
 import frc.robot.commands.DriveCommands.DriveToLimeLightVisionOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
+import frc.robot.commands.DriveCommands.DriveToTargetOffsetLL3;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TrackObject;
 import frc.robot.commands.DriveCommands.TurnToAngle;
@@ -50,8 +52,6 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.06).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
-
-    // private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric().withDeadband(MaxSpeed * 0.025).withRotationalDeadband(MaxAngularRate * 0.05)
 
     private final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric().withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.025).withDriveRequestType(DriveRequestType.OpenLoopVoltage).withDriveRequestType(DriveRequestType.OpenLoopVoltage);
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -80,7 +80,6 @@ public class RobotContainer {
     private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
     private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
 
-    private final cheaterDPAD dpad = new cheaterDPAD(commandFactory, stateManager);
 
     private final SendableChooser<Command> chooser ;
     public RobotContainer() {
@@ -89,7 +88,6 @@ public class RobotContainer {
         SmartDashboard.putData("Autos",chooser);
         //drivetrain.seedFieldCentric();
         configureBindings();
-        //CameraServer.startAutomaticCapture();
         //autoFactory.configAutonomousCommands();
     }
 
@@ -126,7 +124,6 @@ public class RobotContainer {
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
         //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
-        //pilot.pov(0).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false,0)); //-6
         //copilot.start().whileTrue(new ClimberPosition(climber));
         // copilot.start().onTrue(autoFactory.autoCoralPickup());
         // copilot.start().onFalse(autoFactory.autoCoralReturn());
@@ -136,16 +133,11 @@ public class RobotContainer {
 
         pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
         pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
-        //pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -15, 15));
-        //pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, -22, 13));
-        //pilot.pov(0).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.2, 10.9));
-        //pilot.pov(180).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -20.9, 15.4));
 
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        //pilot.pov(180).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(270).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
-
+        pilot.pov(270).whileTrue(new DriveToTargetOffsetLL3(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
+        pilot.pov(180).onTrue(new InstantCommand(() -> limelight3.setPipeline(0)));
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
         copilot.pov(0).onFalse(commandFactory.algaeProcessorScore());
@@ -169,7 +161,6 @@ public class RobotContainer {
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
 
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
-        //copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
     }
 
 

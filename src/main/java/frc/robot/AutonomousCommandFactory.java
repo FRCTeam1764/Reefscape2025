@@ -62,31 +62,6 @@ public class AutonomousCommandFactory extends CommandFactory{
         configAutonomousCommands();
     }
 
-    // public Command autoLevelFour() {
-    //     return new SequentialCommandGroup(
-    //         new RequestStateChange(States.L4, stateManager), 
-    //         new waitUntilPosition(stateManager),
-    //         new WristCommand(intakeWrist, 40),
-    //             new ParallelDeadlineGroup(
-    //                 new WaitCommand(0.5),
-    //                 new IntakeCommand(intakeRollers, .2, false),
-    //                 new WristCommand(intakeWrist, 40)),
-    //             new returnToIdle(stateManager)
-    //     );
-    // }
-
-    // public Command autoLevelScore(int index) {
-    //     return new SequentialCommandGroup(
-    //             new RequestStateChange(index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager),
-    //             new waitUntilPosition(stateManager),
-    //             new WristCommand(intakeWrist, 40),
-    //             new ParallelDeadlineGroup(
-    //                 new WaitCommand(.5),
-    //                 new IntakeCommand(intakeRollers, .2, false),
-    //                 new WristCommand(intakeWrist, 40)),
-    //             new RequestStateChange(States.IDLE, stateManager));
-    // }
-
     public Command autoLevel4Position() {
         return new ParallelCommandGroup(
             new RequestStateChange(States.L4, stateManager));
@@ -181,7 +156,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
         NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
         NamedCommands.registerCommand("CoralPosition", IntakeCoralPosition());
-        NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveForward(swerve)));
+        NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.2),  new DriveForward(swerve)));
         NamedCommands.registerCommand("DriveBackward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveBackward(swerve)));
         NamedCommands.registerCommand("CoralPickup", autoCoralPickup());
         NamedCommands.registerCommand("CoralPickupReturn", autoCoralReturn());

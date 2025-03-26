@@ -19,7 +19,7 @@ import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimelightSubsystem;
 
 
-public class DriveToTargetOffset extends Command {
+public class DriveToTargetOffsetLL3 extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
@@ -30,7 +30,7 @@ public class DriveToTargetOffset extends Command {
 
   private boolean targeting = false;
   private double offset;
-  public DriveToTargetOffset(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, double offset, int pipeline, double targetx, double targety) {
+  public DriveToTargetOffsetLL3(CommandSwerveDrivetrain drivetrain, LimelightSubsystem Limelight, double offset, int pipeline, double targetx, double targety) {
     addRequirements(drivetrain);
     m_Drivetrain = drivetrain;
     m_Limelight = Limelight;
@@ -42,8 +42,9 @@ public class DriveToTargetOffset extends Command {
     this.offset = offset;
     SmartDashboard.putBoolean("TARGET", false);
     SmartDashboard.putBoolean("Aligned", false);
-
   }
+
+
 
   private final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
@@ -89,7 +90,7 @@ public class DriveToTargetOffset extends Command {
       SmartDashboard.putBoolean("Aligned", false);
     }
     
-    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed)).withRotationalRate(0));
+    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/2)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/2)).withRotationalRate(0));
   }
 
   // Called once the command ends or is interrupted.
