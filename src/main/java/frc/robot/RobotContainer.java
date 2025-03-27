@@ -129,7 +129,7 @@ public class RobotContainer {
         //copilot.start().whileTrue(new ClimberPosition(climber));
         // copilot.start().onTrue(autoFactory.autoCoralPickup());
         // copilot.start().onFalse(autoFactory.autoCoralReturn());
-         copilot.back().onTrue(autoFactory.autoAlignCoral());
+       //  copilot.back().onTrue(autoFactory.autoAlignCoral());
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
@@ -148,8 +148,8 @@ public class RobotContainer {
         copilot.y().onTrue(commandFactory.algaeHighPosition());
         copilot.y().onFalse(commandFactory.algaeIdle());
 
-        
-        copilot.a().onTrue(commandFactory.algaeBargePosition());
+        copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
+        copilot.pov(90).onTrue(commandFactory.algaeBargePosition());
         //copilot.a().onFalse(commandFactory.algaeBargeBack());
         //copilot.a().onFalse(commandFactory.algaeBargeScore());
 
@@ -162,9 +162,9 @@ public class RobotContainer {
         // copilot.pov(180).onFalse();
         
         copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
-        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
+        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE_ALGAE, stateManager));
 
-        //copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
+        copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
     }
 
 

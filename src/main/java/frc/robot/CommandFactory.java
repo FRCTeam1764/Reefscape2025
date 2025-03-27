@@ -164,7 +164,7 @@ public class CommandFactory {
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
-                new RequestStateChange(States.IDLE, stateManager)
+                new returnToIdle(stateManager)
                );
     }
 
@@ -231,7 +231,9 @@ public class CommandFactory {
     }
 
     public Command IntakeCoralPosition() {
-        return new RequestStateChange(States.INTAKE_CORAL, stateManager);
+        return
+        new SequentialCommandGroup( new ElevatorCommand(elevator, 10),
+        new RequestStateChange(States.INTAKE_CORAL, stateManager));
     }
 
     
