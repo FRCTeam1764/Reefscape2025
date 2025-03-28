@@ -28,6 +28,12 @@
               }
             ]
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "CoralPickupReturn"
+          }
         }
       ]
     }
