@@ -23,6 +23,7 @@ import frc.robot.commands.BasicCommands.WristCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveBackward;
 import frc.robot.commands.DriveCommands.DriveForward;
+import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.LockOnAprilTagAuto;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -78,15 +79,17 @@ public class AutonomousCommandFactory extends CommandFactory{
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
-                    new WristCommand(intakeWrist, 50),
+                new ParallelRaceGroup(
+                    new WaitCommand(0.2),
+                    new WristCommand(intakeWrist, 50)),
                 new ParallelDeadlineGroup(
-                    new WaitCommand(0.75),
+                    new WaitCommand(0.4),
                     new IntakeCommand(intakeRollers, .1, false),
                     new WristCommand(intakeWrist, 50)),
-
-                    new ParallelRaceGroup(new WaitCommand(.3),
+                new ParallelRaceGroup(
+                    new WaitCommand(.2),
                     new WristCommand(intakeWrist, 30)),
-                new returnToIdle(stateManager)).asProxy();
+                new RequestStateChange(States.IDLE, stateManager)).asProxy();
     }
 
     public Command autoLevelScore() {
@@ -131,12 +134,9 @@ public class AutonomousCommandFactory extends CommandFactory{
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
         ), 
         new ParallelDeadlineGroup(
-            new WaitCommand(1.25),
-            new DriveForward(swerve)),
-        new ParallelCommandGroup(
-            new WristCommand(intakeWrist, 30),
-            new IntakeCommand(intakeRollers, 0.15, false)
-        ));
+            new WaitCommand(1.00),
+            new DriveForward(swerve))
+        );
     }
 
 
@@ -146,8 +146,18 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
 
     public Command autoCoralReturn(){
-        return new RequestStateChange(States.IDLE, stateManager);
+        return new SequentialCommandGroup(
+            new RequestStateChange(States.IDLE, stateManager), 
+            new ParallelDeadlineGroup(
+                new WaitCommand(0.4),
+                new WristCommand(intakeWrist, 30).asProxy(),
+                new IntakeCommand(intakeRollers, -0.15, false).asProxy()
+        ));
     }
+
+    // public Command DriveToTargetOffsetCoral() {
+    //     return new DriveToTargetOffset(swerve, Limelight3, 0, 1, 17.3, 9.3);
+    // }
 
 
     public void configAutonomousCommands() {
@@ -162,7 +172,7 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
         NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
-        NamedCommands.registerCommand("ChangePipelineGround", new ParallelDeadlineGroup(new WaitCommand(0.1), new InstantCommand(() -> Limelight3.setPipeline(1))));
+        NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(1)));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
         NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());

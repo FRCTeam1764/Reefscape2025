@@ -38,7 +38,7 @@ public class IntakeWristRev extends SubsystemBase {
   private SparkMax jank = new SparkMax(5,MotorType.kBrushless); //this is bad, dont do this future coders!
   private AbsoluteEncoder revAbsoluteEncoder = jank.getAbsoluteEncoder(); //to run a rev encoder through a talon, we need to get it through the spark max and do external pid calculations. this will stay uintil we get a actual ctre-throughboreencoder
 
-  private PIDController controller = new PIDController(0.01, 0, 0.0001);
+  private PIDController controller = new PIDController(0.0075, 0, 0.0001);
 
   private StateManager stateManager;
 

@@ -45,7 +45,7 @@ public class ElevatorCommand extends Command {
 
 
 
-    return  this.elevator.getEncoderValue() <= this.desired+2 && this.elevator.getEncoderValue() >= this.desired-2;// false;
+    return  this.elevator.getEncoderValue() <= this.desired+1 && this.elevator.getEncoderValue() >= this.desired-1;// false;
 
 
     // if (stopAtLimitSwitch) {

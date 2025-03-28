@@ -164,7 +164,8 @@ public class CommandFactory {
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
-                new returnToIdle(stateManager)
+                //new returnToIdle(stateManager)
+                new RequestStateChange(States.IDLE, stateManager)
                );
     }
 
@@ -222,11 +223,23 @@ public class CommandFactory {
         );
     }
 
+    // public Command IntakeCoralTest() {
+    //     return new SequentialCommandGroup(
+    //         new ParallelDeadlineGroup(new WaitCommand(0.30), new ElevatorCommand(elevator, 8.7)),
+    //     new ParallelCommandGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 11.0)),
+    //      //   new ParallelDeadlineGroup(new WaitCommand(0.3), new WristCommand(intakeWrist, 60)), 
+    //         new RequestStateChange(States.IDLE, stateManager));
+    // }
+
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(new WaitCommand(0.30), new ElevatorCommand(elevator, 8.7)),
-        new ParallelCommandGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 11.0)),
-         //   new ParallelDeadlineGroup(new WaitCommand(0.3), new WristCommand(intakeWrist, 60)), 
+            new ElevatorCommand(elevator, 8).asProxy(),
+            new ElevatorCommand(elevator, 11).asProxy(),
+            new ParallelDeadlineGroup(  
+                new ParallelCommandGroup(
+                    new ElevatorCommand(elevator, 1),
+                    new WristCommand(intakeWrist, 30)),
+                new IntakeCommand(intakeRollers, -0.2, false)).asProxy(),
             new RequestStateChange(States.IDLE, stateManager));
     }
 

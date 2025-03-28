@@ -5,26 +5,19 @@
     "data": {
       "commands": [
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "LevelFourPosition"
-                      }
-                    }
-                  ]
+                  "name": "LevelFourPosition"
                 }
               },
               {
@@ -44,7 +37,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 1.5
                             }
                           },
                           {
@@ -66,6 +59,12 @@
           "type": "named",
           "data": {
             "name": "LevelFourScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ChangePipelineGround"
           }
         },
         {
@@ -126,7 +125,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.0
+                              "waitTime": 1.5
                             }
                           },
                           {

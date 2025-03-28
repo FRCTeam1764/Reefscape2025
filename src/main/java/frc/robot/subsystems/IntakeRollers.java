@@ -33,8 +33,8 @@ public class IntakeRollers extends SubsystemBase {
     TalonFXConfiguration intakeConfig = new TalonFXConfiguration();
     intakeConfig.MotorOutput.Inverted =  InvertedValue.Clockwise_Positive;
     intakeConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
-    intakeConfig.MotorOutput.PeakForwardDutyCycle = 0.8;
-    intakeConfig.MotorOutput.PeakReverseDutyCycle = -0.8;
+    intakeConfig.MotorOutput.PeakForwardDutyCycle = 0.9;
+    intakeConfig.MotorOutput.PeakReverseDutyCycle = -0.9;
     intakeConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     intakeConfig.CurrentLimits.StatorCurrentLimit = 60;
 
