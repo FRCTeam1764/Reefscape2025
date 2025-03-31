@@ -27,6 +27,7 @@ import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveToTarget;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
+import frc.robot.commands.DriveCommands.DriveToTargetOffsetLL3;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
@@ -195,8 +196,8 @@ public class CommandFactory {
             new waitUntilPositionIndex(stateManager, CommandConstants.ELEVATOR_KEY, 20),
             new ParallelDeadlineGroup(
                 new WaitCommand(0.8), 
-                new WristCommand(intakeWrist, 30).asProxy(),
-                new IntakeCommand(intakeRollers, 0.8, false)),
+            //    new WristCommand(intakeWrist, 30).asProxy(),
+                new IntakeCommand(intakeRollers, 0.8, false)).asProxy(),
             new waitUntilPosition(stateManager),
             new returnToIdle(stateManager));
     }
@@ -235,11 +236,11 @@ public class CommandFactory {
         return new SequentialCommandGroup(
             new ElevatorCommand(elevator, 8).asProxy(),
             new ElevatorCommand(elevator, 11).asProxy(),
-            new ParallelDeadlineGroup(  
-                new ParallelCommandGroup(
-                    new ElevatorCommand(elevator, 1),
-                    new WristCommand(intakeWrist, 30)),
-                new IntakeCommand(intakeRollers, -0.2, false)).asProxy(),
+            // new ParallelDeadlineGroup(  
+            //     new ParallelCommandGroup(
+            //         new ElevatorCommand(elevator, 1),
+            //         new WristCommand(intakeWrist, 30)),
+            //     new IntakeCommand(intakeRollers, -0.2, false)).asProxy(), disabled for now because it was cuaisng issues
             new RequestStateChange(States.IDLE, stateManager));
     }
 

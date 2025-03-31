@@ -133,13 +133,13 @@ public class RobotContainer {
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
-        pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight3, 0, pilot, false));
-        pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight3));
+        pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
+        pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight4));
 
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight3));
         pilot.pov(270).whileTrue(new DriveToTargetOffsetLL3(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
-        pilot.pov(180).onTrue(new InstantCommand(() -> limelight3.setPipeline(0)));
+        pilot.pov(180).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 2, pilot, false,-5));//new InstantCommand(() -> limelight3.setPipeline(0)
 
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
         copilot.pov(0).onFalse(commandFactory.algaeProcessorScore());
@@ -154,6 +154,7 @@ public class RobotContainer {
         //copilot.a().onFalse(commandFactory.algaeBargeScore());
 
 
+
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
         copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
 
@@ -161,9 +162,11 @@ public class RobotContainer {
         // copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
         // copilot.pov(180).onFalse();
         
-        copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
-        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE_ALGAE, stateManager));
+        // copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
+        // copilot.pov(270).onFalse(new RequestStateChange(States.IDLE_ALGAE, stateManager));
 
+        copilot.pov(270).onTrue(new RequestStateChange(States.INTAKE_CORAL_GROUND, stateManager));
+        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
     }
 

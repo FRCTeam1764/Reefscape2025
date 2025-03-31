@@ -27,6 +27,7 @@ import frc.robot.state.INTAKE_ALGAE_HIGH;
 import frc.robot.state.INTAKE_ALGAE_LOW;
 import frc.robot.state.INTERPOLATED_STATE;
 import frc.robot.state.INTAKE_CORAL;
+import frc.robot.state.INTAKE_CORAL_GROUND;
 import frc.robot.state.L1;
 import frc.robot.state.L2;
 import frc.robot.state.L3;
@@ -57,7 +58,8 @@ public class StateManager extends SubsystemBase {
     INTAKE_ALGAE_LOW,
     INTAKE_ALGAE_HIGH,
     SPIT_OUT,
-    INTERPOLATED_STATE 
+    INTERPOLATED_STATE,
+    INTAKE_CORAL_GROUND
   }
 
   public List<BasicState> StateHandlers = List.of(
@@ -76,7 +78,8 @@ public class StateManager extends SubsystemBase {
       new INTAKE_ALGAE_LOW(),
       new INTAKE_CORAL(),
       new INTERPOLATED_STATE(),
-      new PROCESSOR()
+      new PROCESSOR(),
+      new INTAKE_CORAL_GROUND()
 
   );
 
@@ -86,7 +89,6 @@ public class StateManager extends SubsystemBase {
 
   /** Creates a new StateManager. */
   public StateManager() {
-    DataLogManager.start();
     
 
   }
