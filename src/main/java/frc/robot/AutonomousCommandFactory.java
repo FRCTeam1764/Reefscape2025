@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.BasicCommands.AutoIntake;
+import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
@@ -130,7 +131,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
-            new WaitCommand(.75), 
+            new WaitCommand(1.5), 
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
         ), 
         new ParallelDeadlineGroup(
@@ -155,6 +156,36 @@ public class AutonomousCommandFactory extends CommandFactory{
         ));
     }
 
+    public Command DriveToCoralOffset() { 
+        return new SequentialCommandGroup(
+            new ParallelDeadlineGroup(
+                new WaitCommand(.75), 
+                new DriveToTargetOffset(swerve, Limelight3, 0, 1, -16.28, 9.057)
+            ),
+            new ParallelDeadlineGroup(
+                new WaitCommand(1.00),
+                new DriveForward(swerve))
+        );
+    }
+
+    public Command autoIntakeCoralTest() {
+        return new SequentialCommandGroup(
+            new ElevatorCommand(elevator, 8).asProxy(),
+            new ElevatorCommand(elevator, 11).asProxy(),
+            // new ParallelDeadlineGroup(  
+            //     new ParallelCommandGroup(
+            //         new ElevatorCommand(elevator, 1),
+            //         new WristCommand(intakeWrist, 30)),
+            //     new IntakeCommand(intakeRollers, -0.2, false)).asProxy(), disabled for now because it was cuaisng issues
+            new RequestStateChange(States.IDLE, stateManager));
+    }
+
+    public Command autoIntakeCoralPosition() {
+        return
+        new SequentialCommandGroup( new ElevatorCommand(elevator, 10).asProxy(),
+        new RequestStateChange(States.INTAKE_CORAL, stateManager));
+    }
+
     // public Command DriveToTargetOffsetCoral() {
     //     return new DriveToTargetOffset(swerve, Limelight3, 0, 1, 17.3, 9.3);
     // }
@@ -175,11 +206,11 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(1)));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
-        NamedCommands.registerCommand("DriveToOffsetMiddle", DriveToTargetOffsetMiddle());
         NamedCommands.registerCommand("AlignToCoral", autoAlignCoral());
+        NamedCommands.registerCommand("DriveToCoral", DriveToCoralOffset());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
-        NamedCommands.registerCommand("CoralIntake", IntakeCoralTest());
-        NamedCommands.registerCommand("CoralPosition", IntakeCoralPosition());
+        NamedCommands.registerCommand("CoralIntake", autoIntakeCoralTest());
+        NamedCommands.registerCommand("CoralPosition", autoIntakeCoralPosition());
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.2),  new DriveForward(swerve)));
         NamedCommands.registerCommand("DriveBackward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveBackward(swerve)));
         NamedCommands.registerCommand("CoralPickup", autoCoralPickup());

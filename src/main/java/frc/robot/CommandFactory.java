@@ -263,16 +263,14 @@ public class CommandFactory {
     }
 
     public Command DriveToTargetOffsetRight() {
-        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, 17.3, 9.3);
+        return new DriveToTargetOffsetLL3(swerve, Limelight4, 0, 0, 17.3, 9.3);
     }
 
     public Command DriveToTargetOffsetLeft() {
         return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -18.0, 14.8);
     }
 
-    public Command DriveToTargetOffsetMiddle() {
-        return new DriveToTargetOffset(swerve, Limelight4, 0, 0, 28.5, 5.0);
-    }
+    
 
     // AUTOMATED COMMANDS
     private Command AlgaeKnock(boolean high) {
