@@ -82,11 +82,11 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new SequentialCommandGroup(
                 new ParallelRaceGroup(
                     new WaitCommand(0.2),
-                    new WristCommand(intakeWrist, 50)),
+                    new WristCommand(intakeWrist, 45)),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.4),
                     new IntakeCommand(intakeRollers, .1, false),
-                    new WristCommand(intakeWrist, 50)),
+                    new WristCommand(intakeWrist, 45)),
                 new ParallelRaceGroup(
                     new WaitCommand(.2),
                     new WristCommand(intakeWrist, 30)),

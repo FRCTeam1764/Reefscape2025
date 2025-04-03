@@ -157,7 +157,10 @@ public class CommandFactory {
     
     public Command Level4Score() {
         return new SequentialCommandGroup(
+            new ParallelRaceGroup(
                     new WristCommand(intakeWrist, 40),
+                    new WaitCommand(.3)
+            ),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
                     new IntakeCommand(intakeRollers, .2, false).asProxy(),
@@ -234,7 +237,8 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ElevatorCommand(elevator, 7.75),
+            new ElevatorCommand(elevator, 8),
+            new WaitCommand(.1),
             new ElevatorCommand(elevator, 13),
             new RequestStateChange(States.IDLE, stateManager)
             // new ParallelDeadlineGroup(  
