@@ -85,7 +85,7 @@ public class AutonomousCommandFactory extends CommandFactory{
                     new WristCommand(intakeWrist, 45)),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.4),
-                    new IntakeCommand(intakeRollers, .1, false),
+                    new IntakeCommand(intakeRollers, .2, false),
                     new WristCommand(intakeWrist, 45)),
                 new ParallelRaceGroup(
                     new WaitCommand(.2),

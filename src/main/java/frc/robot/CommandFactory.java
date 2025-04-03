@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -125,7 +126,7 @@ public class CommandFactory {
     }
 
     public Command LevelScore() {
-        return new SequentialCommandGroup(
+        return new ConditionalCommand(new SequentialCommandGroup(
                 new WristCommand(intakeWrist, 45),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
@@ -134,11 +135,14 @@ public class CommandFactory {
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
-                new RequestStateChange(States.IDLE, stateManager));
+                new RequestStateChange(States.IDLE, stateManager)), 
+                new RequestStateChange(States.IDLE, stateManager), 
+                ()->stateManager.getWillScore());
     }
 
-    public Command LevelScoreL2() {
-        return new SequentialCommandGroup(
+    public Command LevelScoreL2() { 
+        return new ConditionalCommand(
+            new SequentialCommandGroup(
                 new WristCommand(intakeWrist, 40),
                 new WaitCommand(.1),
                 new ParallelDeadlineGroup(
@@ -148,7 +152,9 @@ public class CommandFactory {
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
-                new RequestStateChange(States.IDLE, stateManager));
+            new RequestStateChange(States.IDLE, stateManager)), 
+            new RequestStateChange(States.IDLE, stateManager), 
+            () -> stateManager.getWillScore());
     }
 
     public Command Level4Position() {
@@ -156,7 +162,7 @@ public class CommandFactory {
     }
     
     public Command Level4Score() {
-        return new SequentialCommandGroup(
+        return new ConditionalCommand(new SequentialCommandGroup(
             new ParallelRaceGroup(
                     new WristCommand(intakeWrist, 40),
                     new WaitCommand(.3)
@@ -170,7 +176,7 @@ public class CommandFactory {
                     new WristCommand(intakeWrist, 30)),
                 //new returnToIdle(stateManager)
                 new RequestStateChange(States.IDLE, stateManager)
-               );
+               ), new RequestStateChange(States.IDLE, stateManager), ()->stateManager.getWillScore());
     }
 
     public Command algaeGroundPosition() {
@@ -237,8 +243,10 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ElevatorCommand(elevator, 8),
-            new WaitCommand(.1),
+            new ParallelDeadlineGroup(
+                new WaitCommand(0.3),
+                new ElevatorCommand(elevator, 8)),
+            new WaitCommand(0.1),
             new ElevatorCommand(elevator, 13),
             new RequestStateChange(States.IDLE, stateManager)
             // new ParallelDeadlineGroup(  

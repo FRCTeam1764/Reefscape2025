@@ -15,6 +15,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.state.ALGAE_KNOCK_HIGH;
 import frc.robot.state.BARGE;
 import frc.robot.state.ALGAE_KNOCK_LOW;
@@ -39,6 +40,7 @@ public class StateManager extends SubsystemBase {
   Map<String, Object> desiredData = new HashMap<>();
   Map<String, Object> currentData = new HashMap<>();
   boolean isAtLocation = false;
+  boolean willScore = true;
 
   // TODO: FIGURE OUT IF WE NEED A "SCORE" STATE FOR ALL POSITIONS
   public enum States {
@@ -158,6 +160,14 @@ public class StateManager extends SubsystemBase {
     }
   }
 
+  public void setWillScore(boolean score) {
+    willScore = score;
+  }
+
+  public boolean getWillScore() {
+    return willScore;
+  }
+
 
   public void clearDesiredData(){
     desiredData.clear();
@@ -198,6 +208,7 @@ public class StateManager extends SubsystemBase {
   public boolean getisAtLocaiton(){
     return isAtLocation;
   }
+
 
   @Override
   public void periodic() {

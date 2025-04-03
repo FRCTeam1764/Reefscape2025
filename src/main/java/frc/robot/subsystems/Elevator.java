@@ -210,7 +210,7 @@ public class Elevator extends SubsystemBase {
     } else {
       SmartDashboard.putBoolean("ElevatorHappy", true);
     }
-    
+    SmartDashboard.putBoolean("WillScore", stateManager.getWillScore());
     SmartDashboard.putBoolean("ElevatorBottomLimit1", limitSwitchBottom1.get());
     SmartDashboard.putBoolean("ElevatorBottomLimit2", limitSwitchBottom2.get());
     SmartDashboard.putBoolean("ElevatorTopLimit1", limitSwitchTop1.get());

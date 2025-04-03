@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import frc.robot.subsystems.Elevator;
@@ -120,7 +121,7 @@ public class RobotContainer {
 
     private void configureMainBindings() {
         pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
-        pilot.leftBumper().onFalse(commandFactory.LevelScoreL2());
+        pilot.leftBumper().onFalse(stateManager.getWillScore() ? commandFactory.LevelScoreL2() : new RequestStateChange(States.IDLE, stateManager));
         pilot.rightTrigger().onTrue(commandFactory.Level4Position());
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
@@ -141,6 +142,8 @@ public class RobotContainer {
         pilot.pov(270).whileTrue(new DriveToTargetOffsetLL3(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
         pilot.pov(180).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 2, pilot, false,-5));//new InstantCommand(() -> limelight3.setPipeline(0)
 
+        pilot.back().onTrue(new RunCommand(()->stateManager.setWillScore(false), wrist, rollers));
+        pilot.back().onFalse(new RunCommand(()->stateManager.setWillScore(true), wrist, rollers));
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
         copilot.pov(0).onFalse(commandFactory.algaeProcessorScore());
         copilot.b().onTrue(commandFactory.algaeLowPosition());
@@ -148,7 +151,7 @@ public class RobotContainer {
         copilot.y().onTrue(commandFactory.algaeHighPosition());
         copilot.y().onFalse(commandFactory.algaeIdle());
 
-        copilot.a().whileTrue(new IntakeCommand(rollers, -.1, false));
+        copilot.a().whileTrue(new IntakeCommand(rollers, -.2, false));
         copilot.pov(90).onTrue(commandFactory.algaeBargePosition());
         //copilot.a().onFalse(commandFactory.algaeBargeBack());
         //copilot.a().onFalse(commandFactory.algaeBargeScore());
