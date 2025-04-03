@@ -129,7 +129,7 @@ public class CommandFactory {
                 new WristCommand(intakeWrist, 45),
                 new ParallelDeadlineGroup(
                     new WaitCommand(.5),
-                    new IntakeCommand(intakeRollers, .1, false),
+                    new IntakeCommand(intakeRollers, .2, false),
                     new WristCommand(intakeWrist, 45)),
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
@@ -160,7 +160,7 @@ public class CommandFactory {
                     new WristCommand(intakeWrist, 40),
                 new ParallelDeadlineGroup(
                     new WaitCommand(0.5),
-                    new IntakeCommand(intakeRollers, .1, false).asProxy(),
+                    new IntakeCommand(intakeRollers, .2, false).asProxy(),
                     new WristCommand(intakeWrist, 50)),
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
@@ -218,7 +218,7 @@ public class CommandFactory {
     public Command algaeProcessorScore() {
         return new SequentialCommandGroup(
             new ParallelDeadlineGroup(
-                new WaitCommand(1),
+                new waitUntilPosition(stateManager),
                 new IntakeCommand(intakeRollers, .3, false).asProxy()),
             new RequestStateChange(States.IDLE, stateManager)
         );
@@ -234,14 +234,16 @@ public class CommandFactory {
 
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
-            new ElevatorCommand(elevator, 8).asProxy(),
-            new ElevatorCommand(elevator, 11).asProxy(),
+            new ElevatorCommand(elevator, 7.75),
+            new ElevatorCommand(elevator, 13),
+            new RequestStateChange(States.IDLE, stateManager)
             // new ParallelDeadlineGroup(  
-            //     new ParallelCommandGroup(
-            //         new ElevatorCommand(elevator, 1),
-            //         new WristCommand(intakeWrist, 30)),
-            //     new IntakeCommand(intakeRollers, -0.2, false)).asProxy(), disabled for now because it was cuaisng issues
-            new RequestStateChange(States.IDLE, stateManager));
+            //     // new ParallelCommandGroup(
+            //     //     new ElevatorCommand(elevator, 1),
+            //     //     new WristCommand(intakeWrist, 30)),
+            //     new waitUntilPosition(stateManager),
+            //     new IntakeCommand(intakeRollers, -0.2, false)) //disabled for now because it was cuaisng issues
+            );
     }
 
     public Command IntakeCoralPosition() {

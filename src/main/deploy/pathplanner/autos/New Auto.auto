@@ -7,32 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "dontmove"
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "AlignToCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "CoralPickup"
-                }
-              }
-            ]
+            "pathName": "New Path"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "CoralPickupReturn"
+            "name": "LevelFourPosition"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LevelFourScore"
           }
         }
       ]
