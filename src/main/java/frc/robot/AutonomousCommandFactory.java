@@ -140,6 +140,12 @@ public class AutonomousCommandFactory extends CommandFactory{
         );
     }
 
+    public Command autoGroundCoral() {
+        return new ParallelDeadlineGroup(
+                new WaitCommand(1.00),
+                new DriveForward(swerve));
+    }
+
 
 
     public Command autoCoralPickup(){
@@ -197,24 +203,33 @@ public class AutonomousCommandFactory extends CommandFactory{
         NamedCommands.registerCommand("LevelTwoPosition", autoLevelPosition(2));
         NamedCommands.registerCommand("LevelThreePosition", autoLevelPosition(3));
         NamedCommands.registerCommand("LevelFourPosition", autoLevel4Position());
+
         NamedCommands.registerCommand("LevelScore", autoLevelScore());
         NamedCommands.registerCommand("LevelFourScore", autoLevel4Score());
+
         NamedCommands.registerCommand("AlgaeLow", algaeLowPosition());
         NamedCommands.registerCommand("AlgaeHigh", algaeHighPosition());
         NamedCommands.registerCommand("AlgaeIdle", algaeIdle());
+
         NamedCommands.registerCommand("TurnToAngle", TurnToAngle());
         NamedCommands.registerCommand("ChangePipelineGround", new InstantCommand(() -> Limelight3.setPipeline(1)));
         NamedCommands.registerCommand("DriveToOffsetLeft", DriveToTargetOffsetLeft());
         NamedCommands.registerCommand("DriveToOffsetRight", DriveToTargetOffsetRight());
+
         NamedCommands.registerCommand("AlignToCoral", autoAlignCoral());
         NamedCommands.registerCommand("DriveToCoral", DriveToCoralOffset());
+        NamedCommands.registerCommand("ForwardToCoral", autoGroundCoral());
         NamedCommands.registerCommand("LockOnAprilTag", LockOnAprilTag());
+
         NamedCommands.registerCommand("CoralIntake", autoIntakeCoralTest());
         NamedCommands.registerCommand("CoralPosition", autoIntakeCoralPosition());
+
         NamedCommands.registerCommand("DriveForward", new ParallelDeadlineGroup(new WaitCommand(.2),  new DriveForward(swerve)));
         NamedCommands.registerCommand("DriveBackward", new ParallelDeadlineGroup(new WaitCommand(.3),  new DriveBackward(swerve)));
+        
         NamedCommands.registerCommand("CoralPickup", autoCoralPickup());
         NamedCommands.registerCommand("CoralPickupReturn", autoCoralReturn());
+        
         NamedCommands.registerCommand("idle", new RequestStateChange(States.IDLE, stateManager));
         
         
