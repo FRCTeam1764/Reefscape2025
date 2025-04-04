@@ -245,7 +245,7 @@ public class CommandFactory {
         return new SequentialCommandGroup(
             new ParallelDeadlineGroup(
                 new WaitCommand(0.3),
-                new ElevatorCommand(elevator, 8)),
+                new ElevatorCommand(elevator, 8.25)),
             new WaitCommand(0.1),
             new ElevatorCommand(elevator, 13),
             new RequestStateChange(States.IDLE, stateManager)
