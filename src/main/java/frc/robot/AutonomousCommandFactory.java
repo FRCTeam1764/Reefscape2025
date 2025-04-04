@@ -183,7 +183,7 @@ public class AutonomousCommandFactory extends CommandFactory{
             //         new ElevatorCommand(elevator, 1),
             //         new WristCommand(intakeWrist, 30)),
             //     new IntakeCommand(intakeRollers, -0.2, false)).asProxy(), disabled for now because it was cuaisng issues
-            new RequestStateChange(States.IDLE, stateManager));
+            new RequestStateChange(States.IDLE_CORAL, stateManager));
     }
 
     public Command autoIntakeCoralPosition() {

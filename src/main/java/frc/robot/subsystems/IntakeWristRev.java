@@ -71,8 +71,8 @@ public class IntakeWristRev extends SubsystemBase {
     TalonFXConfiguration flexConfig = new TalonFXConfiguration(); //TODO chack all of it
     flexConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive; 
     flexConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.7;
-    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.7; 
+    flexConfig.MotorOutput.PeakForwardDutyCycle = 0.5;
+    flexConfig.MotorOutput.PeakReverseDutyCycle = -0.5; 
     flexConfig.CurrentLimits.StatorCurrentLimitEnable = true;
     flexConfig.CurrentLimits.StatorCurrentLimit = 60;
 

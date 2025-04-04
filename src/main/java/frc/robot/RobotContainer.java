@@ -88,6 +88,7 @@ public class RobotContainer {
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
         chooser = AutoBuilder.buildAutoChooser("tests");
+        chooser.addOption("MoveForward", autoFactory.driveForward());
         SmartDashboard.putData("Autos",chooser);
         //drivetrain.seedFieldCentric();
         configureBindings();

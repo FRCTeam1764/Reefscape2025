@@ -26,6 +26,7 @@ import frc.robot.commands.BasicCommands.ClimberCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.ComplexCommands.returnToIdle;
+import frc.robot.commands.DriveCommands.DriveForward;
 import frc.robot.commands.DriveCommands.DriveToTarget;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffsetLL3;
@@ -248,7 +249,7 @@ public class CommandFactory {
                 new ElevatorCommand(elevator, 8.25)),
             new WaitCommand(0.1),
             new ElevatorCommand(elevator, 13),
-            new RequestStateChange(States.IDLE, stateManager)
+            new RequestStateChange(States.IDLE_CORAL, stateManager)
             // new ParallelDeadlineGroup(  
             //     // new ParallelCommandGroup(
             //     //     new ElevatorCommand(elevator, 1),
@@ -263,6 +264,10 @@ public class CommandFactory {
         new SequentialCommandGroup( 
             new ElevatorCommand(elevator, 10),
             new RequestStateChange(States.INTAKE_CORAL, stateManager));
+    }
+
+    public Command driveForward() {
+        return new ParallelDeadlineGroup(new WaitCommand(0.15), new DriveForward(swerve));
     }
 
     

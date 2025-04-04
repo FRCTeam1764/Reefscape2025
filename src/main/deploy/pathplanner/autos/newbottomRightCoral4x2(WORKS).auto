@@ -43,7 +43,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 1.5
                             }
                           },
                           {
@@ -80,7 +80,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "ForwardToCoral"
+                  "name": "AlignToCoral"
                 }
               },
               {
@@ -125,7 +125,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 2.0
+                              "waitTime": 1.5
                             }
                           },
                           {

@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ChangePipelineGround"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -37,7 +43,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.5
+                              "waitTime": 2.0
                             }
                           },
                           {
@@ -62,12 +68,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ChangePipelineGround"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "topRightRightReefToTopAlgae"
@@ -80,7 +80,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "AlignToCoral"
+                  "name": "ForwardToCoral"
                 }
               },
               {
@@ -125,7 +125,7 @@
                           {
                             "type": "wait",
                             "data": {
-                              "waitTime": 1.5
+                              "waitTime": 2.0
                             }
                           },
                           {
