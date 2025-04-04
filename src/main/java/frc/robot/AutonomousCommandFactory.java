@@ -131,7 +131,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     }
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
-            new WaitCommand(1.5), 
+            new WaitCommand(1.0), 
             new LockOnAprilTagAuto(swerve, Limelight3, 1, true,-18)
         ), 
         new ParallelDeadlineGroup(
