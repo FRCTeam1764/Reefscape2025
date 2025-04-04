@@ -260,8 +260,9 @@ public class CommandFactory {
 
     public Command IntakeCoralPosition() {
         return
-        new SequentialCommandGroup( new ElevatorCommand(elevator, 10),
-        new RequestStateChange(States.INTAKE_CORAL, stateManager));
+        new SequentialCommandGroup( 
+            new ElevatorCommand(elevator, 10),
+            new RequestStateChange(States.INTAKE_CORAL, stateManager));
     }
 
     

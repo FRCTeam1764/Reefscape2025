@@ -121,7 +121,7 @@ public class RobotContainer {
 
     private void configureMainBindings() {
         pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
-        pilot.leftBumper().onFalse(stateManager.getWillScore() ? commandFactory.LevelScoreL2() : new RequestStateChange(States.IDLE, stateManager));
+        pilot.leftBumper().onFalse(commandFactory.LevelScoreL2());
         pilot.rightTrigger().onTrue(commandFactory.Level4Position());
         pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
@@ -140,7 +140,7 @@ public class RobotContainer {
         pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
         pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight3));
         pilot.pov(270).whileTrue(new DriveToTargetOffsetLL3(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
-        pilot.pov(180).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 2, pilot, false,-5));//new InstantCommand(() -> limelight3.setPipeline(0)
+        pilot.pov(180).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false,-18));//new InstantCommand(() -> limelight3.setPipeline(0)
 
         pilot.back().onTrue(new RunCommand(()->stateManager.setWillScore(false), wrist, rollers));
         pilot.back().onFalse(new RunCommand(()->stateManager.setWillScore(true), wrist, rollers));
@@ -168,9 +168,13 @@ public class RobotContainer {
         // copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
         // copilot.pov(270).onFalse(new RequestStateChange(States.IDLE_ALGAE, stateManager));
 
-        copilot.pov(270).onTrue(new RequestStateChange(States.INTAKE_CORAL_GROUND, stateManager));
+        copilot.pov(270).onTrue(new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager));
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
+    }
+
+    public void changePipeline() {
+        limelight3.setPipeline(1);
     }
 
 
