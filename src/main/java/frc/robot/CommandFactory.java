@@ -119,6 +119,12 @@ public class CommandFactory {
             index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager);
     }
 
+    public Command Level1Score(){
+        return new SequentialCommandGroup(
+            new ParallelDeadlineGroup(new WaitCommand(.5),new IntakeCommand(intakeRollers, .2, false)),
+            new RequestStateChange(States.IDLE, stateManager)
+            );
+    }
     public Command LevelPosition(int index, boolean test) {
         return new SequentialCommandGroup(
             new RequestStateChange(

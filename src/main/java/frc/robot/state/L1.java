@@ -12,9 +12,9 @@ public boolean matches(States state){
 
 public void execute(StateManager stateManager){
     stateManager.clearDesiredData();
-
-    stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 30.0);
-    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 5.0);
+//50, 1
+    stateManager.addDesiredData(CommandConstants.INTAKE_KEY, 140.0);
+    stateManager.addDesiredData(CommandConstants.ELEVATOR_KEY, 15.0);
 }
    
 }
