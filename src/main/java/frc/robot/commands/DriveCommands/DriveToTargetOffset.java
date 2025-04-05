@@ -83,7 +83,7 @@ public class DriveToTargetOffset extends Command {
 
     }
 
-    if (Math.abs(m_Limelight.getTa()-targety) <= 0.4 && Math.abs(m_Limelight.getTx()-targetx)<=0.25) {
+    if (Math.abs(Math.abs(m_Limelight.getTa())-targety) <= 0.7 && Math.abs(Math.abs(m_Limelight.getTx())-targetx)<=0.7) {
       SmartDashboard.putBoolean("Aligned", true);
     } else {
       SmartDashboard.putBoolean("Aligned", false);
