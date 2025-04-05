@@ -11,12 +11,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ChangePipelineGround"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
