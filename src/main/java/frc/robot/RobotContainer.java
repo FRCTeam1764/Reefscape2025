@@ -129,6 +129,7 @@ public class RobotContainer {
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
         pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
         pilot.leftTrigger().onFalse(commandFactory.Level1Score());
+        copilot.leftTrigger(.7).whileTrue(drivetrain.applyRequest(()->brake));
         //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
         //copilot.start().whileTrue(new ClimberPosition(climber));
         // copilot.start().onTrue(autoFactory.autoCoralPickup());
