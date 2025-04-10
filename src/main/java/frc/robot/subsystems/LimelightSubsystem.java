@@ -48,11 +48,6 @@ public class LimelightSubsystem extends SubsystemBase {
 
   }
 
-
-  
-
-
-
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -69,7 +64,7 @@ public class LimelightSubsystem extends SubsystemBase {
   }
 
 
- public double getTx() {
+  public double getTx() {
     return LimelightHelpers.getTX(Limelight);
   }
 

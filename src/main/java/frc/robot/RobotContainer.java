@@ -68,7 +68,7 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     private final StateManager stateManager = new StateManager();
-     // private final Climber climber = new Climber();
+    // private final Climber climber = new Climber();
     private final Elevator elevator = new Elevator(stateManager);
     private final IntakeRollers rollers = new IntakeRollers();
     private final IntakeWristRev wrist = new IntakeWristRev(stateManager);
@@ -90,9 +90,7 @@ public class RobotContainer {
         chooser = AutoBuilder.buildAutoChooser("tests");
         chooser.addOption("MoveForward", autoFactory.driveForward());
         SmartDashboard.putData("Autos",chooser);
-        //drivetrain.seedFieldCentric();
         configureBindings();
-        //autoFactory.configAutonomousCommands();
     }
 
     private void configureBindings() {
@@ -131,10 +129,6 @@ public class RobotContainer {
         pilot.leftTrigger().onFalse(commandFactory.Level1Score());
         copilot.leftTrigger(.7).whileTrue(drivetrain.applyRequest(()->brake));
         //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
-        //copilot.start().whileTrue(new ClimberPosition(climber));
-        // copilot.start().onTrue(autoFactory.autoCoralPickup());
-        // copilot.start().onFalse(autoFactory.autoCoralReturn());
-       //  copilot.back().onTrue(autoFactory.autoAlignCoral());
 
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
@@ -148,6 +142,7 @@ public class RobotContainer {
 
         pilot.back().onTrue(new RunCommand(()->stateManager.setWillScore(false), wrist, rollers));
         pilot.back().onFalse(new RunCommand(()->stateManager.setWillScore(true), wrist, rollers));
+        
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
         copilot.pov(0).onFalse(commandFactory.algaeProcessorScore());
         copilot.b().onTrue(commandFactory.algaeLowPosition());
@@ -157,20 +152,9 @@ public class RobotContainer {
 
         copilot.a().whileTrue(new IntakeCommand(rollers, -.2, false));
         copilot.pov(90).onTrue(commandFactory.algaeBargePosition());
-        //copilot.a().onFalse(commandFactory.algaeBargeBack());
-        //copilot.a().onFalse(commandFactory.algaeBargeScore());
-
-
 
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
         copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
-
-        
-        // copilot.pov(180).onTrue(commandFactory.algaeGroundPosition());
-        // copilot.pov(180).onFalse();
-        
-        // copilot.pov(270).onTrue(commandFactory.algaeGroundPosition());
-        // copilot.pov(270).onFalse(new RequestStateChange(States.IDLE_ALGAE, stateManager));
 
         copilot.pov(270).onTrue(new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager));
         copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));

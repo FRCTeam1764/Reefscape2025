@@ -97,23 +97,6 @@ public class CommandFactory {
         this.stateManager = stateManager;
     }
 
-    public void changeLimelightOrienation(boolean leftLimelight) {
-        left = leftLimelight;
-        SmartDashboard.putBoolean("limalight", left);
-
-    }
-
-    public boolean getOrientation() {
-        return left;
-    }
-
-    // TESTING COMMANDS
-
-    public Command reefLimelight(CommandSwerveDrivetrain drivetrain, LimelightSubsystem limelight3, LimelightSubsystem limelight4, boolean trying) {
-        
-        return trying ? new DriveToTargetOffset(drivetrain, limelight3, 0, 0, -18.6, 16.1) : new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3);
-    }
-
     public Command LevelPosition(int index) {
         return new RequestStateChange(
             index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager);
@@ -124,12 +107,6 @@ public class CommandFactory {
             new ParallelDeadlineGroup(new WaitCommand(.5),new IntakeCommand(intakeRollers, .2, false)),
             new RequestStateChange(States.IDLE, stateManager)
             );
-    }
-    public Command LevelPosition(int index, boolean test) {
-        return new SequentialCommandGroup(
-            new RequestStateChange(
-            index == 1 ? States.L1 : index == 2 ? States.L2 : States.L3, stateManager),
-            reefLimelight(swerve, Limelight3, Limelight4, test));
     }
 
     public Command LevelScore() {
@@ -181,7 +158,6 @@ public class CommandFactory {
                 new ParallelRaceGroup(
                     new WaitCommand(.3),
                     new WristCommand(intakeWrist, 30)),
-                //new returnToIdle(stateManager)
                 new RequestStateChange(States.IDLE, stateManager)
                ), new RequestStateChange(States.IDLE, stateManager), ()->stateManager.getWillScore());
     }
@@ -212,7 +188,6 @@ public class CommandFactory {
             new waitUntilPositionIndex(stateManager, CommandConstants.ELEVATOR_KEY, 20),
             new ParallelDeadlineGroup(
                 new WaitCommand(0.8), 
-            //    new WristCommand(intakeWrist, 30).asProxy(),
                 new IntakeCommand(intakeRollers, 0.8, false)).asProxy(),
             new waitUntilPosition(stateManager),
             new returnToIdle(stateManager));
@@ -240,14 +215,6 @@ public class CommandFactory {
         );
     }
 
-    // public Command IntakeCoralTest() {
-    //     return new SequentialCommandGroup(
-    //         new ParallelDeadlineGroup(new WaitCommand(0.30), new ElevatorCommand(elevator, 8.7)),
-    //     new ParallelCommandGroup(new WaitCommand(0.5), new ElevatorCommand(elevator, 11.0)),
-    //      //   new ParallelDeadlineGroup(new WaitCommand(0.3), new WristCommand(intakeWrist, 60)), 
-    //         new RequestStateChange(States.IDLE, stateManager));
-    // }
-
     public Command IntakeCoralTest() {
         return new SequentialCommandGroup(
             new ParallelDeadlineGroup(
@@ -256,18 +223,11 @@ public class CommandFactory {
             new WaitCommand(0.1),
             new ElevatorCommand(elevator, 13),
             new RequestStateChange(States.IDLE_CORAL, stateManager)
-            // new ParallelDeadlineGroup(  
-            //     // new ParallelCommandGroup(
-            //     //     new ElevatorCommand(elevator, 1),
-            //     //     new WristCommand(intakeWrist, 30)),
-            //     new waitUntilPosition(stateManager),
-            //     new IntakeCommand(intakeRollers, -0.2, false)) //disabled for now because it was cuaisng issues
             );
     }
 
     public Command IntakeCoralPosition() {
-        return
-        new SequentialCommandGroup( 
+        return new SequentialCommandGroup( 
             new ElevatorCommand(elevator, 10),
             new RequestStateChange(States.INTAKE_CORAL, stateManager));
     }
@@ -275,9 +235,6 @@ public class CommandFactory {
     public Command driveForward() {
         return new ParallelDeadlineGroup(new WaitCommand(0.15), new DriveForward(swerve));
     }
-
-    
-
 
     //limalight
     public Command LockOnAprilTag() {
@@ -296,44 +253,11 @@ public class CommandFactory {
         return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -18.0, 14.8);
     }
 
-    
-
-    // AUTOMATED COMMANDS
-    private Command AlgaeKnock(boolean high) {
-        return new SequentialCommandGroup(
-                new RequestStateChange(high ? States.ALGAE_KNOCK_HIGH : States.ALGAE_KNOCK_LOW, stateManager),
-                new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4, CommandConstants.ELEVATOR_KEY, 4),
-                new returnToIdle(stateManager, States.IDLE)).finallyDo((key) -> interupted(key));
-    }
-
-    
-
-    private Command AlgaeGround() {
-        return new SequentialCommandGroup(
-                new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager),
-                new LockOnAprilTag(swerve, Limelight3, 0, driver, false)).finallyDo((key) -> interupted(key));
-    }
-
-    private Command AlgaeReefIntake(boolean low) {
-        return new SequentialCommandGroup(
-                new WaitUntilCommand(() -> leftLimelight ? Limelight4.hasTarget() : Limelight3.hasTarget()),
-                new RequestStateChange(low ? States.INTAKE_ALGAE_LOW : States.INTAKE_ALGAE_HIGH, stateManager),
-                new ParallelCommandGroup(
-                        new LockOnAprilTag(swerve, Limelight2, 0, driver, false),
-                        new waitUntilPosition(stateManager, CommandConstants.INTAKE_KEY, 4,
-                                CommandConstants.ELEVATOR_KEY, 4)),
-                new ParallelDeadlineGroup(
-                        new WaitCommand(2),
-                        new IntakeCommand(intakeRollers, CommandConstants.INTAKE_GRAB_ALGAE_SPEED, false)),
-                new returnToIdle(stateManager, States.IDLE_ALGAE)).finallyDo((key) -> interupted(key));
-    }
-
 
     public Command interupted(boolean wasInteruppted) {
         if (wasInteruppted) {
             return new InstantCommand();
         }
-
         return new returnToIdle(stateManager);
     }
 

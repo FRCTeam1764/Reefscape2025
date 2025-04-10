@@ -68,15 +68,6 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new ParallelCommandGroup(
             new RequestStateChange(States.L4, stateManager));
     }
-
-    // public Command autoLevel4Position() {
-    //     return new SequentialCommandGroup(
-    //         new RequestStateChange(States.L4, stateManager),
-    //         new ParallelDeadlineGroup(
-    //             new waitUntilPosition(stateManager), 
-    //             new IntakeCommand(intakeRollers, -0.1, false))
-    //         );
-    // }
     
     public Command autoLevel4Score() {
         return new SequentialCommandGroup(
@@ -129,6 +120,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     public Command wristIdle(){
         return new AutoIntake(intakeWrist, 20).asProxy();
     }
+
     public Command autoAlignCoral() {
         return new SequentialCommandGroup(  new ParallelDeadlineGroup(
             new WaitCommand(1.0), 
@@ -145,8 +137,6 @@ public class AutonomousCommandFactory extends CommandFactory{
                 new WaitCommand(1.00),
                 new DriveForward(swerve));
     }
-
-
 
     public Command autoCoralPickup(){
         return algaeGroundPosition();
@@ -178,11 +168,6 @@ public class AutonomousCommandFactory extends CommandFactory{
         return new SequentialCommandGroup(
             new ElevatorCommand(elevator, 8).asProxy(),
             new ElevatorCommand(elevator, 11).asProxy(),
-            // new ParallelDeadlineGroup(  
-            //     new ParallelCommandGroup(
-            //         new ElevatorCommand(elevator, 1),
-            //         new WristCommand(intakeWrist, 30)),
-            //     new IntakeCommand(intakeRollers, -0.2, false)).asProxy(), disabled for now because it was cuaisng issues
             new RequestStateChange(States.IDLE_CORAL, stateManager));
     }
 
@@ -191,10 +176,6 @@ public class AutonomousCommandFactory extends CommandFactory{
         new SequentialCommandGroup( new ElevatorCommand(elevator, 10).asProxy(),
         new RequestStateChange(States.INTAKE_CORAL, stateManager));
     }
-
-    // public Command DriveToTargetOffsetCoral() {
-    //     return new DriveToTargetOffset(swerve, Limelight3, 0, 1, 17.3, 9.3);
-    // }
 
 
     public void configAutonomousCommands() {
