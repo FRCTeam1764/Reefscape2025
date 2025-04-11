@@ -21,7 +21,6 @@ import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
-import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveBackward;
 import frc.robot.commands.DriveCommands.DriveForward;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
@@ -30,7 +29,7 @@ import frc.robot.commands.DriveCommands.LockOnAprilTagAuto;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
-import frc.robot.subsystems.IntakeWristRev;
+import frc.robot.subsystems.IntakeWrist;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
@@ -40,7 +39,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     private boolean leftLimelight;
     private Elevator elevator;
     private IntakeRollers intakeRollers;
-    private IntakeWristRev intakeWrist;
+    private IntakeWrist intakeWrist;
     private LimelightSubsystem Limelight4;
     private LimelightSubsystem Limelight3;
     private LimelightSubsystem Limelight2;
@@ -48,7 +47,7 @@ public class AutonomousCommandFactory extends CommandFactory{
     private CommandSwerveDrivetrain swerve;
     private StateManager stateManager;
 
-    public AutonomousCommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
+    public AutonomousCommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
             CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
         super(elevator, intakeRollers, intakeWrist, Limelight4, Limelight3, Limelight2, driver, swerve, stateManager);

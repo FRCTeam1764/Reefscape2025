@@ -4,43 +4,35 @@
 
 package frc.robot;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
+import java.util.Map;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SelectCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.waitUntilPosition;
 import frc.robot.commands.waitUntilPositionIndex;
 import frc.robot.commands.BasicCommands.RequestStateChange;
 import frc.robot.commands.BasicCommands.WristCommand;
-import frc.robot.commands.BasicCommands.ClimberCommand;
 import frc.robot.commands.BasicCommands.ElevatorCommand;
 import frc.robot.commands.BasicCommands.IntakeCommand;
-import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.commands.DriveCommands.DriveForward;
-import frc.robot.commands.DriveCommands.DriveToTarget;
 import frc.robot.commands.DriveCommands.DriveToTargetOffset;
 import frc.robot.commands.DriveCommands.DriveToTargetOffsetLL3;
 import frc.robot.commands.DriveCommands.LockOnAprilTag;
 import frc.robot.commands.DriveCommands.TurnToAngle;
 import frc.robot.constants.CommandConstants;
-import frc.robot.state.ALGAE_KNOCK_HIGH;
-import frc.robot.state.ALGAE_KNOCK_LOW;
-import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.IntakeRollers;
 import frc.robot.subsystems.IntakeWrist;
-import frc.robot.subsystems.IntakeWristRev;
 import frc.robot.subsystems.LimelightSubsystem;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.StateManager.States;
@@ -68,21 +60,17 @@ public class CommandFactory {
     }
 
     public desiredAction currentAction = desiredAction.SCOREL2;
-    private boolean leftLimelight;
     //private Climber climber;
     private Elevator elevator;
     private IntakeRollers intakeRollers;
-    private IntakeWristRev intakeWrist;
+    private IntakeWrist intakeWrist;
     private LimelightSubsystem Limelight4;
     private LimelightSubsystem Limelight3;
-    private LimelightSubsystem Limelight2;
     private CommandSwerveDrivetrain swerve;
     private StateManager stateManager;
-    private States[] stateList = { States.L4, States.L3, States.L2, States.L1 };
     private CommandXboxController driver;
-    private boolean left = true;
 
-    public CommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
+    public CommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWrist intakeWrist,
             LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
             CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
       //  this.climber = climber;
@@ -91,7 +79,6 @@ public class CommandFactory {
         this.intakeWrist = intakeWrist;
         this.Limelight4 = Limelight4;
         this.Limelight3 = Limelight3;
-        this.Limelight2 = Limelight2;
         this.driver = driver;
         this.swerve = swerve;
         this.stateManager = stateManager;
@@ -190,19 +177,16 @@ public class CommandFactory {
                 new WaitCommand(0.8), 
                 new IntakeCommand(intakeRollers, 0.8, false)).asProxy(),
             new waitUntilPosition(stateManager),
-            new returnToIdle(stateManager));
+            new RequestStateChange(States.IDLE,stateManager));
     }
 
-    public Command algaeBargeBack() {
-        return new returnToIdle(stateManager);
-    }
 
     public Command algaeBargeScore(){
         return new SequentialCommandGroup(
             new ParallelDeadlineGroup(
             new WaitCommand(1),
             new IntakeCommand(intakeRollers, .3, false).asProxy()),
-        new returnToIdle(stateManager, States.IDLE));
+        new RequestStateChange(States.IDLE,stateManager));
     }
     
 
@@ -258,9 +242,27 @@ public class CommandFactory {
         if (wasInteruppted) {
             return new InstantCommand();
         }
-        return new returnToIdle(stateManager);
+        return new RequestStateChange(States.IDLE,stateManager);
     }
 
+    private desiredAction selectPressed() {
+         switch (stateManager.desiredButtonState){
+        case(stateManager.States.L4):  
+        return desiredAction.SCOREL4;
+        default: 
+        return desiredAction.INTAKE_CORAL;
+        }
+        ;
+      }
 
+  private final Command desiredPressState =
+      new SelectCommand<>(
+          // Maps selector values to commands
+          Map.ofEntries(
+              Map.entry(desiredAction.SCOREL4, Level4Position()),
+              Map.entry(desiredAction.SCOREL3, new PrintCommand("Command two was selected!")),
+              Map.entry(desiredAction.SCOREL2, new PrintCommand("Command three was selected!"))),
+          this::selectPressed);
+    
 
 } 

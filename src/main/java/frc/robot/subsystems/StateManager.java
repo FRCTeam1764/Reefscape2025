@@ -39,8 +39,8 @@ public class StateManager extends SubsystemBase {
 
   Map<String, Object> desiredData = new HashMap<>();
   Map<String, Object> currentData = new HashMap<>();
-  boolean isAtLocation = false;
   boolean willScore = true;
+  public States desiredButtonState = States.IDLE;
 
   // TODO: FIGURE OUT IF WE NEED A "SCORE" STATE FOR ALL POSITIONS
   public enum States {
@@ -87,8 +87,6 @@ public class StateManager extends SubsystemBase {
 
   public States state;
 
-  private States previousState;
-
   /** Creates a new StateManager. */
   public StateManager() {
     
@@ -99,8 +97,6 @@ public class StateManager extends SubsystemBase {
     for (BasicState handler : StateHandlers) {
       if (handler.matches(newstate)) {
         handler.execute(this);
-        isAtLocation = false;
-        previousState = state;
         this.state = newstate;
       }
     }
@@ -128,21 +124,7 @@ public class StateManager extends SubsystemBase {
 
   
 
-  public void returnToIdle(States state) {
-    if (false) { //(boolean) currentData.get("IntakeLimitSwitch")
-      if (state == States.INTAKE_CORAL) {
-        requestNewState(States.IDLE_CORAL);
-      } else if (state == States.INTAKE_ALGAE_GROUND || state == States.INTAKE_ALGAE_LOW
-          || state == States.INTAKE_ALGAE_HIGH) {
-        requestNewState(States.IDLE_ALGAE);
-      }else{
-        requestNewState(States.IDLE_ALGAE); //this should not happen
 
-      }
-    } else {
-      requestNewState(States.IDLE);
-    }
-  }
 
   public void returnToIdle() {
     if ((boolean) currentData.get("IntakeLimitSwitch")) {
@@ -204,12 +186,6 @@ public class StateManager extends SubsystemBase {
   public void setState(States state) {
     this.state = state;
   }
-
-  public boolean getisAtLocaiton(){
-    return isAtLocation;
-  }
-
-
   @Override
   public void periodic() {
 

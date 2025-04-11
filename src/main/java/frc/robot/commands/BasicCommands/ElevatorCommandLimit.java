@@ -6,14 +6,12 @@ package frc.robot.commands.BasicCommands;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.commands.ComplexCommands.returnToIdle;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCommandLimit extends Command {
   /** Creates a new ElevatorCommand. */
   Elevator elevator;
-  boolean stopAtLimitSwitch;
   public ElevatorCommandLimit(Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.elevator = elevator;
@@ -41,8 +39,6 @@ public class ElevatorCommandLimit extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-
     return  this.elevator.limitSwitchBottom2.get() && this.elevator.limitSwitchBottom1.get();
-
   }
 }
