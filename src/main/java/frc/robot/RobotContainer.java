@@ -48,8 +48,8 @@ import frc.robot.state.INTERPOLATED_STATE;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
+    private double MaxSpeed = 1; // kSpeedAt12Volts desired top speed
+    private double MaxAngularRate = RotationsPerSecond.of(0.5).in(RadiansPerSecond); // 3/4 of a rotation per second max angular velocity
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -81,15 +81,9 @@ public class RobotContainer {
     private final LimelightSubsystem limelight4 = new LimelightSubsystem(drivetrain, "limelight-four",0,0,0);
 
     private final CommandFactory commandFactory = new CommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
-    private final AutonomousCommandFactory autoFactory = new AutonomousCommandFactory( elevator, rollers, wrist, limelight4, limelight3, limelight2, pilot, drivetrain, stateManager);
-
-
-    private final SendableChooser<Command> chooser ;
+    
     public RobotContainer() {
         stateManager.requestNewState(States.IDLE);
-        chooser = AutoBuilder.buildAutoChooser("tests");
-        chooser.addOption("MoveForward", autoFactory.driveForward());
-        SmartDashboard.putData("Autos",chooser);
         configureBindings();
     }
 
@@ -109,7 +103,7 @@ public class RobotContainer {
         wrist.setDefaultCommand(new DefaultWristCommand(wrist, stateManager));
         rollers.setDefaultCommand(new DefaultRollerCommand(rollers, stateManager));
 
-        //climber.setDefaultCommand(new De+faultClimberCommand(climber, stateManager, copilot)); 
+        //climber.setDefaultCommand(new DefaultClimberCommand(climber, stateManager, copilot)); 
 
         pilot.y().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
         pilot.start().onTrue(new RequestStateChange(States.IDLE, stateManager));
@@ -121,28 +115,19 @@ public class RobotContainer {
     private void configureMainBindings() {
         pilot.leftBumper().whileTrue(commandFactory.LevelPosition(2));
         pilot.leftBumper().onFalse(commandFactory.LevelScoreL2());
-        pilot.rightTrigger().onTrue(commandFactory.Level4Position());
-        pilot.rightTrigger().onFalse(commandFactory.Level4Score());
         pilot.rightBumper().onTrue(commandFactory.LevelPosition(3));
         pilot.rightBumper().onFalse(commandFactory.LevelScore());
         pilot.leftTrigger().onTrue(commandFactory.LevelPosition(1));
         pilot.leftTrigger().onFalse(commandFactory.Level1Score());
         copilot.leftTrigger(.7).whileTrue(drivetrain.applyRequest(()->brake));
-        //pilot.back().whileTrue(new TrackObject(drivetrain, limelight3, 2));
-
+        copilot.pov(270).whileTrue(new TrackObject(drivetrain, limelight3, 3));
+        //copilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight3, 0, 3, 0, 20));
         pilot.b().whileTrue(new DriveRobotCentric(drivetrain,pilot));
 
-        pilot.x().whileTrue(new LockOnAprilTag(drivetrain, limelight4, 0, pilot, false));
-        pilot.a().whileTrue(new TurnToAngle(drivetrain, limelight4));
-
-        pilot.pov(90).whileTrue(new DriveToTargetOffset(drivetrain, limelight4, 0, 0, 17.3, 9.3));
-        pilot.pov(0).whileTrue(new TurnToAngle(drivetrain, limelight3));
-        pilot.pov(270).whileTrue(new DriveToTargetOffsetLL3(drivetrain, limelight3, 0, 0, -18, 14.8));//-15.7, 7.4));
-        pilot.pov(180).whileTrue(new LockOnAprilTag(drivetrain, limelight3, 1, pilot, false,-18));//new InstantCommand(() -> limelight3.setPipeline(0)
-
+        
         pilot.back().onTrue(new RunCommand(()->stateManager.setWillScore(false), wrist, rollers));
         pilot.back().onFalse(new RunCommand(()->stateManager.setWillScore(true), wrist, rollers));
-        
+
         copilot.pov(0).onTrue(commandFactory.algaeProcessorPosition());
         copilot.pov(0).onFalse(commandFactory.algaeProcessorScore());
         copilot.b().onTrue(commandFactory.algaeLowPosition());
@@ -150,24 +135,20 @@ public class RobotContainer {
         copilot.y().onTrue(commandFactory.algaeHighPosition());
         copilot.y().onFalse(commandFactory.algaeIdle());
 
+        copilot.rightBumper().onTrue(commandFactory.LevelPosition(4));
+        copilot.rightBumper().onFalse(commandFactory.Level4Score());
+
         copilot.a().whileTrue(new IntakeCommand(rollers, -.2, false));
-        copilot.pov(90).onTrue(commandFactory.algaeBargePosition());
+        //copilot.pov(90).onTrue(commandFactory.algaeBargePosition());
 
         copilot.rightTrigger(.7).onTrue(commandFactory.IntakeCoralPosition());
         copilot.rightTrigger(.7).onFalse(commandFactory.IntakeCoralTest());
 
-        copilot.pov(270).onTrue(new RequestStateChange(States.INTAKE_ALGAE_GROUND, stateManager));
-        copilot.pov(270).onFalse(new RequestStateChange(States.IDLE, stateManager));
         copilot.back().whileTrue(new ElevatorCommandLimit(elevator));
         
     }
 
     public void changePipeline() {
         limelight3.setPipeline(1);
-    }
-
-
-    public Command getAutonomousCommand() {
-        return chooser.getSelected();
     }
 }

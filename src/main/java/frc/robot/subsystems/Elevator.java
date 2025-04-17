@@ -88,14 +88,14 @@ public class Elevator extends SubsystemBase {
 
     // p pid //4.1
     config.Slot0.kP = 1;//3.75;
-    config.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
+    config.Slot0.kD = 0.01;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config.Slot0.kV = 0;
     config.Slot0.kA = 0;
     config.Slot0.kG = 0.65;
     
 
     config.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config.MotorOutput.PeakForwardDutyCycle = 0.8; //prev .275
+    config.MotorOutput.PeakForwardDutyCycle = 0.2; //prev .275
     config.MotorOutput.PeakReverseDutyCycle = -.15; // can bump up to 12 or something
     config.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     config.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -103,14 +103,14 @@ public class Elevator extends SubsystemBase {
  
     // p pid //4.1
     config2.Slot0.kP = 1;//3.75;
-    config2.Slot0.kD = 0;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
+    config2.Slot0.kD = 0.01;//SmartDashboard.getNumber("d", 0.51); // d pid .5362, then .52
     config2.Slot0.kV = 0;
     config2.Slot0.kA = 0;
     config2.Slot0.kG = 0.65;
 
 
     config2.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-    config2.MotorOutput.PeakForwardDutyCycle = 0.8;
+    config2.MotorOutput.PeakForwardDutyCycle = 0.2;
     config2.MotorOutput.PeakReverseDutyCycle = -.15; // can bump up to 12 or something
     config2.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive; //TODO: FIND IF TRUE OR NOT BEFORE U FRY ROBOT
     config2.CurrentLimits.StatorCurrentLimitEnable = true;

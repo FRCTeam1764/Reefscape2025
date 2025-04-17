@@ -17,6 +17,8 @@ import frc.robot.constants.CommandConstants;
 import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.LimelightSubsystem;
+
+import static edu.wpi.first.units.Units.Micro;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
@@ -25,11 +27,11 @@ public class TrackObject extends Command {
   private LimelightSubsystem m_Limelight;
   private CommandSwerveDrivetrain m_Drivetrain;
   private Integer m_pipeline;
-  private PIDController xController = new PIDController(0.02, 0.0001, 0.0085);//.0045);
-  private PIDController yController = new PIDController(0.04, 0.0001, 0.02);
-  private PIDController thetaController = new PIDController(6, CommandConstants.kI, CommandConstants.kD);
-    private double targetx = 0;
-  private double targety = 20;
+  private PIDController xController = new PIDController(0.015, 0.0001, 0.0008);//.0045);
+  private PIDController yController = new PIDController(0.035, 0.0001, 0.00004);
+  private PIDController thetaController = new PIDController(.03, 0, 0.0015);
+  private double targetx = 0;
+  private double targety = 15;
   private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
   
 
@@ -61,6 +63,8 @@ public class TrackObject extends Command {
     yController.setTolerance(1);
     thetaController.reset();
     thetaController.setTolerance(Math.toRadians(1.5));
+
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -92,8 +96,7 @@ public class TrackObject extends Command {
       //xOutput = -m_throttle.get()*DrivetrainConstants.maxSpeedMetersPerSecond;
 		
 		} 
-    
-    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/3)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/3)).withRotationalRate(thetaOutput*MaxAngularRate));
+    m_Drivetrain.setControl(drive.withVelocityX(ySpeed*(CommandConstants.MaxSpeed/6)).withVelocityY(xSpeed*(CommandConstants.MaxSpeed/6)).withRotationalRate(thetaOutput*MaxAngularRate/6));
   }
 
   // Called once the command ends or is interrupted.
