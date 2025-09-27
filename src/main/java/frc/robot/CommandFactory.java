@@ -141,6 +141,15 @@ public class CommandFactory {
             () -> stateManager.getWillScore());
     }
 
+    public Command upDownWrist() {
+        return new SequentialCommandGroup(
+            new WristCommand(intakeWrist, 45),
+            new WaitCommand(2)),
+            new RequestStateChagnge(States.IDLE, stateManager);
+        
+
+    }
+
     public Command Level4Position() {
         return new RequestStateChange(States.L4, stateManager);
     }
@@ -203,16 +212,6 @@ public class CommandFactory {
             new WaitCommand(1),
             new IntakeCommand(intakeRollers, .3, false).asProxy()),
         new returnToIdle(stateManager, States.IDLE));
-    }
-    
-
-    public Command algaeProcessorScore() {
-        return new SequentialCommandGroup(
-            new ParallelDeadlineGroup(
-                new waitUntilPosition(stateManager),
-                new IntakeCommand(intakeRollers, .3, false).asProxy()),
-            new RequestStateChange(States.IDLE, stateManager)
-        );
     }
 
     public Command IntakeCoralTest() {
