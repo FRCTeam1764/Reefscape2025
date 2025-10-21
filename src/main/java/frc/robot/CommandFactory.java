@@ -83,8 +83,7 @@ public class CommandFactory {
     private boolean left = true;
 
     public CommandFactory( Elevator elevator, IntakeRollers intakeRollers, IntakeWristRev intakeWrist,
-            LimelightSubsystem Limelight4, LimelightSubsystem Limelight3, LimelightSubsystem Limelight2,
-            CommandXboxController driver, CommandSwerveDrivetrain swerve, StateManager stateManager) {
+            CommandXboxController driver, StateManager stateManager) {
       //  this.climber = climber;
         this.elevator = elevator;
         this.intakeRollers = intakeRollers;
@@ -144,8 +143,8 @@ public class CommandFactory {
     public Command upDownWrist() {
         return new SequentialCommandGroup(
             new WristCommand(intakeWrist, 45),
-            new WaitCommand(2)),
-            new RequestStateChagnge(States.IDLE, stateManager);
+            new WaitCommand(2),
+            new RequestStateChange(States.IDLE, stateManager));
         
 
     }
@@ -252,6 +251,16 @@ public class CommandFactory {
         return new DriveToTargetOffset(swerve, Limelight3, 0, 0, -18.0, 14.8);
     }
 
+    
+
+    public Command algaeProcessorScore() {
+        return new SequentialCommandGroup(
+            new ParallelDeadlineGroup(
+                new waitUntilPosition(stateManager),
+                new IntakeCommand(intakeRollers, .3, false).asProxy()),
+            new RequestStateChange(States.IDLE, stateManager)
+        );
+    }
 
     public Command interupted(boolean wasInteruppted) {
         if (wasInteruppted) {
